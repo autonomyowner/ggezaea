@@ -3,6 +3,9 @@
   "version": "1.0.0",
   "description": "Matcha Backend API - NestJS",
   "main": "dist/main.js",
+  "prisma": {
+    "schema": "prisma/schema.prisma"
+  },
   "scripts": {
     "build": "nest build",
     "start": "nest start",
