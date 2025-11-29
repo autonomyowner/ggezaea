@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect, useRef } from 'react';
+import Link from 'next/link';
 import { useLanguage } from './LanguageProvider';
 
 interface Message {
@@ -503,12 +504,12 @@ export default function InteractiveDemo() {
           <p className="text-sm mb-4" style={{ color: 'var(--text-muted)' }}>
             {t.demo.readyDiscover}
           </p>
-          <a
+          <Link
             href="/signup"
             className="matcha-btn matcha-btn-primary text-base px-8 py-4 inline-block"
           >
             {t.demo.startFreeAnalysis}
-          </a>
+          </Link>
         </div>
       </div>
     </section>

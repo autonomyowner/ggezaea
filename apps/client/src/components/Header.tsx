@@ -2,20 +2,13 @@
 
 import Link from 'next/link';
 import { useState } from 'react';
-import { useRouter } from 'next/navigation';
-import { useAuthContext } from './AuthProvider';
+import { useUser, SignedIn, SignedOut, UserButton } from '@clerk/nextjs';
 import { useLanguage } from './LanguageProvider';
 
 export default function Header() {
-  const router = useRouter();
-  const { user, isAuthenticated, logout } = useAuthContext();
+  const { user } = useUser();
   const { language, setLanguage, t } = useLanguage();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-
-  const handleLogout = () => {
-    logout();
-    router.push('/');
-  };
 
   const toggleLanguage = () => {
     setLanguage(language === 'en' ? 'fr' : 'en');
@@ -60,7 +53,7 @@ export default function Header() {
             >
               {t.header.pricing}
             </Link>
-            {isAuthenticated && (
+            <SignedIn>
               <Link
                 href="/dashboard"
                 className="text-sm font-medium transition-colors hover:text-[var(--matcha-600)]"
@@ -68,7 +61,7 @@ export default function Header() {
               >
                 {t.header.dashboard}
               </Link>
-            )}
+            </SignedIn>
           </nav>
 
           {/* Desktop Auth Buttons + Language Switcher */}
@@ -85,38 +78,38 @@ export default function Header() {
               {language === 'en' ? 'FR' : 'EN'}
             </button>
 
-            {isAuthenticated ? (
-              <>
-                <span
-                  className="text-sm"
-                  style={{ color: 'var(--text-secondary)' }}
-                >
-                  {t.header.hello}, {user?.prenom}
-                </span>
-                {user?.plan === 'pro' && (
-                  <span className="matcha-badge matcha-badge-pro">Pro</span>
-                )}
-                <button
-                  onClick={handleLogout}
-                  className="matcha-btn matcha-btn-secondary text-sm px-4 py-2"
-                >
-                  {t.header.logout}
-                </button>
-              </>
-            ) : (
-              <>
-                <Link
-                  href="/login"
-                  className="text-sm font-medium transition-colors hover:text-[var(--matcha-600)]"
-                  style={{ color: 'var(--text-secondary)' }}
-                >
-                  {t.header.login}
-                </Link>
-                <Link href="/signup" className="matcha-btn matcha-btn-primary text-sm px-5 py-2">
-                  {t.header.getStarted}
-                </Link>
-              </>
-            )}
+            <SignedIn>
+              <span
+                className="text-sm"
+                style={{ color: 'var(--text-secondary)' }}
+              >
+                {t.header.hello}, {user?.firstName || user?.username || 'User'}
+              </span>
+              <UserButton
+                afterSignOutUrl="/"
+                appearance={{
+                  elements: {
+                    avatarBox: {
+                      width: '32px',
+                      height: '32px',
+                    },
+                  },
+                }}
+              />
+            </SignedIn>
+
+            <SignedOut>
+              <Link
+                href="/login"
+                className="text-sm font-medium transition-colors hover:text-[var(--matcha-600)]"
+                style={{ color: 'var(--text-secondary)' }}
+              >
+                {t.header.login}
+              </Link>
+              <Link href="/signup" className="matcha-btn matcha-btn-primary text-sm px-5 py-2">
+                {t.header.getStarted}
+              </Link>
+            </SignedOut>
           </div>
 
           {/* Mobile Menu Button */}
@@ -165,7 +158,7 @@ export default function Header() {
               >
                 {t.header.pricing}
               </Link>
-              {isAuthenticated && (
+              <SignedIn>
                 <Link
                   href="/dashboard"
                   className="text-sm font-medium py-2"
@@ -174,7 +167,7 @@ export default function Header() {
                 >
                   {t.header.dashboard}
                 </Link>
-              )}
+              </SignedIn>
 
               {/* Mobile Language Switcher */}
               <button
@@ -194,30 +187,31 @@ export default function Header() {
               </button>
 
               <div className="pt-3 border-t border-[var(--border-soft)]">
-                {isAuthenticated ? (
+                <SignedIn>
                   <div className="flex flex-col gap-3">
-                    <span
-                      className="text-sm"
-                      style={{ color: 'var(--text-secondary)' }}
-                    >
-                      {t.header.hello}, {user?.prenom}
-                      {user?.plan === 'pro' && (
-                        <span className="ml-2 matcha-badge matcha-badge-pro">
-                          Pro
-                        </span>
-                      )}
-                    </span>
-                    <button
-                      onClick={() => {
-                        handleLogout();
-                        setMobileMenuOpen(false);
-                      }}
-                      className="matcha-btn matcha-btn-secondary text-sm w-full"
-                    >
-                      {t.header.logout}
-                    </button>
+                    <div className="flex items-center gap-3">
+                      <UserButton
+                        afterSignOutUrl="/"
+                        appearance={{
+                          elements: {
+                            avatarBox: {
+                              width: '32px',
+                              height: '32px',
+                            },
+                          },
+                        }}
+                      />
+                      <span
+                        className="text-sm"
+                        style={{ color: 'var(--text-secondary)' }}
+                      >
+                        {user?.firstName || user?.username || 'User'}
+                      </span>
+                    </div>
                   </div>
-                ) : (
+                </SignedIn>
+
+                <SignedOut>
                   <div className="flex flex-col gap-3">
                     <Link
                       href="/login"
@@ -234,7 +228,7 @@ export default function Header() {
                       {t.header.getStarted}
                     </Link>
                   </div>
-                )}
+                </SignedOut>
               </div>
             </nav>
           </div>

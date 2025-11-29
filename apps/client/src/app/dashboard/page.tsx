@@ -3,43 +3,69 @@
 import { useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
-import { useAuthContext } from '../../components/AuthProvider';
+import { useUser, useAuth } from '@clerk/nextjs';
 import { useLanguage } from '../../components/LanguageProvider';
 import { Button } from '../../components/ui/Button';
+import { useDashboard } from '../../hooks/useApi';
 
 export default function DashboardPage() {
   const router = useRouter();
-  const { user, isAuthenticated, isLoading, remainingAnalyses } = useAuthContext();
+  const { user, isLoaded: userLoaded } = useUser();
+  const { isSignedIn, isLoaded: authLoaded } = useAuth();
   const { t, language } = useLanguage();
+  const { data: dashboardData, isLoading: dashboardLoading, error: dashboardError } = useDashboard();
 
-  // Mock data for demonstration - uses translations
-  const mockBiases = [
+  const isLoading = !userLoaded || !authLoaded || dashboardLoading;
+
+  // Fallback data when API is not available or still loading
+  const fallbackBiases = [
     { name: t.dashboard.confirmationBias, intensity: 75, description: t.dashboard.confirmationBiasDesc },
     { name: t.dashboard.haloEffect, intensity: 60, description: t.dashboard.haloEffectDesc },
     { name: t.dashboard.lossAversion, intensity: 45, description: t.dashboard.lossAversionDesc },
     { name: t.dashboard.anchoringBias, intensity: 55, description: t.dashboard.anchoringBiasDesc },
   ];
 
-  const mockThinkingPatterns = [
+  const fallbackPatterns = [
     { name: t.dashboard.analytical, value: 72, color: 'var(--matcha-500)' },
     { name: t.dashboard.creative, value: 58, color: 'var(--terra-400)' },
     { name: t.dashboard.pragmatic, value: 85, color: 'var(--matcha-600)' },
     { name: t.dashboard.emotional, value: 40, color: 'var(--terra-500)' },
   ];
 
-  const mockInsights = [
+  const fallbackInsights = [
     t.dashboard.insight1,
     t.dashboard.insight2,
     t.dashboard.insight3,
   ];
 
+  // Use API data if available, otherwise fallback
+  const biases = dashboardData?.stats.topBiases.length
+    ? dashboardData.stats.topBiases.map(b => ({
+        name: b.name,
+        intensity: Math.round(b.avgIntensity),
+        description: `Detected ${b.count} times`,
+      }))
+    : fallbackBiases;
+
+  const patterns = dashboardData?.stats.patterns.length
+    ? dashboardData.stats.patterns.map((p, i) => ({
+        name: p.name,
+        value: Math.round(p.avgPercentage),
+        color: ['var(--matcha-500)', 'var(--terra-400)', 'var(--matcha-600)', 'var(--terra-500)'][i % 4],
+      }))
+    : fallbackPatterns;
+
+  const insights = dashboardData?.recentInsights.length
+    ? dashboardData.recentInsights.slice(0, 3)
+    : fallbackInsights;
+
   useEffect(() => {
-    if (!isLoading && !isAuthenticated) {
+    if (authLoaded && !isSignedIn) {
       router.replace('/login');
     }
-  }, [isAuthenticated, isLoading, router]);
+  }, [isSignedIn, authLoaded, router]);
 
-  if (isLoading || !isAuthenticated) {
+  if (isLoading || !isSignedIn) {
     return (
       <div
         className="min-h-screen flex items-center justify-center"
@@ -50,9 +76,26 @@ export default function DashboardPage() {
     );
   }
 
-  const isPro = user?.plan === 'pro';
-  const memberSince = 'Nov 2024';
-  const lastAnalysis = language === 'en' ? `2 ${t.dashboard.daysAgo} ago` : `Il y a 2 ${t.dashboard.daysAgo}`;
+  const isPro = dashboardData?.profile.tier === 'PRO';
+  const firstName = dashboardData?.profile.firstName || user?.firstName || 'User';
+  const analysesRemaining = dashboardData?.usage.analysesRemaining;
+  const totalAnalyses = dashboardData?.usage.totalAnalyses || 0;
+  const profileCompletion = dashboardData?.profile.completionPercentage || 0;
+
+  // Format member since date
+  const memberSince = dashboardData?.profile.memberSince
+    ? new Date(dashboardData.profile.memberSince).toLocaleDateString(language === 'en' ? 'en-US' : 'fr-FR', { month: 'short', year: 'numeric' })
+    : 'N/A';
+
+  // Format last analysis date
+  const lastAnalysisDate = dashboardData?.usage.lastAnalysisDate;
+  let lastAnalysis = language === 'en' ? 'No analyses yet' : 'Aucune analyse';
+  if (lastAnalysisDate) {
+    const daysAgo = Math.floor((Date.now() - new Date(lastAnalysisDate).getTime()) / (1000 * 60 * 60 * 24));
+    lastAnalysis = language === 'en'
+      ? `${daysAgo} ${t.dashboard.daysAgo} ago`
+      : `Il y a ${daysAgo} ${t.dashboard.daysAgo}`;
+  }
 
   return (
     <div className="min-h-screen" style={{ background: 'var(--cream-50)' }}>
@@ -79,14 +122,14 @@ export default function DashboardPage() {
                 color: 'var(--text-primary)',
               }}
             >
-              {t.dashboard.hello}, {user?.prenom}
+              {t.dashboard.hello}, {firstName}
             </h1>
             <p style={{ color: 'var(--text-secondary)' }}>
               {t.dashboard.subtitle}
             </p>
           </div>
           <div className="flex items-center gap-4">
-            {!isPro && (
+            {!isPro && analysesRemaining !== null && (
               <div
                 className="px-4 py-2 rounded-full text-sm"
                 style={{
@@ -94,7 +137,7 @@ export default function DashboardPage() {
                   color: 'var(--text-secondary)',
                 }}
               >
-                {remainingAnalyses} {remainingAnalyses !== 1 ? t.dashboard.analysesRemainingPlural : t.dashboard.analysesRemaining}
+                {analysesRemaining} {analysesRemaining !== 1 ? t.dashboard.analysesRemainingPlural : t.dashboard.analysesRemaining}
               </div>
             )}
             <span className={`matcha-badge ${isPro ? 'matcha-badge-pro' : 'matcha-badge-free'}`}>
@@ -102,6 +145,20 @@ export default function DashboardPage() {
             </span>
           </div>
         </div>
+
+        {/* API Error Banner */}
+        {dashboardError && (
+          <div
+            className="mb-6 p-4 rounded-xl text-sm"
+            style={{
+              background: 'rgba(239, 176, 68, 0.1)',
+              color: 'var(--terra-600)',
+              border: '1px solid rgba(239, 176, 68, 0.3)',
+            }}
+          >
+            Unable to load real-time data. Showing sample data.
+          </div>
+        )}
 
         {/* Main Grid */}
         <div className="grid lg:grid-cols-3 gap-6">
@@ -128,10 +185,10 @@ export default function DashboardPage() {
             <div className="mb-6">
               <div className="flex justify-between text-sm mb-2">
                 <span style={{ color: 'var(--text-secondary)' }}>{t.dashboard.profileCompletion}</span>
-                <span style={{ color: 'var(--matcha-600)' }}>68%</span>
+                <span style={{ color: 'var(--matcha-600)' }}>{profileCompletion}%</span>
               </div>
               <div className="matcha-progress">
-                <div className="matcha-progress-bar" style={{ width: '68%' }} />
+                <div className="matcha-progress-bar" style={{ width: `${profileCompletion}%` }} />
               </div>
             </div>
 
@@ -139,7 +196,7 @@ export default function DashboardPage() {
             <div className="space-y-4">
               <div className="flex justify-between">
                 <span style={{ color: 'var(--text-secondary)' }}>{t.dashboard.analysesCompleted}</span>
-                <span style={{ color: 'var(--text-primary)' }} className="font-medium">12</span>
+                <span style={{ color: 'var(--text-primary)' }} className="font-medium">{totalAnalyses}</span>
               </div>
               <div className="flex justify-between">
                 <span style={{ color: 'var(--text-secondary)' }}>{t.dashboard.memberSince}</span>
@@ -181,7 +238,7 @@ export default function DashboardPage() {
               </h2>
 
               <div className="space-y-5">
-                {mockBiases.map((bias, i) => (
+                {biases.map((bias, i) => (
                   <div key={i}>
                     <div className="flex justify-between text-sm mb-2">
                       <span style={{ color: 'var(--text-primary)' }} className="font-medium">
@@ -223,7 +280,7 @@ export default function DashboardPage() {
               </h2>
 
               <div className="grid grid-cols-2 gap-4">
-                {mockThinkingPatterns.map((pattern, i) => (
+                {patterns.map((pattern, i) => (
                   <div
                     key={i}
                     className="p-4 rounded-2xl"
@@ -279,7 +336,7 @@ export default function DashboardPage() {
           </h2>
 
           <div className="grid md:grid-cols-3 gap-4">
-            {mockInsights.map((insight, i) => (
+            {insights.map((insight, i) => (
               <div
                 key={i}
                 className="p-4 rounded-2xl"

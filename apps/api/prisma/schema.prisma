@@ -1,0 +1,67 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum UserTier {
+  FREE
+  PRO
+}
+
+enum AnalysisStatus {
+  PENDING
+  PROCESSING
+  COMPLETED
+  FAILED
+}
+
+model User {
+  id        String   @id // Clerk user ID
+  email     String   @unique
+  firstName String?  @map("first_name")
+  tier      UserTier @default(FREE)
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  analyses   Analysis[]
+  usageLimit UsageLimit?
+
+  @@map("users")
+}
+
+model Analysis {
+  id             String         @id @default(cuid())
+  userId         String         @map("user_id")
+  inputText      String         @map("input_text") @db.Text
+  status         AnalysisStatus @default(PENDING)
+  biases         Json?
+  patterns       Json?
+  insights       Json?
+  emotionalState Json?          @map("emotional_state")
+  processingTime Int?           @map("processing_time") // milliseconds
+  errorMessage   String?        @map("error_message")
+  createdAt      DateTime       @default(now()) @map("created_at")
+  completedAt    DateTime?      @map("completed_at")
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, createdAt(sort: Desc)])
+  @@map("analyses")
+}
+
+model UsageLimit {
+  id                String   @id @default(cuid())
+  userId            String   @unique @map("user_id")
+  analysesThisMonth Int      @default(0) @map("analyses_this_month")
+  monthResetAt      DateTime @map("month_reset_at")
+  createdAt         DateTime @default(now()) @map("created_at")
+  updatedAt         DateTime @updatedAt @map("updated_at")
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("usage_limits")
+}

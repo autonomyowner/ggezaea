@@ -1,0 +1,85 @@
+'use client';
+
+import { SignUp } from '@clerk/nextjs';
+import Link from 'next/link';
+import { useLanguage } from '../../../components/LanguageProvider';
+
+export default function SignupPage() {
+  const { t } = useLanguage();
+
+  return (
+    <div className="min-h-screen" style={{ background: 'var(--cream-50)' }}>
+      {/* Decorative Background */}
+      <div className="fixed inset-0 pointer-events-none overflow-hidden">
+        <div
+          className="absolute top-0 left-0 w-[400px] h-[400px] opacity-20"
+          style={{
+            background:
+              'radial-gradient(circle, var(--matcha-200) 0%, transparent 70%)',
+            borderRadius: '50%',
+            transform: 'translate(-20%, -30%)',
+          }}
+        />
+        <div
+          className="absolute bottom-0 right-0 w-[300px] h-[300px] opacity-15"
+          style={{
+            background:
+              'radial-gradient(circle, var(--terra-300) 0%, transparent 70%)',
+            borderRadius: '50%',
+            transform: 'translate(20%, 30%)',
+          }}
+        />
+      </div>
+
+      <div className="relative min-h-screen flex flex-col items-center justify-center px-4 py-12">
+        <div className="w-full max-w-md">
+          {/* Header */}
+          <div className="text-center mb-8">
+            <Link
+              href="/"
+              className="inline-block text-2xl font-semibold mb-6"
+              style={{
+                fontFamily: 'var(--font-dm-serif), Georgia, serif',
+                color: 'var(--matcha-600)',
+              }}
+            >
+              Matcha
+            </Link>
+            <h1
+              className="text-3xl mb-2"
+              style={{
+                fontFamily: 'var(--font-dm-serif), Georgia, serif',
+                color: 'var(--text-primary)',
+              }}
+            >
+              {t.signup.title}
+            </h1>
+            <p style={{ color: 'var(--text-secondary)' }}>
+              {t.signup.subtitle}
+            </p>
+          </div>
+
+          {/* Clerk SignUp Component */}
+          <div className="flex justify-center">
+            <SignUp
+              appearance={{
+                elements: {
+                  formButtonPrimary: {
+                    backgroundColor: 'var(--matcha-500)',
+                    '&:hover': {
+                      backgroundColor: 'var(--matcha-600)',
+                    },
+                  },
+                  card: {
+                    boxShadow: 'var(--shadow-lg)',
+                    borderRadius: '24px',
+                  },
+                },
+              }}
+            />
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
