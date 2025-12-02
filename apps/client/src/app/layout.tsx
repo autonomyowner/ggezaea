@@ -70,9 +70,13 @@ export const metadata: Metadata = {
     },
   },
   icons: {
-    icon: "/favicon.ico",
+    icon: [
+      { url: "/favicon.ico", sizes: "any" },
+      { url: "/favicon/favicon-96x96.png", sizes: "96x96", type: "image/png" },
+    ],
     apple: "/apple-touch-icon.png",
   },
+  manifest: "/favicon/site.webmanifest",
 };
 
 export default function RootLayout({
