@@ -4,6 +4,35 @@ import { useCallback, useRef, useState, useEffect } from 'react';
 import { useAuth } from '@clerk/nextjs';
 import { api } from '../../../lib/api';
 
+// Pre-recorded audio files mapping (phrase text → audio file path)
+const PRERECORDED_AUDIO: Record<string, string> = {
+  // Set Opening
+  "Begin slow tapping... left... right... left... right...": "/audio/flash/Begin slow tapping left right.mp3",
+  // Focus Cue
+  "Stay fully connected to your peaceful place...": "/audio/flash/Stay fully connected to your peaceful place.mp3",
+  // Flash Command
+  "Flash": "/audio/flash/Flash.mp3",
+  // Between-Flash Reminders
+  "Stay with your positive place...": "/audio/flash/Stay with your positive place.mp3",
+  "Notice what you see there...": "/audio/flash/Notice what you see there.mp3",
+  "Feel the calm...": "/audio/flash/Feel the calm.mp3",
+  "Let those good feelings grow...": "/audio/flash/Let those good feelings grow.mp3",
+  // Set Completion
+  "Stop tapping...": "/audio/flash/Stop tapping.mp3",
+  "Take a deep breath...": "/audio/flash/Take a deep breath.mp3",
+  // Pause Check
+  "Take a moment to notice how you feel.": "/audio/flash/Take a moment to notice how you feel.mp3",
+  "Does the memory seem different in any way?": "/audio/flash/Does the memory seem different in any way.mp3",
+  // Closing Phase
+  "Bring to mind what was bothering you earlier...": "/audio/flash/Bring to mind what was bothering you earlier.mp3",
+  "How does it feel now, on a scale of zero to ten?": "/audio/flash/How does it feel now, on a scale of zero to ten.mp3",
+  // Session Complete
+  "Wonderful. Your mind did important work today.": "/audio/flash/Wonderful Your mind did important work today.mp3",
+  "Notice your feet on the ground...": "/audio/flash/Notice your feet on the ground.mp3",
+  "Look around and name three things you can see...": "/audio/flash/Look around and name three things you can see.mp3",
+  "You can return anytime you need this space.": "/audio/flash/You can return anytime you need this space.mp3",
+};
+
 interface UseTTSReturn {
   speak: (text: string, onStart?: () => void) => void;
   speakSequence: (texts: string[]) => void;
@@ -70,6 +99,14 @@ export function useTTS(): UseTTSReturn {
     const cached = audioCache.current.get(text);
     if (cached) return cached;
 
+    // Check for pre-recorded audio file
+    const prerecordedPath = PRERECORDED_AUDIO[text];
+    if (prerecordedPath) {
+      audioCache.current.set(text, prerecordedPath);
+      return prerecordedPath;
+    }
+
+    // Fall back to API for non-prerecorded phrases
     try {
       const token = await getToken();
       if (!token) {

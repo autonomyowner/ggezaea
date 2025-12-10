@@ -3,6 +3,7 @@
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
 import InteractiveDemo from '@/components/InteractiveDemo';
+import WelcomeDemo from '@/components/WelcomeDemo';
 import { useLanguage } from '@/components/LanguageProvider';
 
 export default function LandingPage() {
@@ -207,6 +208,9 @@ export default function LandingPage() {
           </div>
         </div>
       </section>
+
+      {/* Welcome Demo - Video Explainer */}
+      <WelcomeDemo />
 
       {/* How It Works */}
       <section id="how-it-works" className="py-24 px-4">

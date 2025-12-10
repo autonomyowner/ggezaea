@@ -45,12 +45,18 @@ interface UseFlashSessionReturn {
   toggleMute: () => void;
 }
 
-// Clinical Flash Technique Protocol
+// Clinical Flash Technique Protocol (based on Manfield et al. research)
+// Source: PMC10801180, flashtechnique.com
 const FLASH_CONFIG = {
-  FLASHES_PER_SET: 5,
-  SECONDS_BETWEEN_FLASHES: 8.5,
-  BILATERAL_INTERVAL_MS: 1500,
-  SET_DURATION_MS: 42500,
+  FLASHES_PER_SET: 5,              // 5 triple-blink sequences per set
+  SECONDS_BETWEEN_FLASHES: 7,      // ~7 seconds between flashes (PMC study)
+  BILATERAL_INTERVAL_MS: 2500,     // 2.5s - slow bilateral for relaxation response
+  SET_DURATION_MS: 48000,          // ~48 seconds per set (includes preparation time)
+  TRIPLE_BLINK_DURATION_MS: 150,   // Duration of each blink in triple sequence
+  TRIPLE_BLINK_GAP_MS: 100,        // Gap between blinks in triple sequence
+  // Timing offsets for proper pacing
+  PEF_FOCUS_DELAY_MS: 6000,        // PEF instruction at 6s (after opening completes)
+  FIRST_FLASH_DELAY_MS: 12000,     // First flash at 12s (time to connect to PEF)
 };
 
 const VOICE_SCRIPTS = {
@@ -183,38 +189,53 @@ export function useFlashSession(): UseFlashSessionReturn {
       setSetElapsed(Math.min(elapsed, FLASH_CONFIG.SET_DURATION_MS));
     }, 100);
 
-    // Opening voice
+    // Opening voice (0s) - "Begin slow tapping..."
     speak(VOICE_SCRIPTS.setOpening);
 
-    // PEF focus at 2s
-    addTimeout(() => speak(VOICE_SCRIPTS.pefFocus), 2000);
+    // PEF focus at 6s (after opening completes) - "Stay connected to your peaceful place..."
+    addTimeout(() => speak(VOICE_SCRIPTS.pefFocus), FLASH_CONFIG.PEF_FOCUS_DELAY_MS);
 
-    // Schedule all 5 flashes
+    // Schedule all 5 flashes (triple-blink pattern per clinical protocol)
     const scheduleFlash = (flashNum: number, delay: number) => {
       addTimeout(() => {
         // Audio with visual sync on start
         speak(VOICE_SCRIPTS.flash, () => {
-          // Visual flash synchronized with audio start
-          setBlinkActive(true);
+          // Triple-blink pattern: 3 rapid visual pulses (clinical protocol)
           setBlinkCount(flashNum + 1);
 
-          // End visual after 400ms
-          setTimeout(() => setBlinkActive(false), 400);
+          const { TRIPLE_BLINK_DURATION_MS, TRIPLE_BLINK_GAP_MS } = FLASH_CONFIG;
+          const blinkCycle = TRIPLE_BLINK_DURATION_MS + TRIPLE_BLINK_GAP_MS; // 250ms per blink cycle
+
+          // Blink 1
+          setBlinkActive(true);
+          setTimeout(() => setBlinkActive(false), TRIPLE_BLINK_DURATION_MS);
+
+          // Blink 2
+          setTimeout(() => {
+            setBlinkActive(true);
+            setTimeout(() => setBlinkActive(false), TRIPLE_BLINK_DURATION_MS);
+          }, blinkCycle);
+
+          // Blink 3
+          setTimeout(() => {
+            setBlinkActive(true);
+            setTimeout(() => setBlinkActive(false), TRIPLE_BLINK_DURATION_MS);
+          }, blinkCycle * 2);
         });
 
-        // Reminder 2s after (not on last flash)
+        // Reminder 3s after flash (not on last flash) - gives time to process
         if (flashNum < FLASH_CONFIG.FLASHES_PER_SET - 1) {
           addTimeout(() => {
             const idx = flashNum % VOICE_SCRIPTS.betweenFlashes.length;
             speak(VOICE_SCRIPTS.betweenFlashes[idx]);
-          }, 2000);
+          }, 3000);
         }
       }, delay);
     };
 
-    // First flash at 4s, then every 8.5s
+    // First flash at 12s (after PEF instruction + time to connect), then every 7s
     for (let i = 0; i < FLASH_CONFIG.FLASHES_PER_SET; i++) {
-      const delay = 4000 + (i * FLASH_CONFIG.SECONDS_BETWEEN_FLASHES * 1000);
+      const delay = FLASH_CONFIG.FIRST_FLASH_DELAY_MS + (i * FLASH_CONFIG.SECONDS_BETWEEN_FLASHES * 1000);
       scheduleFlash(i, delay);
     }
 
