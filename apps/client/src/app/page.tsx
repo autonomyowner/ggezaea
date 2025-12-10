@@ -1,7 +1,7 @@
 'use client';
 
 import Link from 'next/link';
-import { useEffect, useState, useRef } from 'react';
+import { useEffect, useState } from 'react';
 import InteractiveDemo from '@/components/InteractiveDemo';
 import WelcomeDemo from '@/components/WelcomeDemo';
 import { useLanguage } from '@/components/LanguageProvider';
@@ -9,52 +9,10 @@ import { useLanguage } from '@/components/LanguageProvider';
 export default function LandingPage() {
   const [mounted, setMounted] = useState(false);
   const { t } = useLanguage();
-  const [isAudioPlaying, setIsAudioPlaying] = useState(false);
-  const [audioProgress, setAudioProgress] = useState(0);
-  const [audioDuration, setAudioDuration] = useState(0);
-  const audioRef = useRef<HTMLAudioElement | null>(null);
 
   useEffect(() => {
     setMounted(true);
-    return () => {
-      if (audioRef.current) {
-        audioRef.current.pause();
-        audioRef.current = null;
-      }
-    };
   }, []);
-
-  const handleAudioPlay = () => {
-    if (!audioRef.current) {
-      audioRef.current = new Audio('/man.mp3');
-      audioRef.current.addEventListener('loadedmetadata', () => {
-        setAudioDuration(audioRef.current?.duration || 0);
-      });
-      audioRef.current.addEventListener('timeupdate', () => {
-        if (audioRef.current) {
-          setAudioProgress(audioRef.current.currentTime);
-        }
-      });
-      audioRef.current.addEventListener('ended', () => {
-        setIsAudioPlaying(false);
-        setAudioProgress(0);
-      });
-    }
-
-    if (isAudioPlaying) {
-      audioRef.current.pause();
-      setIsAudioPlaying(false);
-    } else {
-      audioRef.current.play();
-      setIsAudioPlaying(true);
-    }
-  };
-
-  const formatTime = (seconds: number) => {
-    const mins = Math.floor(seconds / 60);
-    const secs = Math.floor(seconds % 60);
-    return `${mins}:${secs.toString().padStart(2, '0')}`;
-  };
 
   return (
     <div className="min-h-screen overflow-hidden" style={{ background: 'var(--cream-50)' }}>
@@ -334,80 +292,6 @@ export default function LandingPage() {
                 </p>
               </div>
             ))}
-          </div>
-        </div>
-      </section>
-
-      {/* Audio Explanation Section */}
-      <section className="py-16 px-4">
-        <div className="max-w-2xl mx-auto">
-          <div
-            className="rounded-2xl p-8 text-center"
-            style={{
-              background: 'var(--bg-card)',
-              border: '1px solid var(--border-soft)',
-              boxShadow: 'var(--shadow-lg)',
-            }}
-          >
-            <h3
-              className="text-xl md:text-2xl mb-3"
-              style={{
-                fontFamily: 'var(--font-dm-serif), Georgia, serif',
-                color: 'var(--text-primary)',
-              }}
-            >
-              Listen to how it works
-            </h3>
-            <p
-              className="mb-6 text-sm"
-              style={{ color: 'var(--text-secondary)' }}
-            >
-              Press play to hear a quick explanation of Matcha
-            </p>
-
-            {/* Audio Player */}
-            <div
-              className="rounded-xl p-4"
-              style={{
-                background: 'var(--cream-100)',
-                border: '1px solid var(--border-soft)',
-              }}
-            >
-              {/* Play Button */}
-              <button
-                onClick={handleAudioPlay}
-                className="w-full py-4 rounded-lg font-medium text-base transition-all mb-4"
-                style={{
-                  background: isAudioPlaying
-                    ? 'var(--terra-100)'
-                    : 'var(--matcha-500)',
-                  color: isAudioPlaying ? 'var(--terra-600)' : 'white',
-                  border: isAudioPlaying ? '1px solid var(--terra-300)' : 'none',
-                }}
-              >
-                {isAudioPlaying ? 'Pause' : 'Play Audio'}
-              </button>
-
-              {/* Progress Bar */}
-              <div
-                className="h-2 rounded-full overflow-hidden mb-2"
-                style={{ background: 'var(--cream-300)' }}
-              >
-                <div
-                  className="h-full rounded-full transition-all duration-200"
-                  style={{
-                    width: audioDuration > 0 ? `${(audioProgress / audioDuration) * 100}%` : '0%',
-                    background: 'var(--matcha-500)',
-                  }}
-                />
-              </div>
-
-              {/* Time Display */}
-              <div className="flex justify-between text-xs" style={{ color: 'var(--text-muted)' }}>
-                <span>{formatTime(audioProgress)}</span>
-                <span>{audioDuration > 0 ? formatTime(audioDuration) : '--:--'}</span>
-              </div>
-            </div>
           </div>
         </div>
       </section>
