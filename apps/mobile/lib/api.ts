@@ -1,6 +1,6 @@
 import axios, { AxiosInstance } from 'axios';
 
-const API_URL = process.env.EXPO_PUBLIC_API_URL || 'https://matcha-api.onrender.com/api';
+const API_URL = process.env.EXPO_PUBLIC_API_URL || 'https://matcha-api-akyb.onrender.com/api';
 
 export interface DashboardData {
   profile: {
@@ -96,9 +96,12 @@ export interface EmdrGuidance {
   groundingNeeded: boolean;
 }
 
-export const createApiClient = (getToken: () => Promise<string | null>) => {
+export const createApiClient = (
+  getToken: (options?: { forceRefresh?: boolean }) => Promise<string | null>
+) => {
   const client: AxiosInstance = axios.create({
     baseURL: API_URL,
+    timeout: 30000,
     headers: {
       'Content-Type': 'application/json',
     },
@@ -111,6 +114,29 @@ export const createApiClient = (getToken: () => Promise<string | null>) => {
     }
     return config;
   });
+
+  client.interceptors.response.use(
+    (response) => response,
+    async (error) => {
+      const originalRequest = error.config;
+
+      if (error.response?.status === 401 && !originalRequest._retry) {
+        originalRequest._retry = true;
+
+        try {
+          const newToken = await getToken({ forceRefresh: true });
+          if (newToken) {
+            originalRequest.headers.Authorization = `Bearer ${newToken}`;
+            return client(originalRequest);
+          }
+        } catch {
+          // Token refresh failed - user needs to re-authenticate
+        }
+      }
+
+      return Promise.reject(error);
+    }
+  );
 
   return {
     // Dashboard

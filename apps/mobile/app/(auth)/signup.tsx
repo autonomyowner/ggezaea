@@ -1,6 +1,6 @@
-import { useSignUp } from '@clerk/clerk-expo';
+import { useSignUp, useOAuth } from '@clerk/clerk-expo';
 import { Link, useRouter } from 'expo-router';
-import { useState } from 'react';
+import { useState, useCallback } from 'react';
 import {
   View,
   Text,
@@ -12,6 +12,10 @@ import {
   ActivityIndicator,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import * as WebBrowser from 'expo-web-browser';
+import * as Linking from 'expo-linking';
+
+WebBrowser.maybeCompleteAuthSession();
 
 export default function SignUpScreen() {
   const { signUp, setActive, isLoaded } = useSignUp();
@@ -23,7 +27,31 @@ export default function SignUpScreen() {
   const [pendingVerification, setPendingVerification] = useState(false);
   const [code, setCode] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const [isOAuthLoading, setIsOAuthLoading] = useState<'google' | 'facebook' | null>(null);
   const [error, setError] = useState('');
+
+  const { startOAuthFlow: startGoogleOAuth } = useOAuth({ strategy: 'oauth_google' });
+  const { startOAuthFlow: startFacebookOAuth } = useOAuth({ strategy: 'oauth_facebook' });
+
+  const handleOAuth = useCallback(async (provider: 'google' | 'facebook') => {
+    try {
+      setIsOAuthLoading(provider);
+      setError('');
+      const startOAuth = provider === 'google' ? startGoogleOAuth : startFacebookOAuth;
+      const { createdSessionId, setActive: setOAuthActive } = await startOAuth({
+        redirectUrl: Linking.createURL('/(tabs)', { scheme: 'matcha' }),
+      });
+      if (createdSessionId && setOAuthActive) {
+        await setOAuthActive({ session: createdSessionId });
+        router.replace('/(tabs)');
+      }
+    } catch (err: any) {
+      console.error('OAuth error:', err);
+      setError(err.errors?.[0]?.message || 'Failed to sign up with ' + provider);
+    } finally {
+      setIsOAuthLoading(null);
+    }
+  }, [startGoogleOAuth, startFacebookOAuth, router]);
 
   const handleSignUp = async () => {
     if (!isLoaded) return;
@@ -98,6 +126,62 @@ export default function SignUpScreen() {
 
               {!pendingVerification ? (
                 <>
+                  {/* OAuth Buttons */}
+                  <View style={{ marginBottom: 24 }}>
+                    <TouchableOpacity
+                      style={{
+                        flexDirection: 'row',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        backgroundColor: 'white',
+                        borderWidth: 1,
+                        borderColor: '#e5ddd5',
+                        borderRadius: 12,
+                        paddingVertical: 14,
+                        marginBottom: 12,
+                      }}
+                      onPress={() => handleOAuth('google')}
+                      disabled={isOAuthLoading !== null || isLoading}
+                    >
+                      {isOAuthLoading === 'google' ? (
+                        <ActivityIndicator color="#5a9470" />
+                      ) : (
+                        <>
+                          <Text style={{ fontSize: 18, marginRight: 12, fontWeight: 'bold', color: '#4285F4' }}>G</Text>
+                          <Text style={{ color: '#2d3a2e', fontWeight: '500', fontSize: 16 }}>Continue with Google</Text>
+                        </>
+                      )}
+                    </TouchableOpacity>
+                    <TouchableOpacity
+                      style={{
+                        flexDirection: 'row',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        backgroundColor: '#1877F2',
+                        borderRadius: 12,
+                        paddingVertical: 14,
+                      }}
+                      onPress={() => handleOAuth('facebook')}
+                      disabled={isOAuthLoading !== null || isLoading}
+                    >
+                      {isOAuthLoading === 'facebook' ? (
+                        <ActivityIndicator color="white" />
+                      ) : (
+                        <>
+                          <Text style={{ fontSize: 18, color: 'white', marginRight: 12, fontWeight: 'bold' }}>f</Text>
+                          <Text style={{ color: 'white', fontWeight: '500', fontSize: 16 }}>Continue with Facebook</Text>
+                        </>
+                      )}
+                    </TouchableOpacity>
+                  </View>
+
+                  {/* Divider */}
+                  <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 24 }}>
+                    <View style={{ flex: 1, height: 1, backgroundColor: '#e5ddd5' }} />
+                    <Text style={{ marginHorizontal: 16, color: '#a69889' }}>or</Text>
+                    <View style={{ flex: 1, height: 1, backgroundColor: '#e5ddd5' }} />
+                  </View>
+
                   <View>
                     <Text className="text-warm-700 mb-2 font-sans-medium">First Name</Text>
                     <TextInput
@@ -138,9 +222,9 @@ export default function SignUpScreen() {
                   </View>
 
                   <TouchableOpacity
-                    className={`bg-matcha-600 rounded-xl py-4 mt-6 ${isLoading ? 'opacity-70' : ''}`}
+                    className={`bg-matcha-600 rounded-xl py-4 mt-6 ${isLoading || isOAuthLoading ? 'opacity-70' : ''}`}
                     onPress={handleSignUp}
-                    disabled={isLoading}
+                    disabled={isLoading || isOAuthLoading !== null}
                   >
                     {isLoading ? (
                       <ActivityIndicator color="white" />

@@ -1,4 +1,4 @@
-import { useEffect, useState, useCallback, useRef } from 'react';
+import { useEffect, useState, useCallback, useRef, memo } from 'react';
 import {
   View,
   Text,
@@ -9,7 +9,6 @@ import {
   Platform,
   ActivityIndicator,
   Alert,
-  Keyboard,
 } from 'react-native';
 import { useLocalSearchParams, useNavigation, useRouter } from 'expo-router';
 import { useAuth } from '@clerk/clerk-expo';
@@ -33,24 +32,28 @@ function TypingIndicator() {
   );
 }
 
-// Message Bubble Component
-function MessageBubble({ message }: { message: Message }) {
+// Message Bubble Component - Memoized to prevent re-renders
+const MessageBubble = memo(function MessageBubble({ message }: { message: Message }) {
   const isUser = message.role === 'USER';
 
   return (
-    <View className={`px-4 py-2 ${isUser ? 'items-end' : 'items-start'}`}>
+    <View style={{ paddingHorizontal: 16, paddingVertical: 8, alignItems: isUser ? 'flex-end' : 'flex-start' }}>
       <View
-        className={`max-w-[85%] px-4 py-3 ${
-          isUser
-            ? 'bg-matcha-600 rounded-2xl rounded-tr-sm'
-            : 'bg-warm-100 rounded-2xl rounded-tl-sm'
-        }`}
+        style={{
+          maxWidth: '85%',
+          paddingHorizontal: 16,
+          paddingVertical: 12,
+          backgroundColor: isUser ? '#5a9470' : '#f5ebe0',
+          borderRadius: 16,
+          borderTopRightRadius: isUser ? 4 : 16,
+          borderTopLeftRadius: isUser ? 16 : 4,
+        }}
       >
-        <Text className={`${isUser ? 'text-white' : 'text-warm-900'}`}>
+        <Text style={{ color: isUser ? 'white' : '#2d3a2e', fontSize: 16 }}>
           {message.content}
         </Text>
       </View>
-      <Text className="text-warm-400 text-xs mt-1 px-1">
+      <Text style={{ color: '#a69889', fontSize: 12, marginTop: 4, paddingHorizontal: 4 }}>
         {new Date(message.createdAt).toLocaleTimeString([], {
           hour: '2-digit',
           minute: '2-digit',
@@ -58,7 +61,7 @@ function MessageBubble({ message }: { message: Message }) {
       </Text>
     </View>
   );
-}
+});
 
 // Analysis Panel Component
 function AnalysisPanel({ analysis }: { analysis: Analysis | null }) {
@@ -175,17 +178,16 @@ export default function ChatDetailScreen() {
   const [isSending, setIsSending] = useState(false);
   const [showAnalysis, setShowAnalysis] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const scrollTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
-  // Scroll to bottom when keyboard shows
-  useEffect(() => {
-    const keyboardShowListener = Keyboard.addListener(
-      Platform.OS === 'ios' ? 'keyboardWillShow' : 'keyboardDidShow',
-      () => {
-        setTimeout(() => flatListRef.current?.scrollToEnd({ animated: true }), 100);
-      }
-    );
-
-    return () => keyboardShowListener.remove();
+  // Debounced scroll to bottom
+  const scrollToBottom = useCallback((animated = true) => {
+    if (scrollTimeoutRef.current) {
+      clearTimeout(scrollTimeoutRef.current);
+    }
+    scrollTimeoutRef.current = setTimeout(() => {
+      flatListRef.current?.scrollToEnd({ animated });
+    }, 100);
   }, []);
 
   const fetchConversation = useCallback(async () => {
@@ -323,11 +325,11 @@ export default function ChatDetailScreen() {
 
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
-      <SafeAreaView className="flex-1 bg-cream-50" edges={['bottom']}>
+      <SafeAreaView style={{ flex: 1, backgroundColor: '#fefdfb' }} edges={['bottom']}>
         <KeyboardAvoidingView
           style={{ flex: 1 }}
-          behavior={Platform.OS === 'ios' ? 'padding' : undefined}
-          keyboardVerticalOffset={Platform.OS === 'ios' ? 90 : 0}
+          behavior="padding"
+          keyboardVerticalOffset={Platform.OS === 'ios' ? 90 : 20}
         >
           {/* Messages */}
           <FlatList
@@ -336,11 +338,15 @@ export default function ChatDetailScreen() {
             keyExtractor={(item) => item.id}
             renderItem={({ item }) => <MessageBubble message={item} />}
             contentContainerStyle={{ paddingVertical: 16, flexGrow: 1 }}
-            onContentSizeChange={() => flatListRef.current?.scrollToEnd({ animated: true })}
-            onLayout={() => flatListRef.current?.scrollToEnd({ animated: false })}
+            onContentSizeChange={() => scrollToBottom(true)}
             ListFooterComponent={isSending ? <TypingIndicator /> : null}
             keyboardShouldPersistTaps="handled"
             keyboardDismissMode="interactive"
+            removeClippedSubviews={false}
+            maintainVisibleContentPosition={{
+              minIndexForVisible: 0,
+              autoscrollToTopThreshold: 10,
+            }}
           />
 
           {/* Input Area */}
@@ -348,16 +354,18 @@ export default function ChatDetailScreen() {
             style={{
               flexDirection: 'row',
               alignItems: 'flex-end',
-              paddingHorizontal: 16,
-              paddingVertical: 12,
+              paddingHorizontal: 12,
+              paddingVertical: 8,
+              paddingBottom: Platform.OS === 'android' ? 12 : 8,
               backgroundColor: 'white',
               borderTopWidth: 1,
               borderTopColor: '#f5ebe0',
             }}
           >
             <TouchableOpacity
-              style={{ width: 40, height: 40, alignItems: 'center', justifyContent: 'center' }}
+              style={{ width: 44, height: 44, alignItems: 'center', justifyContent: 'center' }}
               onPress={toggleAnalysis}
+              activeOpacity={0.7}
             >
               <Ionicons
                 name={showAnalysis ? 'analytics' : 'analytics-outline'}
@@ -369,46 +377,53 @@ export default function ChatDetailScreen() {
               style={{
                 flex: 1,
                 backgroundColor: '#faf8f5',
-                borderRadius: 20,
+                borderRadius: 22,
                 paddingHorizontal: 16,
-                paddingVertical: 10,
+                paddingVertical: Platform.OS === 'ios' ? 10 : 6,
                 marginHorizontal: 8,
+                minHeight: 44,
                 maxHeight: 120,
-                minHeight: 40,
+                justifyContent: 'center',
               }}
             >
               <TextInput
                 style={{
                   color: '#2d3a2e',
                   fontSize: 16,
+                  lineHeight: 22,
                   maxHeight: 100,
-                  paddingTop: 0,
-                  paddingBottom: 0,
+                  minHeight: Platform.OS === 'ios' ? 22 : 28,
+                  paddingTop: Platform.OS === 'ios' ? 0 : 8,
+                  paddingBottom: Platform.OS === 'ios' ? 0 : 8,
+                  textAlignVertical: 'center',
                 }}
                 placeholder="Type a message..."
                 placeholderTextColor="#a69889"
                 value={inputText}
                 onChangeText={setInputText}
+                onFocus={() => scrollToBottom(true)}
                 multiline
                 maxLength={10000}
-                textAlignVertical="center"
+                blurOnSubmit={false}
+                returnKeyType="default"
               />
             </View>
             <TouchableOpacity
               style={{
-                width: 40,
-                height: 40,
-                borderRadius: 20,
+                width: 44,
+                height: 44,
+                borderRadius: 22,
                 alignItems: 'center',
                 justifyContent: 'center',
                 backgroundColor: inputText.trim() && !isSending ? '#5a9470' : '#e5ddd5',
               }}
               onPress={handleSend}
               disabled={!inputText.trim() || isSending}
+              activeOpacity={0.7}
             >
               <Ionicons
                 name="send"
-                size={18}
+                size={20}
                 color={inputText.trim() && !isSending ? 'white' : '#a69889'}
               />
             </TouchableOpacity>
@@ -419,11 +434,14 @@ export default function ChatDetailScreen() {
         <BottomSheet
           ref={bottomSheetRef}
           index={-1}
-          snapPoints={['50%', '80%']}
+          snapPoints={['50%', '75%']}
           enablePanDownToClose
           onClose={() => setShowAnalysis(false)}
           backgroundStyle={{ backgroundColor: '#fefdfb' }}
           handleIndicatorStyle={{ backgroundColor: '#d9d0c5' }}
+          keyboardBehavior="interactive"
+          keyboardBlurBehavior="restore"
+          android_keyboardInputMode="adjustResize"
         >
           <View className="flex-row items-center justify-between px-4 pb-2 border-b border-warm-100">
             <Text className="text-warm-900 font-sans-semibold text-lg">Analysis</Text>

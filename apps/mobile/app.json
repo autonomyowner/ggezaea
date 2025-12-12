@@ -17,7 +17,9 @@
       "bundleIdentifier": "com.matcha.app"
     },
     "android": {
-      "package": "com.matcha.app"
+      "package": "com.matcha.app",
+      "softwareKeyboardLayoutMode": "pan",
+      "useNextNotificationsApi": true
     },
     "web": {
       "bundler": "metro",
@@ -26,10 +28,24 @@
     "plugins": [
       "expo-router",
       "expo-secure-store",
-      "expo-font"
+      "expo-font",
+      [
+        "expo-notifications",
+        {
+          "icon": "./assets/icon.png",
+          "color": "#5a9470",
+          "sounds": []
+        }
+      ]
     ],
     "experiments": {
       "typedRoutes": true
+    },
+    "notification": {
+      "icon": "./assets/icon.png",
+      "color": "#5a9470",
+      "androidMode": "default",
+      "androidCollapsedTitle": "Matcha"
     }
   }
 }

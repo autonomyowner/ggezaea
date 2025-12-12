@@ -23,9 +23,68 @@ function formatTimeAgo(dateString: string): string {
   return date.toLocaleDateString();
 }
 
+// Guest prompt component
+function GuestPrompt() {
+  const router = useRouter();
+
+  return (
+    <View style={{ flex: 1, backgroundColor: '#fefdfb', alignItems: 'center', justifyContent: 'center', padding: 32 }}>
+      <View style={{ width: 100, height: 100, borderRadius: 50, backgroundColor: '#dcedde', alignItems: 'center', justifyContent: 'center', marginBottom: 24 }}>
+        <Ionicons name="chatbubbles-outline" size={48} color="#5a9470" />
+      </View>
+
+      <Text style={{ fontFamily: 'DMSerifDisplay_400Regular', fontSize: 24, color: '#2d3a2e', textAlign: 'center', marginBottom: 8 }}>
+        AI-Powered Conversations
+      </Text>
+
+      <Text style={{ color: '#5a5347', textAlign: 'center', lineHeight: 22, marginBottom: 32 }}>
+        Chat with our AI companion to process your thoughts, understand emotions, and gain personalized insights.
+      </Text>
+
+      <View style={{ width: '100%', gap: 12 }}>
+        <TouchableOpacity
+          style={{ backgroundColor: '#5a9470', borderRadius: 12, paddingVertical: 16, alignItems: 'center' }}
+          onPress={() => router.push('/(auth)/signup')}
+        >
+          <Text style={{ color: 'white', fontWeight: '600', fontSize: 16 }}>Create Free Account</Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity
+          style={{ backgroundColor: 'white', borderRadius: 12, paddingVertical: 16, alignItems: 'center', borderWidth: 1, borderColor: '#f5ebe0' }}
+          onPress={() => router.push('/(auth)/login')}
+        >
+          <Text style={{ color: '#5a9470', fontWeight: '600', fontSize: 16 }}>Sign In</Text>
+        </TouchableOpacity>
+      </View>
+
+      <View style={{ marginTop: 32, padding: 16, backgroundColor: '#fff8f0', borderRadius: 12, width: '100%' }}>
+        <Text style={{ color: '#c97d52', fontWeight: '600', marginBottom: 8 }}>Why sign up?</Text>
+        <View style={{ gap: 8 }}>
+          <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+            <Ionicons name="checkmark-circle" size={16} color="#5a9470" />
+            <Text style={{ color: '#5a5347', marginLeft: 8 }}>Save your conversations</Text>
+          </View>
+          <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+            <Ionicons name="checkmark-circle" size={16} color="#5a9470" />
+            <Text style={{ color: '#5a5347', marginLeft: 8 }}>Track emotional patterns over time</Text>
+          </View>
+          <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+            <Ionicons name="checkmark-circle" size={16} color="#5a9470" />
+            <Text style={{ color: '#5a5347', marginLeft: 8 }}>Get personalized AI analysis</Text>
+          </View>
+          <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+            <Ionicons name="checkmark-circle" size={16} color="#5a9470" />
+            <Text style={{ color: '#5a5347', marginLeft: 8 }}>Sync across devices</Text>
+          </View>
+        </View>
+      </View>
+    </View>
+  );
+}
+
 export default function ChatListScreen() {
   const router = useRouter();
-  const { getToken, isSignedIn } = useAuth();
+  const { getToken, isSignedIn, isLoaded } = useAuth();
   const [conversations, setConversations] = useState<Conversation[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [isRefreshing, setIsRefreshing] = useState(false);
@@ -34,7 +93,7 @@ export default function ChatListScreen() {
 
   const fetchConversations = useCallback(async (force = false) => {
     if (!isSignedIn) {
-      setError('Please sign in to view conversations');
+      setIsLoading(false);
       return;
     }
 
@@ -82,12 +141,14 @@ export default function ChatListScreen() {
 
   // Initial fetch only
   useEffect(() => {
-    if (isSignedIn) {
-      fetchConversations(true).finally(() => setIsLoading(false));
-    } else {
-      setIsLoading(false);
+    if (isLoaded) {
+      if (isSignedIn) {
+        fetchConversations(true).finally(() => setIsLoading(false));
+      } else {
+        setIsLoading(false);
+      }
     }
-  }, [isSignedIn]);
+  }, [isSignedIn, isLoaded]);
 
   // Refetch when app comes to foreground
   useEffect(() => {
@@ -106,6 +167,11 @@ export default function ChatListScreen() {
   };
 
   const handleNewChat = async () => {
+    if (!isSignedIn) {
+      router.push('/(auth)/login');
+      return;
+    }
+
     try {
       const api = createApiClient(getToken);
       const response = await api.createConversation();
@@ -117,12 +183,18 @@ export default function ChatListScreen() {
     }
   };
 
-  if (isLoading) {
+  // Show loading while auth is being determined
+  if (!isLoaded || isLoading) {
     return (
       <View style={{ flex: 1, backgroundColor: '#fefdfb', alignItems: 'center', justifyContent: 'center' }}>
         <ActivityIndicator size="large" color="#5a9470" />
       </View>
     );
+  }
+
+  // Show guest prompt if not signed in
+  if (!isSignedIn) {
+    return <GuestPrompt />;
   }
 
   return (
