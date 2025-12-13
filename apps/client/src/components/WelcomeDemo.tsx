@@ -20,9 +20,7 @@ export default function WelcomeDemo() {
   const [isPlaying, setIsPlaying] = useState(false);
   const [currentTime, setCurrentTime] = useState(0);
   const [hasEnded, setHasEnded] = useState(false);
-  const [audioFailed, setAudioFailed] = useState(false);
 
-  const audioRef = useRef<HTMLAudioElement>(null);
   const timerRef = useRef<number | null>(null);
   const startTimeRef = useRef<number>(0);
 
@@ -65,68 +63,14 @@ export default function WelcomeDemo() {
     }
   }, []);
 
-  // Handle audio time updates
-  useEffect(() => {
-    const audio = audioRef.current;
-    if (!audio) return;
-
-    const handleTimeUpdate = () => {
-      setCurrentTime(audio.currentTime * 1000);
-    };
-
-    const handleEnded = () => {
-      setIsPlaying(false);
-      setHasEnded(true);
-      stopTimer();
-    };
-
-    const handleError = () => {
-      console.log('Audio error, using timer fallback');
-      setAudioFailed(true);
-      if (isPlaying) {
-        startTimer();
-      }
-    };
-
-    audio.addEventListener('timeupdate', handleTimeUpdate);
-    audio.addEventListener('ended', handleEnded);
-    audio.addEventListener('error', handleError);
-
-    return () => {
-      audio.removeEventListener('timeupdate', handleTimeUpdate);
-      audio.removeEventListener('ended', handleEnded);
-      audio.removeEventListener('error', handleError);
-    };
-  }, [isPlaying, startTimer, stopTimer]);
-
-  const handlePlay = async () => {
-    const audio = audioRef.current;
-
+  const handlePlay = () => {
     setCurrentTime(0);
     setHasEnded(false);
     setIsPlaying(true);
-
-    if (audio && !audioFailed) {
-      try {
-        audio.currentTime = 0;
-        await audio.play();
-        // Audio is playing, timeupdate will handle progress
-      } catch (err) {
-        console.log('Audio play failed, using timer:', err);
-        setAudioFailed(true);
-        startTimer();
-      }
-    } else {
-      // No audio or already failed, use timer
-      startTimer();
-    }
+    startTimer();
   };
 
   const handlePause = () => {
-    const audio = audioRef.current;
-    if (audio && !audioFailed) {
-      audio.pause();
-    }
     stopTimer();
     setIsPlaying(false);
   };
@@ -144,14 +88,6 @@ export default function WelcomeDemo() {
 
   return (
     <section className="welcome-demo-section">
-      {/* Hidden audio element - better mobile support than dynamic Audio() */}
-      <audio
-        ref={audioRef}
-        src="/welcome-demo.mp3"
-        preload="auto"
-        playsInline
-      />
-
       <div className="welcome-demo-container">
         {/* Ambient glow */}
         <div className="demo-ambient">

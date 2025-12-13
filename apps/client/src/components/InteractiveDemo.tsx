@@ -31,12 +31,6 @@ export default function InteractiveDemo() {
   const containerRef = useRef<HTMLDivElement>(null);
   const chatRef = useRef<HTMLDivElement>(null);
 
-  // Audio player state
-  const [isAudioPlaying, setIsAudioPlaying] = useState(false);
-  const [audioProgress, setAudioProgress] = useState(0);
-  const [audioDuration, setAudioDuration] = useState(0);
-  const audioRef = useRef<HTMLAudioElement | null>(null);
-
   const biases = [
     { name: t.demo.negativityBias, percentage: 78, color: 'var(--terra-400)' },
     { name: t.demo.imposterSyndrome, percentage: 85, color: 'var(--matcha-500)' },
@@ -141,49 +135,6 @@ export default function InteractiveDemo() {
     }, 100);
   };
 
-  // Audio player functions
-  const handleAudioPlay = () => {
-    if (!audioRef.current) {
-      audioRef.current = new Audio('/man.mp3');
-      audioRef.current.addEventListener('loadedmetadata', () => {
-        setAudioDuration(audioRef.current?.duration || 0);
-      });
-      audioRef.current.addEventListener('timeupdate', () => {
-        if (audioRef.current) {
-          setAudioProgress(audioRef.current.currentTime);
-        }
-      });
-      audioRef.current.addEventListener('ended', () => {
-        setIsAudioPlaying(false);
-        setAudioProgress(0);
-      });
-    }
-
-    if (isAudioPlaying) {
-      audioRef.current.pause();
-      setIsAudioPlaying(false);
-    } else {
-      audioRef.current.play();
-      setIsAudioPlaying(true);
-    }
-  };
-
-  const formatTime = (seconds: number) => {
-    const mins = Math.floor(seconds / 60);
-    const secs = Math.floor(seconds % 60);
-    return `${mins}:${secs.toString().padStart(2, '0')}`;
-  };
-
-  // Cleanup audio on unmount
-  useEffect(() => {
-    return () => {
-      if (audioRef.current) {
-        audioRef.current.pause();
-        audioRef.current = null;
-      }
-    };
-  }, []);
-
   return (
     <section className="py-24 px-4" ref={containerRef}>
       <div className="max-w-6xl mx-auto">
@@ -214,51 +165,6 @@ export default function InteractiveDemo() {
           >
             {t.demo.description}
           </p>
-
-          {/* Audio Player */}
-          <div
-            className="mt-8 max-w-md mx-auto rounded-xl p-4"
-            style={{
-              background: 'var(--cream-100)',
-              border: '1px solid var(--border-soft)',
-            }}
-          >
-            <p
-              className="text-sm mb-3"
-              style={{ color: 'var(--text-secondary)' }}
-            >
-              Listen to how it works
-            </p>
-            <button
-              onClick={handleAudioPlay}
-              className="w-full py-3 rounded-lg font-medium text-sm transition-all mb-3"
-              style={{
-                background: isAudioPlaying
-                  ? 'var(--terra-100)'
-                  : 'var(--matcha-500)',
-                color: isAudioPlaying ? 'var(--terra-600)' : 'white',
-                border: isAudioPlaying ? '1px solid var(--terra-300)' : 'none',
-              }}
-            >
-              {isAudioPlaying ? 'Pause' : 'Play Audio'}
-            </button>
-            <div
-              className="h-1.5 rounded-full overflow-hidden mb-1"
-              style={{ background: 'var(--cream-300)' }}
-            >
-              <div
-                className="h-full rounded-full transition-all duration-200"
-                style={{
-                  width: audioDuration > 0 ? `${(audioProgress / audioDuration) * 100}%` : '0%',
-                  background: 'var(--matcha-500)',
-                }}
-              />
-            </div>
-            <div className="flex justify-between text-xs" style={{ color: 'var(--text-muted)' }}>
-              <span>{formatTime(audioProgress)}</span>
-              <span>{audioDuration > 0 ? formatTime(audioDuration) : '--:--'}</span>
-            </div>
-          </div>
         </div>
 
         {/* Demo Container - Screen Recording Style */}
