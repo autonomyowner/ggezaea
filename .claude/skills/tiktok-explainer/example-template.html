@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Example Explainer Template</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=DM+Serif+Display:ital@0;1&display=swap" rel="stylesheet">
+  <!--
+  VOICEOVER SCRIPT (ElevenLabs - Voice: Bella):
+
+  [0:00-0:04] "Opening hook that grabs attention immediately."
+  [0:04-0:09] "First key point explaining the concept clearly."
+  [0:09-0:14] "Second point building on the foundation."
+  [0:14-0:19] "Third insight or powerful realization."
+  [0:19-0:24] "Call to action that inspires next steps."
+
+  TOTAL: 24 seconds
+  ELEVENLABS SETTINGS: Stability 0.6, Clarity 0.75, Style 0.3
+  -->
+  <style>
+    :root {
+      /* Matcha Brand Colors - Use these exact values */
+      --matcha-50: #f0fdf4;
+      --matcha-100: #dcfce7;
+      --matcha-200: #bbf7d0;
+      --matcha-300: #86efac;
+      --matcha-400: #4ade80;
+      --matcha-500: #68a67d;
+      --matcha-600: #5a9470;
+      --matcha-700: #4a7c5d;
+      --matcha-800: #3d6b4e;
+
+      /* Cream Neutrals */
+      --cream-50: #fefdfb;
+      --cream-100: #fdf8f3;
+      --cream-200: #f5ebe0;
+      --cream-300: #e8dcc8;
+      --cream-400: #d4c4a8;
+
+      /* Terra Accents */
+      --terra-300: #f5a572;
+      --terra-400: #e07b4c;
+      --terra-500: #c45d2c;
+
+      /* Text */
+      --text-primary: #2d3a2e;
+      --text-secondary: #5a6b5c;
+      --text-muted: #8a9a8c;
+      --text-inverse: #fefdfb;
+
+      /* Shadows */
+      --shadow-sm: 0 2px 8px rgba(45, 58, 46, 0.06);
+      --shadow-md: 0 4px 16px rgba(45, 58, 46, 0.08);
+      --shadow-lg: 0 8px 32px rgba(45, 58, 46, 0.12);
+      --shadow-xl: 0 16px 48px rgba(45, 58, 46, 0.16);
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      width: 100vw;
+      height: 100vh;
+      background: var(--cream-50);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      font-family: 'DM Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    }
+
+    .container {
+      width: 1080px;
+      height: 1920px;
+      transform: scale(0.45);
+      transform-origin: center;
+      background: linear-gradient(180deg, var(--cream-50) 0%, var(--cream-100) 50%, var(--cream-200) 100%);
+      position: relative;
+      overflow: hidden;
+    }
+
+    /* Organic floating blobs - Matcha brand style */
+    .blob {
+      position: absolute;
+      pointer-events: none;
+      opacity: 0.28;
+    }
+
+    .blob-1 {
+      width: 600px;
+      height: 600px;
+      background: radial-gradient(circle, var(--matcha-200) 0%, transparent 70%);
+      border-radius: 60% 40% 30% 70% / 60% 30% 70% 40%;
+      top: -150px;
+      right: -200px;
+      animation: blob-float 25s ease-in-out infinite;
+    }
+
+    .blob-2 {
+      width: 500px;
+      height: 500px;
+      background: radial-gradient(circle, var(--terra-300) 0%, transparent 70%);
+      border-radius: 30% 70% 70% 30% / 30% 30% 70% 70%;
+      bottom: -100px;
+      left: -150px;
+      animation: blob-float 20s ease-in-out infinite reverse;
+    }
+
+    @keyframes blob-float {
+      0%, 100% { transform: translate(0, 0) scale(1); }
+      50% { transform: translate(20px, -20px) scale(1.05); }
+    }
+
+    /* Phases */
+    .phase {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 120px 100px;
+      opacity: 0;
+      transition: opacity 0.95s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .phase.active {
+      opacity: 1;
+    }
+
+    .phase-content {
+      width: 100%;
+      max-width: 880px;
+      text-align: center;
+    }
+
+    /* Typography - DM Serif Display for headings */
+    .hook {
+      font-family: 'DM Serif Display', Georgia, serif;
+      font-size: 130px;
+      font-weight: 400;
+      color: var(--text-primary);
+      line-height: 1.15;
+      letter-spacing: -2px;
+      margin-bottom: 60px;
+    }
+
+    .text-gradient {
+      background: linear-gradient(135deg, var(--matcha-600) 0%, var(--matcha-500) 50%, var(--terra-400) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .large-text {
+      font-family: 'DM Serif Display', Georgia, serif;
+      font-size: 100px;
+      font-weight: 400;
+      color: var(--text-primary);
+      line-height: 1.25;
+      margin-bottom: 60px;
+    }
+
+    .medium-text {
+      font-family: 'DM Sans', sans-serif;
+      font-size: 62px;
+      font-weight: 500;
+      color: var(--text-secondary);
+      line-height: 1.45;
+      margin-bottom: 40px;
+    }
+
+    /* CTA - Matcha gradient button style */
+    .cta-box {
+      background: linear-gradient(135deg, var(--matcha-500) 0%, var(--matcha-600) 100%);
+      border-radius: 48px;
+      padding: 90px 90px;
+      box-shadow: 0 20px 60px rgba(104, 166, 125, 0.35);
+    }
+
+    .cta-text {
+      font-family: 'DM Serif Display', Georgia, serif;
+      font-size: 96px;
+      font-weight: 400;
+      color: var(--text-inverse);
+      line-height: 1.22;
+      margin-bottom: 50px;
+    }
+
+    .cta-sub {
+      font-family: 'DM Sans', sans-serif;
+      font-size: 54px;
+      color: rgba(254, 253, 251, 0.9);
+      font-weight: 500;
+    }
+
+    /* Progress bar */
+    .progress {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      height: 8px;
+      background: linear-gradient(90deg, var(--matcha-500) 0%, var(--matcha-400) 100%);
+      width: 0%;
+      transition: width 0.1s linear;
+      border-radius: 9999px;
+    }
+
+    /* Click hint */
+    .restart-hint {
+      position: absolute;
+      bottom: 60px;
+      left: 50%;
+      transform: translateX(-50%);
+      font-family: 'DM Sans', sans-serif;
+      font-size: 32px;
+      color: var(--text-muted);
+      opacity: 0;
+      transition: opacity 0.4s ease;
+      padding: 16px 32px;
+      background: white;
+      border-radius: 12px;
+      border: 1px solid rgba(104, 166, 125, 0.15);
+    }
+
+    .container:hover .restart-hint {
+      opacity: 1;
+    }
+  </style>
+</head>
+<body>
+  <div class="container" onclick="restart()">
+    <!-- Organic blobs -->
+    <div class="blob blob-1"></div>
+    <div class="blob blob-2"></div>
+
+    <!-- Phase 1: Hook (0-4s) -->
+    <div class="phase phase-hook">
+      <div class="phase-content">
+        <div class="hook">Your <span class="text-gradient">hook</span><br>goes here</div>
+        <div class="medium-text">Grab attention immediately</div>
+      </div>
+    </div>
+
+    <!-- Phase 2: Point 1 (4-9s) -->
+    <div class="phase phase-point1">
+      <div class="phase-content">
+        <div class="large-text">First key<br><span class="text-gradient">insight</span></div>
+        <div class="medium-text">Build understanding step by step</div>
+      </div>
+    </div>
+
+    <!-- Add more phases as needed -->
+
+    <!-- Final Phase: CTA (19-24s) -->
+    <div class="phase phase-cta">
+      <div class="phase-content">
+        <div class="cta-box">
+          <div class="cta-text">Your call<br>to action</div>
+          <div class="cta-sub">Inspire the next step</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Progress bar -->
+    <div class="progress" id="progress"></div>
+
+    <!-- Restart hint -->
+    <div class="restart-hint">Click anywhere to restart →</div>
+  </div>
+
+  <script>
+    // Timeline configuration (milliseconds)
+    const TIMELINE = {
+      hook: { start: 0, end: 4000 },
+      point1: { start: 4000, end: 9000 },
+      // Add more phases
+      cta: { start: 19000, end: 24000 }
+    };
+
+    const TOTAL_DURATION = 24000;
+    let startTime = null;
+    let animationFrame = null;
+    let isPlaying = false;
+
+    function getPhase(time) {
+      if (time < TIMELINE.hook.end) return 'hook';
+      if (time < TIMELINE.point1.end) return 'point1';
+      // Add more conditions
+      return 'cta';
+    }
+
+    function updateAnimation(timestamp) {
+      if (!startTime) startTime = timestamp;
+      const elapsed = timestamp - startTime;
+      const currentPhase = getPhase(elapsed);
+
+      // Update phases
+      document.querySelectorAll('.phase').forEach(phase => {
+        if (phase.classList.contains(`phase-${currentPhase}`)) {
+          phase.classList.add('active');
+        } else {
+          phase.classList.remove('active');
+        }
+      });
+
+      // Update progress bar
+      const progress = Math.min((elapsed / TOTAL_DURATION) * 100, 100);
+      document.getElementById('progress').style.width = progress + '%';
+
+      // Continue or end
+      if (elapsed < TOTAL_DURATION) {
+        animationFrame = requestAnimationFrame(updateAnimation);
+      } else {
+        isPlaying = false;
+      }
+    }
+
+    function start() {
+      if (isPlaying) return;
+      isPlaying = true;
+      startTime = null;
+      animationFrame = requestAnimationFrame(updateAnimation);
+    }
+
+    function restart() {
+      if (animationFrame) {
+        cancelAnimationFrame(animationFrame);
+      }
+      document.querySelectorAll('.phase').forEach(p => p.classList.remove('active'));
+      document.getElementById('progress').style.width = '0%';
+      setTimeout(start, 100);
+    }
+
+    // Auto-start
+    window.addEventListener('load', () => {
+      setTimeout(start, 500);
+    });
+  </script>
+</body>
+</html>

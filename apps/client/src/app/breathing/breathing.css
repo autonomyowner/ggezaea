@@ -1,12 +1,13 @@
 /* Breathing Page Styles */
 
 .breathing-container {
-  position: fixed;
-  inset: 0;
+  min-height: 100vh;
+  min-height: 100dvh;
   background: var(--cream-50, #fefdfb);
   display: flex;
   flex-direction: column;
-  overflow: hidden;
+  overflow-x: hidden;
+  position: relative;
 }
 
 /* Loading state */
@@ -80,7 +81,7 @@
 
 /* Exit button */
 .breathing-exit-btn {
-  position: absolute;
+  position: fixed;
   top: 16px;
   right: 16px;
   width: 44px;

@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Break Toxic Thinking Patterns</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=DM+Serif+Display:ital@0;1&display=swap" rel="stylesheet">
+  <!--
+  VOICEOVER SCRIPT (ElevenLabs - Voice: Rachel, empowering):
+
+  [0:00-0:04] "That voice in your head? The one that says you're not good enough? It's a pattern. Not the truth."
+  [0:04-0:08] "Your brain learned it years ago. Now it runs on autopilot. Sabotaging every good thing."
+  [0:08-0:13] "All-or-nothing thinking. Catastrophizing. Overgeneralizing. These aren't personality traits. They're bugs in your code."
+  [0:13-0:17] "And just like code, they can be rewritten. Matcha identifies the pattern. Then shows you how to break it."
+  [0:17-0:22] "One thought at a time. One pattern at a time. Until the voice changes."
+  [0:22-0:26] "Stop fighting your mind. Reprogram it. Start with Matcha."
+
+  TOTAL: 26 seconds
+  ELEVENLABS SETTINGS: Stability 0.6, Clarity 0.75, Style 0.35
+  -->
+  <style>
+    :root {
+      --matcha-50: #f0fdf4; --matcha-100: #dcfce7; --matcha-200: #bbf7d0;
+      --matcha-300: #86efac; --matcha-400: #4ade80; --matcha-500: #68a67d;
+      --matcha-600: #5a9470; --matcha-700: #4a7c5d;
+      --cream-50: #fefdfb; --cream-100: #fdf8f3; --cream-200: #f5ebe0;
+      --terra-300: #f5a572; --terra-400: #e07b4c; --terra-500: #c45d2c;
+      --text-primary: #2d3a2e; --text-secondary: #5a6b5c; --text-muted: #8a9a8c;
+      --text-inverse: #fefdfb;
+      --shadow-md: 0 4px 16px rgba(45, 58, 46, 0.08);
+      --shadow-lg: 0 8px 32px rgba(45, 58, 46, 0.12);
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      width: 100vw; height: 100vh; background: var(--cream-50);
+      display: flex; align-items: center; justify-content: center; overflow: hidden;
+      font-family: 'DM Sans', sans-serif;
+    }
+    .container {
+      width: 1080px; height: 1920px; transform: scale(0.45); transform-origin: center;
+      background: linear-gradient(180deg, var(--cream-50), var(--cream-100), var(--cream-200));
+      position: relative; overflow: hidden;
+    }
+    .blob {
+      position: absolute; pointer-events: none; opacity: 0.27;
+      border-radius: 60% 40% 30% 70% / 60% 30% 70% 40%;
+      animation: blob-float 26s ease-in-out infinite;
+    }
+    .blob-1 {
+      width: 610px; height: 610px; top: -175px; right: -225px;
+      background: radial-gradient(circle, var(--matcha-200) 0%, transparent 70%);
+    }
+    .blob-2 {
+      width: 530px; height: 530px; bottom: -125px; left: -185px;
+      background: radial-gradient(circle, var(--terra-300) 0%, transparent 70%);
+      border-radius: 30% 70% 70% 30% / 30% 30% 70% 70%;
+      animation: blob-float 21s ease-in-out infinite reverse;
+    }
+    @keyframes blob-float {
+      0%, 100% { transform: translate(0, 0) scale(1); }
+      50% { transform: translate(23px, -23px) scale(1.07); }
+    }
+    .phase {
+      position: absolute; width: 100%; height: 100%;
+      display: flex; align-items: center; justify-content: center;
+      padding: 120px 100px; opacity: 0;
+      transition: opacity 0.92s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    .phase.active { opacity: 1; }
+    .phase-content { width: 100%; max-width: 880px; text-align: center; }
+    .hook {
+      font-family: 'DM Serif Display', Georgia, serif;
+      font-size: 118px; font-weight: 400; color: var(--text-primary);
+      line-height: 1.18; letter-spacing: -3px; margin-bottom: 70px;
+    }
+    .text-gradient {
+      background: linear-gradient(135deg, var(--matcha-600) 0%, var(--matcha-500) 50%, var(--terra-400) 100%);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+    }
+    .large-text {
+      font-family: 'DM Serif Display', Georgia, serif;
+      font-size: 96px; font-weight: 400; color: var(--text-primary);
+      line-height: 1.28; margin-bottom: 60px;
+    }
+    .medium-text {
+      font-family: 'DM Sans', sans-serif;
+      font-size: 60px; font-weight: 500; color: var(--text-secondary);
+      line-height: 1.48; margin-bottom: 40px;
+    }
+    .voice-visual {
+      background: white; border-radius: 32px; padding: 70px 60px;
+      box-shadow: var(--shadow-lg); margin: 0 auto 70px;
+      border: 2px solid rgba(224, 123, 76, 0.2); max-width: 780px;
+    }
+    .voice-text {
+      font-family: 'DM Serif Display', Georgia, serif;
+      font-size: 66px; color: var(--terra-500);
+      line-height: 1.35; font-style: italic;
+    }
+    .pattern-grid {
+      display: grid; grid-template-columns: 1fr 1fr 1fr;
+      gap: 38px; margin-top: 75px;
+    }
+    .pattern-card {
+      background: white; border-radius: 26px; padding: 55px 38px;
+      box-shadow: var(--shadow-md); border: 2px solid rgba(224, 123, 76, 0.15);
+      transition: all 0.32s ease;
+    }
+    .pattern-card:hover {
+      transform: translateY(-8px); box-shadow: var(--shadow-lg);
+      border-color: var(--terra-400);
+    }
+    .pattern-name {
+      font-family: 'DM Sans', sans-serif; font-size: 36px;
+      font-weight: 700; color: var(--terra-500);
+      margin-bottom: 25px; line-height: 1.3;
+    }
+    .code-visual {
+      background: white; border-radius: 28px; padding: 65px 55px;
+      box-shadow: var(--shadow-md); margin-top: 70px;
+      border: 2px solid rgba(104, 166, 125, 0.2);
+    }
+    .code-line {
+      font-family: 'DM Sans', sans-serif; font-size: 44px;
+      color: var(--text-primary); margin-bottom: 30px;
+      padding-left: 40px; border-left: 4px solid var(--matcha-400);
+    }
+    .code-line.old {
+      text-decoration: line-through; color: var(--terra-400);
+      border-color: var(--terra-400); opacity: 0.6;
+    }
+    .code-line.new {
+      border-color: var(--matcha-500); font-weight: 600;
+    }
+    .transform-visual {
+      display: grid; grid-template-columns: 1fr auto 1fr;
+      gap: 50px; align-items: center; margin-top: 75px;
+    }
+    .transform-box {
+      background: white; border-radius: 28px; padding: 62px 48px;
+      box-shadow: var(--shadow-md);
+    }
+    .transform-label {
+      font-family: 'DM Sans', sans-serif; font-size: 36px;
+      font-weight: 700; margin-bottom: 32px; text-transform: uppercase;
+    }
+    .transform-left { border: 2px solid rgba(224, 123, 76, 0.25); }
+    .transform-left .transform-label { color: var(--terra-500); }
+    .transform-right { border: 2px solid rgba(104, 166, 125, 0.25); }
+    .transform-right .transform-label { color: var(--matcha-600); }
+    .transform-text {
+      font-family: 'DM Serif Display', Georgia, serif;
+      font-size: 60px; color: var(--text-primary); line-height: 1.3;
+    }
+    .transform-arrow { font-size: 88px; color: var(--matcha-500); }
+    .cta-box {
+      background: linear-gradient(135deg, var(--matcha-500) 0%, var(--matcha-600) 100%);
+      border-radius: 48px; padding: 86px 86px;
+      box-shadow: 0 20px 60px rgba(104, 166, 125, 0.35);
+    }
+    .cta-text {
+      font-family: 'DM Serif Display', Georgia, serif;
+      font-size: 92px; font-weight: 400; color: var(--text-inverse);
+      line-height: 1.24; margin-bottom: 46px;
+    }
+    .cta-sub {
+      font-family: 'DM Sans', sans-serif; font-size: 52px;
+      color: rgba(254, 253, 251, 0.9); font-weight: 500;
+    }
+    .progress {
+      position: absolute; bottom: 0; left: 0; height: 8px;
+      background: linear-gradient(90deg, var(--matcha-500), var(--matcha-400));
+      width: 0%; transition: width 0.1s linear; border-radius: 9999px;
+    }
+    .restart-hint {
+      position: absolute; bottom: 60px; left: 50%; transform: translateX(-50%);
+      font-size: 32px; color: var(--text-muted); opacity: 0;
+      transition: opacity 0.4s; padding: 16px 32px; background: white;
+      border-radius: 12px; border: 1px solid rgba(104, 166, 125, 0.15);
+    }
+    .container:hover .restart-hint { opacity: 1; }
+  </style>
+</head>
+<body>
+  <div class="container" onclick="restart()">
+    <div class="blob blob-1"></div>
+    <div class="blob blob-2"></div>
+
+    <!-- Phase 1: Hook (0-4s) -->
+    <div class="phase phase-hook">
+      <div class="phase-content">
+        <div class="hook">That <span class="text-gradient">voice</span><br>in your head?</div>
+        <div class="voice-visual">
+          <div class="voice-text">"You're not good enough"</div>
+        </div>
+        <div class="medium-text">It's a pattern<br>Not the truth</div>
+      </div>
+    </div>
+
+    <!-- Phase 2: Problem (4-8s) -->
+    <div class="phase phase-problem">
+      <div class="phase-content">
+        <div class="large-text">Your brain<br><span class="text-gradient">learned it</span><br>years ago</div>
+        <div class="medium-text">Now it runs on autopilot<br>Sabotaging every good thing</div>
+      </div>
+    </div>
+
+    <!-- Phase 3: Patterns (8-13s) -->
+    <div class="phase phase-patterns">
+      <div class="phase-content">
+        <div class="medium-text" style="margin-bottom: 70px;">These aren't personality traits<br>They're bugs in your code</div>
+        <div class="pattern-grid">
+          <div class="pattern-card">
+            <div class="pattern-name">All-or-Nothing</div>
+          </div>
+          <div class="pattern-card">
+            <div class="pattern-name">Catastrophizing</div>
+          </div>
+          <div class="pattern-card">
+            <div class="pattern-name">Overgeneralizing</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Phase 4: Solution (13-17s) -->
+    <div class="phase phase-solution">
+      <div class="phase-content">
+        <div class="large-text">Just like code<br>they can be<br><span class="text-gradient">rewritten</span></div>
+        <div class="code-visual">
+          <div class="code-line old">I always fail</div>
+          <div class="code-line new">I'm learning from setbacks</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Phase 5: Process (17-22s) -->
+    <div class="phase phase-process">
+      <div class="phase-content">
+        <div class="medium-text" style="margin-bottom: 75px;">Matcha identifies the pattern<br>Then shows you how to break it</div>
+        <div class="transform-visual">
+          <div class="transform-box transform-left">
+            <div class="transform-label">Old Voice</div>
+            <div class="transform-text">Toxic</div>
+          </div>
+          <div class="transform-arrow">→</div>
+          <div class="transform-box transform-right">
+            <div class="transform-label">New Voice</div>
+            <div class="transform-text">Kind</div>
+          </div>
+        </div>
+        <div class="medium-text" style="margin-top: 70px; color: var(--matcha-600);">One thought at a time</div>
+      </div>
+    </div>
+
+    <!-- Phase 6: CTA (22-26s) -->
+    <div class="phase phase-cta">
+      <div class="phase-content">
+        <div class="cta-box">
+          <div class="cta-text">Stop fighting<br>your mind</div>
+          <div class="cta-sub">Reprogram it<br>Start with Matcha</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="progress" id="progress"></div>
+    <div class="restart-hint">Click anywhere to restart →</div>
+  </div>
+
+  <script>
+    const TIMELINE = {
+      hook: { start: 0, end: 4000 },
+      problem: { start: 4000, end: 8000 },
+      patterns: { start: 8000, end: 13000 },
+      solution: { start: 13000, end: 17000 },
+      process: { start: 17000, end: 22000 },
+      cta: { start: 22000, end: 26000 }
+    };
+    const TOTAL_DURATION = 26000;
+    let startTime = null, animationFrame = null, isPlaying = false;
+
+    function getPhase(time) {
+      if (time < TIMELINE.hook.end) return 'hook';
+      if (time < TIMELINE.problem.end) return 'problem';
+      if (time < TIMELINE.patterns.end) return 'patterns';
+      if (time < TIMELINE.solution.end) return 'solution';
+      if (time < TIMELINE.process.end) return 'process';
+      return 'cta';
+    }
+
+    function updateAnimation(timestamp) {
+      if (!startTime) startTime = timestamp;
+      const elapsed = timestamp - startTime;
+      const currentPhase = getPhase(elapsed);
+
+      document.querySelectorAll('.phase').forEach(phase => {
+        phase.classList.toggle('active', phase.classList.contains(`phase-${currentPhase}`));
+      });
+
+      document.getElementById('progress').style.width = Math.min((elapsed / TOTAL_DURATION) * 100, 100) + '%';
+
+      if (elapsed < TOTAL_DURATION) {
+        animationFrame = requestAnimationFrame(updateAnimation);
+      } else {
+        isPlaying = false;
+      }
+    }
+
+    function start() {
+      if (isPlaying) return;
+      isPlaying = true;
+      startTime = null;
+      animationFrame = requestAnimationFrame(updateAnimation);
+    }
+
+    function restart() {
+      if (animationFrame) cancelAnimationFrame(animationFrame);
+      document.querySelectorAll('.phase').forEach(p => p.classList.remove('active'));
+      document.getElementById('progress').style.width = '0%';
+      setTimeout(start, 100);
+    }
+
+    window.addEventListener('load', () => setTimeout(start, 500));
+  </script>
+</body>
+</html>

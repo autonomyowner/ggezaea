@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Why Therapy Isn't Working For You</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=DM+Serif+Display:ital@0;1&display=swap" rel="stylesheet">
+  <!--
+  VOICEOVER SCRIPT (ElevenLabs - Voice: Adam, authoritative):
+
+  [0:00-0:04] "You've been in therapy for months. Maybe years. But nothing's changed. You're still stuck."
+  [0:04-0:08] "Here's why. Traditional therapy asks you to talk about your problems. But talking isn't healing."
+  [0:08-0:13] "Your brain needs action, not words. It needs patterns broken, not just discussed."
+  [0:13-0:18] "That's why Matcha uses proven techniques. Flash for trauma. CBT for thinking. Real-time insights that actually work."
+  [0:18-0:22] "Stop talking in circles. Start breaking patterns. Real progress starts now."
+
+  TOTAL: 22 seconds
+  ELEVENLABS SETTINGS: Stability 0.6, Clarity 0.85, Style 0.5 (direct & confident)
+  -->
+  <style>
+    :root {
+      --matcha-50: #f0fdf4; --matcha-100: #dcfce7; --matcha-200: #bbf7d0;
+      --matcha-300: #86efac; --matcha-400: #4ade80; --matcha-500: #68a67d;
+      --matcha-600: #5a9470; --matcha-700: #4a7c5d; --matcha-800: #3d6b4e;
+      --cream-50: #fefdfb; --cream-100: #fdf8f3; --cream-200: #f5ebe0;
+      --cream-300: #e8dcc8; --cream-400: #d4c4a8;
+      --terra-300: #f5a572; --terra-400: #e07b4c; --terra-500: #c45d2c;
+      --text-primary: #2d3a2e; --text-secondary: #5a6b5c; --text-muted: #8a9a8c;
+      --text-inverse: #fefdfb;
+      --shadow-md: 0 4px 16px rgba(45, 58, 46, 0.08);
+      --shadow-lg: 0 8px 32px rgba(45, 58, 46, 0.12);
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      width: 100vw; height: 100vh; background: var(--cream-50);
+      display: flex; align-items: center; justify-content: center; overflow: hidden;
+      font-family: 'DM Sans', -apple-system, sans-serif;
+    }
+    .container {
+      width: 1080px; height: 1920px; transform: scale(0.45); transform-origin: center;
+      background: linear-gradient(180deg, var(--cream-50) 0%, var(--cream-100) 50%, var(--cream-200) 100%);
+      position: relative; overflow: hidden;
+    }
+    .blob {
+      position: absolute; pointer-events: none; opacity: 0.28;
+      background: radial-gradient(circle, var(--matcha-200) 0%, transparent 70%);
+      border-radius: 60% 40% 30% 70% / 60% 30% 70% 40%;
+      animation: blob-float 25s ease-in-out infinite;
+    }
+    .blob-1 { width: 600px; height: 600px; top: -180px; right: -220px; }
+    .blob-2 { width: 520px; height: 520px; bottom: -120px; left: -180px;
+      background: radial-gradient(circle, var(--terra-300) 0%, transparent 70%);
+      border-radius: 30% 70% 70% 30% / 30% 30% 70% 70%;
+      animation: blob-float 20s ease-in-out infinite reverse;
+    }
+    @keyframes blob-float {
+      0%, 100% { transform: translate(0, 0) scale(1); }
+      50% { transform: translate(20px, -20px) scale(1.05); }
+    }
+    .phase {
+      position: absolute; width: 100%; height: 100%;
+      display: flex; align-items: center; justify-content: center;
+      padding: 120px 100px; opacity: 0;
+      transition: opacity 1s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    .phase.active { opacity: 1; }
+    .phase-content { width: 100%; max-width: 880px; text-align: center; }
+    .hook {
+      font-family: 'DM Serif Display', Georgia, serif;
+      font-size: 120px; font-weight: 400; color: var(--text-primary);
+      line-height: 1.15; letter-spacing: -3px; margin-bottom: 70px;
+    }
+    .text-gradient {
+      background: linear-gradient(135deg, var(--matcha-600) 0%, var(--matcha-500) 50%, var(--terra-400) 100%);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+    }
+    .large-text {
+      font-family: 'DM Serif Display', Georgia, serif;
+      font-size: 100px; font-weight: 400; color: var(--text-primary);
+      line-height: 1.25; margin-bottom: 60px;
+    }
+    .medium-text {
+      font-family: 'DM Sans', sans-serif;
+      font-size: 64px; font-weight: 500; color: var(--text-secondary);
+      line-height: 1.4; margin-bottom: 40px;
+    }
+    .stuck-visual {
+      width: 500px; height: 500px; margin: 0 auto 80px;
+      position: relative;
+    }
+    .stuck-circle {
+      width: 100%; height: 100%; border: 5px solid var(--terra-400);
+      border-radius: 50%; position: relative;
+      animation: rotate-stuck 6s linear infinite;
+    }
+    .stuck-dot {
+      width: 60px; height: 60px; background: var(--terra-500);
+      border-radius: 50%; position: absolute;
+      top: 50%; left: 50%; transform: translate(-50%, -50%);
+      box-shadow: 0 0 40px rgba(196, 93, 44, 0.5);
+    }
+    @keyframes rotate-stuck {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(360deg); }
+    }
+    .vs-container {
+      display: grid; grid-template-columns: 1fr auto 1fr;
+      gap: 50px; align-items: center; margin-top: 70px;
+    }
+    .vs-box {
+      background: white; border-radius: 28px; padding: 65px 50px;
+      box-shadow: var(--shadow-md);
+    }
+    .vs-label {
+      font-family: 'DM Sans', sans-serif; font-size: 38px;
+      font-weight: 700; margin-bottom: 35px; text-transform: uppercase;
+    }
+    .vs-left { border: 2px solid rgba(224, 123, 76, 0.25); }
+    .vs-left .vs-label { color: var(--terra-500); }
+    .vs-right { border: 2px solid rgba(104, 166, 125, 0.25); }
+    .vs-right .vs-label { color: var(--matcha-600); }
+    .vs-text {
+      font-family: 'DM Serif Display', Georgia, serif;
+      font-size: 58px; color: var(--text-primary); line-height: 1.3;
+    }
+    .vs-arrow { font-size: 90px; color: var(--text-muted); }
+    .technique-grid {
+      display: grid; grid-template-columns: 1fr 1fr 1fr;
+      gap: 35px; margin-top: 70px;
+    }
+    .technique-card {
+      background: white; border-radius: 24px; padding: 50px 35px;
+      box-shadow: var(--shadow-md); border: 2px solid rgba(104, 166, 125, 0.15);
+      transition: all 0.3s ease;
+    }
+    .technique-card:hover {
+      transform: translateY(-6px); box-shadow: var(--shadow-lg);
+    }
+    .technique-label {
+      font-family: 'DM Sans', sans-serif; font-size: 34px;
+      font-weight: 700; color: var(--matcha-600);
+      margin-bottom: 20px; text-transform: uppercase;
+    }
+    .technique-text {
+      font-family: 'DM Sans', sans-serif; font-size: 42px;
+      color: var(--text-primary); line-height: 1.3;
+    }
+    .cta-box {
+      background: linear-gradient(135deg, var(--matcha-500) 0%, var(--matcha-600) 100%);
+      border-radius: 48px; padding: 85px 85px;
+      box-shadow: 0 20px 60px rgba(104, 166, 125, 0.35);
+    }
+    .cta-text {
+      font-family: 'DM Serif Display', Georgia, serif;
+      font-size: 92px; font-weight: 400; color: var(--text-inverse);
+      line-height: 1.25; margin-bottom: 45px;
+    }
+    .cta-sub {
+      font-family: 'DM Sans', sans-serif; font-size: 52px;
+      color: rgba(254, 253, 251, 0.9); font-weight: 500;
+    }
+    .progress {
+      position: absolute; bottom: 0; left: 0; height: 8px;
+      background: linear-gradient(90deg, var(--matcha-500) 0%, var(--matcha-400) 100%);
+      width: 0%; transition: width 0.1s linear; border-radius: 9999px;
+    }
+    .restart-hint {
+      position: absolute; bottom: 60px; left: 50%; transform: translateX(-50%);
+      font-size: 32px; color: var(--text-muted); opacity: 0;
+      transition: opacity 0.4s; padding: 16px 32px; background: white;
+      border-radius: 12px; border: 1px solid rgba(104, 166, 125, 0.15);
+    }
+    .container:hover .restart-hint { opacity: 1; }
+  </style>
+</head>
+<body>
+  <div class="container" onclick="restart()">
+    <div class="blob blob-1"></div>
+    <div class="blob blob-2"></div>
+
+    <!-- Phase 1: Hook (0-4s) -->
+    <div class="phase phase-hook">
+      <div class="phase-content">
+        <div class="hook">You've been in<br>therapy for <span class="text-gradient">months</span></div>
+        <div class="stuck-visual">
+          <div class="stuck-circle">
+            <div class="stuck-dot"></div>
+          </div>
+        </div>
+        <div class="medium-text">Maybe years<br>But nothing's changed<br>You're still stuck</div>
+      </div>
+    </div>
+
+    <!-- Phase 2: Problem (4-8s) -->
+    <div class="phase phase-problem">
+      <div class="phase-content">
+        <div class="large-text">Traditional therapy<br>asks you to <span class="text-gradient">talk</span><br>about your problems</div>
+        <div class="medium-text" style="color: var(--terra-500); margin-top: 60px;">But talking isn't healing</div>
+      </div>
+    </div>
+
+    <!-- Phase 3: Insight (8-13s) -->
+    <div class="phase phase-insight">
+      <div class="phase-content">
+        <div class="vs-container">
+          <div class="vs-box vs-left">
+            <div class="vs-label">Your Brain Needs</div>
+            <div class="vs-text">Action</div>
+          </div>
+          <div class="vs-arrow">≠</div>
+          <div class="vs-box vs-right">
+            <div class="vs-label">Not</div>
+            <div class="vs-text">Words</div>
+          </div>
+        </div>
+        <div class="medium-text" style="margin-top: 80px;">Patterns broken<br>not just discussed</div>
+      </div>
+    </div>
+
+    <!-- Phase 4: Solution (13-18s) -->
+    <div class="phase phase-solution">
+      <div class="phase-content">
+        <div class="medium-text" style="margin-bottom: 70px;">Matcha uses proven techniques</div>
+        <div class="technique-grid">
+          <div class="technique-card">
+            <div class="technique-label">Flash</div>
+            <div class="technique-text">For Trauma</div>
+          </div>
+          <div class="technique-card">
+            <div class="technique-label">CBT</div>
+            <div class="technique-text">For Thinking</div>
+          </div>
+          <div class="technique-card">
+            <div class="technique-label">Real-Time</div>
+            <div class="technique-text">Insights</div>
+          </div>
+        </div>
+        <div class="medium-text" style="margin-top: 70px; color: var(--matcha-600);">That actually work</div>
+      </div>
+    </div>
+
+    <!-- Phase 5: CTA (18-22s) -->
+    <div class="phase phase-cta">
+      <div class="phase-content">
+        <div class="cta-box">
+          <div class="cta-text">Stop talking<br>in circles</div>
+          <div class="cta-sub">Start breaking patterns<br>Real progress starts now</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="progress" id="progress"></div>
+    <div class="restart-hint">Click anywhere to restart →</div>
+  </div>
+
+  <script>
+    const TIMELINE = {
+      hook: { start: 0, end: 4000 },
+      problem: { start: 4000, end: 8000 },
+      insight: { start: 8000, end: 13000 },
+      solution: { start: 13000, end: 18000 },
+      cta: { start: 18000, end: 22000 }
+    };
+    const TOTAL_DURATION = 22000;
+    let startTime = null, animationFrame = null, isPlaying = false;
+
+    function getPhase(time) {
+      if (time < TIMELINE.hook.end) return 'hook';
+      if (time < TIMELINE.problem.end) return 'problem';
+      if (time < TIMELINE.insight.end) return 'insight';
+      if (time < TIMELINE.solution.end) return 'solution';
+      return 'cta';
+    }
+
+    function updateAnimation(timestamp) {
+      if (!startTime) startTime = timestamp;
+      const elapsed = timestamp - startTime;
+      const currentPhase = getPhase(elapsed);
+
+      document.querySelectorAll('.phase').forEach(phase => {
+        phase.classList.toggle('active', phase.classList.contains(`phase-${currentPhase}`));
+      });
+
+      document.getElementById('progress').style.width = Math.min((elapsed / TOTAL_DURATION) * 100, 100) + '%';
+
+      if (elapsed < TOTAL_DURATION) {
+        animationFrame = requestAnimationFrame(updateAnimation);
+      } else {
+        isPlaying = false;
+      }
+    }
+
+    function start() {
+      if (isPlaying) return;
+      isPlaying = true;
+      startTime = null;
+      animationFrame = requestAnimationFrame(updateAnimation);
+    }
+
+    function restart() {
+      if (animationFrame) cancelAnimationFrame(animationFrame);
+      document.querySelectorAll('.phase').forEach(p => p.classList.remove('active'));
+      document.getElementById('progress').style.width = '0%';
+      setTimeout(start, 100);
+    }
+
+    window.addEventListener('load', () => setTimeout(start, 500));
+  </script>
+</body>
+</html>

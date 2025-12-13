@@ -1,0 +1,73 @@
+TIKTOK EXPLAINER: Trauma & Flash Technique
+==========================================
+
+TOTAL DURATION: 28 seconds
+ELEVENLABS VOICE: Bella (warm, reassuring, empathetic)
+SETTINGS: Stability 0.6 | Clarity 0.75 | Style 0.3
+
+VOICEOVER SCRIPT:
+-----------------
+
+[0:00-0:04]
+"Living with trauma means your brain keeps replaying the same painful memories... over and over."
+
+[0:04-0:09]
+"Traditional therapy asks you to relive those moments. But there's a better way."
+
+[0:09-0:14]
+"The Flash Technique lets you process trauma without feeling the pain. Clinically proven. Doctor approved."
+
+[0:14-0:19]
+"You focus on something peaceful while your brain does the healing work in the background. No reliving. No retraumatization."
+
+[0:19-0:24]
+"In just minutes, what felt unbearable becomes... manageable. That's the power of Flash."
+
+[0:24-0:28]
+"Your healing doesn't have to hurt. Start your Flash session today."
+
+
+ALTERNATIVE VOICES:
+-------------------
+- Bella: Warm, reassuring (RECOMMENDED)
+- Rachel: Friendly, conversational
+- Charlotte: Calm, soothing
+- Sarah: Professional, empathetic
+
+
+RECORDING TIPS:
+---------------
+1. Record with slight pauses at the timestamps
+2. Emphasize words: "trauma", "relive", "Flash", "peaceful", "unbearable"
+3. Slow down slightly at emotional moments (0:00-0:04, 0:24-0:28)
+4. Keep tone hopeful and reassuring, not clinical
+5. Download as MP3, 44.1kHz for best quality
+
+
+SYNC WITH ANIMATION:
+--------------------
+- Animation auto-plays and loops
+- Click anywhere to restart
+- Bilateral animation (left-right dots) happens at 14-19s
+- Before/After comparison appears at 19-24s
+- All transitions are smooth and calming
+
+
+PRODUCTION WORKFLOW:
+--------------------
+1. Open trauma-flash-technique.html in browser
+2. Press F11 for fullscreen
+3. Start screen recording (1080x1920 vertical)
+4. Let animation play through once (28s)
+5. Edit in CapCut/Premiere:
+   - Import screen recording
+   - Import ElevenLabs voiceover
+   - Sync audio to video
+   - Add subtle background music (optional, keep VERY quiet)
+6. Export vertical 9:16 for TikTok
+
+
+HASHTAGS (TikTok):
+------------------
+#trauma #mentalhealth #therapy #ptsd #healing #flashtechnique
+#traumahealing #mentalhealthmatters #therapytok #anxietyrelief

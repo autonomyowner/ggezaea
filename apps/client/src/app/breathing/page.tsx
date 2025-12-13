@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useRef, useCallback } from 'react';
+import { useState, useRef, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
 import './breathing.css';
 
@@ -54,14 +54,6 @@ export default function BreathingPage() {
   const [countdown, setCountdown] = useState(0);
   const [isActive, setIsActive] = useState(false);
   const abortRef = useRef(false);
-
-  // Prevent scroll on this page
-  useEffect(() => {
-    document.body.style.overflow = 'hidden';
-    return () => {
-      document.body.style.overflow = '';
-    };
-  }, []);
 
   const getPhaseText = () => {
     switch (phase) {

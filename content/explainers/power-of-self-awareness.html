@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>The Power of Self-Awareness</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=DM+Serif+Display:ital@0;1&display=swap" rel="stylesheet">
+  <!--
+  VOICEOVER SCRIPT (ElevenLabs - Voice: Bella, inspiring):
+
+  [0:00-0:04] "Most people go through life never understanding why they react the way they do. They just... exist."
+  [0:04-0:08] "But the most powerful people? They know themselves. Deeply. Completely."
+  [0:08-0:12] "Self-awareness isn't just nice to have. It's the difference between being controlled by your patterns and controlling them."
+  [0:12-0:17] "When you see your biases, your triggers, your patterns... you get a choice. React the old way, or choose something new."
+  [0:17-0:21] "That's freedom. That's growth. That's what Matcha gives you every single day."
+  [0:21-0:25] "Stop being a passenger. Take the wheel. Start your journey with Matcha."
+
+  TOTAL: 25 seconds
+  ELEVENLABS SETTINGS: Stability 0.65, Clarity 0.8, Style 0.4
+  -->
+  <style>
+    :root {
+      --matcha-50: #f0fdf4; --matcha-100: #dcfce7; --matcha-200: #bbf7d0;
+      --matcha-300: #86efac; --matcha-400: #4ade80; --matcha-500: #68a67d;
+      --matcha-600: #5a9470; --matcha-700: #4a7c5d;
+      --cream-50: #fefdfb; --cream-100: #fdf8f3; --cream-200: #f5ebe0;
+      --terra-300: #f5a572; --terra-400: #e07b4c; --terra-500: #c45d2c;
+      --text-primary: #2d3a2e; --text-secondary: #5a6b5c; --text-muted: #8a9a8c;
+      --text-inverse: #fefdfb;
+      --shadow-md: 0 4px 16px rgba(45, 58, 46, 0.08);
+      --shadow-lg: 0 8px 32px rgba(45, 58, 46, 0.12);
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      width: 100vw; height: 100vh; background: var(--cream-50);
+      display: flex; align-items: center; justify-content: center; overflow: hidden;
+      font-family: 'DM Sans', sans-serif;
+    }
+    .container {
+      width: 1080px; height: 1920px; transform: scale(0.45); transform-origin: center;
+      background: linear-gradient(180deg, var(--cream-50), var(--cream-100), var(--cream-200));
+      position: relative; overflow: hidden;
+    }
+    .blob {
+      position: absolute; pointer-events: none; opacity: 0.29;
+      border-radius: 60% 40% 30% 70% / 60% 30% 70% 40%;
+      animation: blob-float 27s ease-in-out infinite;
+    }
+    .blob-1 {
+      width: 640px; height: 640px; top: -185px; right: -240px;
+      background: radial-gradient(circle, var(--matcha-200) 0%, transparent 70%);
+    }
+    .blob-2 {
+      width: 560px; height: 560px; bottom: -140px; left: -200px;
+      background: radial-gradient(circle, var(--terra-300) 0%, transparent 70%);
+      border-radius: 30% 70% 70% 30% / 30% 30% 70% 70%;
+      animation: blob-float 23s ease-in-out infinite reverse;
+    }
+    @keyframes blob-float {
+      0%, 100% { transform: translate(0, 0) scale(1); }
+      50% { transform: translate(24px, -24px) scale(1.08); }
+    }
+    .phase {
+      position: absolute; width: 100%; height: 100%;
+      display: flex; align-items: center; justify-content: center;
+      padding: 120px 100px; opacity: 0;
+      transition: opacity 0.94s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    .phase.active { opacity: 1; }
+    .phase-content { width: 100%; max-width: 880px; text-align: center; }
+    .hook {
+      font-family: 'DM Serif Display', Georgia, serif;
+      font-size: 115px; font-weight: 400; color: var(--text-primary);
+      line-height: 1.2; letter-spacing: -3px; margin-bottom: 70px;
+    }
+    .text-gradient {
+      background: linear-gradient(135deg, var(--matcha-600) 0%, var(--matcha-500) 50%, var(--terra-400) 100%);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+    }
+    .large-text {
+      font-family: 'DM Serif Display', Georgia, serif;
+      font-size: 94px; font-weight: 400; color: var(--text-primary);
+      line-height: 1.3; margin-bottom: 60px;
+    }
+    .medium-text {
+      font-family: 'DM Sans', sans-serif;
+      font-size: 58px; font-weight: 500; color: var(--text-secondary);
+      line-height: 1.5; margin-bottom: 40px;
+    }
+    .people-visual {
+      display: grid; grid-template-columns: 1fr 1fr;
+      gap: 55px; margin-top: 75px;
+    }
+    .people-box {
+      background: white; border-radius: 28px; padding: 68px 52px;
+      box-shadow: var(--shadow-md);
+    }
+    .people-label {
+      font-family: 'DM Sans', sans-serif; font-size: 38px;
+      font-weight: 700; margin-bottom: 35px; text-transform: uppercase;
+    }
+    .people-left { border: 2px solid rgba(138, 154, 140, 0.25); }
+    .people-left .people-label { color: var(--text-muted); }
+    .people-right { border: 2px solid rgba(104, 166, 125, 0.3); }
+    .people-right .people-label { color: var(--matcha-600); }
+    .people-text {
+      font-family: 'DM Serif Display', Georgia, serif;
+      font-size: 62px; color: var(--text-primary); line-height: 1.32;
+    }
+    .power-card {
+      background: linear-gradient(135deg, rgba(104, 166, 125, 0.08), rgba(104, 166, 125, 0.15));
+      border: 2px solid var(--matcha-300); border-radius: 32px;
+      padding: 75px 65px; margin-top: 75px;
+    }
+    .power-text {
+      font-family: 'DM Serif Display', Georgia, serif;
+      font-size: 70px; color: var(--matcha-700);
+      line-height: 1.38; font-weight: 400;
+    }
+    .choice-visual {
+      display: flex; gap: 55px; justify-content: center;
+      align-items: center; margin-top: 80px;
+    }
+    .choice-box {
+      background: white; border-radius: 26px; padding: 60px 48px;
+      box-shadow: var(--shadow-md); flex: 1;
+    }
+    .choice-label {
+      font-family: 'DM Sans', sans-serif; font-size: 36px;
+      font-weight: 700; margin-bottom: 30px; text-transform: uppercase;
+    }
+    .choice-left { border: 2px solid rgba(224, 123, 76, 0.25); }
+    .choice-left .choice-label { color: var(--terra-500); }
+    .choice-right { border: 2px solid rgba(104, 166, 125, 0.25); }
+    .choice-right .choice-label { color: var(--matcha-600); }
+    .choice-text {
+      font-family: 'DM Serif Display', Georgia, serif;
+      font-size: 54px; color: var(--text-primary); line-height: 1.35;
+    }
+    .choice-plus {
+      font-size: 90px; color: var(--matcha-500); font-weight: 300;
+    }
+    .impact-grid {
+      display: grid; grid-template-columns: 1fr 1fr;
+      gap: 45px; margin-top: 75px;
+    }
+    .impact-item {
+      background: white; border-radius: 26px; padding: 58px 45px;
+      box-shadow: var(--shadow-md); border: 2px solid rgba(104, 166, 125, 0.15);
+    }
+    .impact-label {
+      font-family: 'DM Sans', sans-serif; font-size: 38px;
+      font-weight: 700; color: var(--matcha-600);
+      margin-bottom: 28px; text-transform: uppercase;
+    }
+    .impact-text {
+      font-family: 'DM Sans', sans-serif; font-size: 48px;
+      color: var(--text-primary); line-height: 1.4;
+    }
+    .cta-box {
+      background: linear-gradient(135deg, var(--matcha-500) 0%, var(--matcha-600) 100%);
+      border-radius: 48px; padding: 88px 88px;
+      box-shadow: 0 20px 60px rgba(104, 166, 125, 0.35);
+    }
+    .cta-text {
+      font-family: 'DM Serif Display', Georgia, serif;
+      font-size: 90px; font-weight: 400; color: var(--text-inverse);
+      line-height: 1.26; margin-bottom: 48px;
+    }
+    .cta-sub {
+      font-family: 'DM Sans', sans-serif; font-size: 51px;
+      color: rgba(254, 253, 251, 0.9); font-weight: 500;
+    }
+    .progress {
+      position: absolute; bottom: 0; left: 0; height: 8px;
+      background: linear-gradient(90deg, var(--matcha-500), var(--matcha-400));
+      width: 0%; transition: width 0.1s linear; border-radius: 9999px;
+    }
+    .restart-hint {
+      position: absolute; bottom: 60px; left: 50%; transform: translateX(-50%);
+      font-size: 32px; color: var(--text-muted); opacity: 0;
+      transition: opacity 0.4s; padding: 16px 32px; background: white;
+      border-radius: 12px; border: 1px solid rgba(104, 166, 125, 0.15);
+    }
+    .container:hover .restart-hint { opacity: 1; }
+  </style>
+</head>
+<body>
+  <div class="container" onclick="restart()">
+    <div class="blob blob-1"></div>
+    <div class="blob blob-2"></div>
+
+    <!-- Phase 1: Hook (0-4s) -->
+    <div class="phase phase-hook">
+      <div class="phase-content">
+        <div class="hook">Most people<br>never <span class="text-gradient">understand</span><br>why they react</div>
+        <div class="medium-text">They just... exist</div>
+      </div>
+    </div>
+
+    <!-- Phase 2: Contrast (4-8s) -->
+    <div class="phase phase-contrast">
+      <div class="phase-content">
+        <div class="large-text">But the most<br><span class="text-gradient">powerful</span> people?</div>
+        <div class="people-visual">
+          <div class="people-box people-left">
+            <div class="people-label">Most People</div>
+            <div class="people-text">Reactive</div>
+          </div>
+          <div class="people-box people-right">
+            <div class="people-label">Powerful People</div>
+            <div class="people-text">Self-Aware</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Phase 3: Power (8-12s) -->
+    <div class="phase phase-power">
+      <div class="phase-content">
+        <div class="large-text"><span class="text-gradient">Self-awareness</span><br>isn't just nice to have</div>
+        <div class="power-card">
+          <div class="power-text">It's the difference between being controlled by your patterns and controlling them</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Phase 4: Choice (12-17s) -->
+    <div class="phase phase-choice">
+      <div class="phase-content">
+        <div class="medium-text" style="margin-bottom: 75px;">When you see your patterns<br>you get a choice</div>
+        <div class="choice-visual">
+          <div class="choice-box choice-left">
+            <div class="choice-label">Old Way</div>
+            <div class="choice-text">React</div>
+          </div>
+          <div class="choice-plus">OR</div>
+          <div class="choice-box choice-right">
+            <div class="choice-label">New Way</div>
+            <div class="choice-text">Choose</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Phase 5: Impact (17-21s) -->
+    <div class="phase phase-impact">
+      <div class="phase-content">
+        <div class="impact-grid">
+          <div class="impact-item">
+            <div class="impact-label">Freedom</div>
+            <div class="impact-text">From old patterns</div>
+          </div>
+          <div class="impact-item">
+            <div class="impact-label">Growth</div>
+            <div class="impact-text">Real, lasting change</div>
+          </div>
+        </div>
+        <div class="medium-text" style="margin-top: 75px; color: var(--matcha-600);">That's what Matcha<br>gives you every day</div>
+      </div>
+    </div>
+
+    <!-- Phase 6: CTA (21-25s) -->
+    <div class="phase phase-cta">
+      <div class="phase-content">
+        <div class="cta-box">
+          <div class="cta-text">Stop being<br>a passenger</div>
+          <div class="cta-sub">Take the wheel<br>Start your journey with Matcha</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="progress" id="progress"></div>
+    <div class="restart-hint">Click anywhere to restart →</div>
+  </div>
+
+  <script>
+    const TIMELINE = {
+      hook: { start: 0, end: 4000 },
+      contrast: { start: 4000, end: 8000 },
+      power: { start: 8000, end: 12000 },
+      choice: { start: 12000, end: 17000 },
+      impact: { start: 17000, end: 21000 },
+      cta: { start: 21000, end: 25000 }
+    };
+    const TOTAL_DURATION = 25000;
+    let startTime = null, animationFrame = null, isPlaying = false;
+
+    function getPhase(time) {
+      if (time < TIMELINE.hook.end) return 'hook';
+      if (time < TIMELINE.contrast.end) return 'contrast';
+      if (time < TIMELINE.power.end) return 'power';
+      if (time < TIMELINE.choice.end) return 'choice';
+      if (time < TIMELINE.impact.end) return 'impact';
+      return 'cta';
+    }
+
+    function updateAnimation(timestamp) {
+      if (!startTime) startTime = timestamp;
+      const elapsed = timestamp - startTime;
+      const currentPhase = getPhase(elapsed);
+
+      document.querySelectorAll('.phase').forEach(phase => {
+        phase.classList.toggle('active', phase.classList.contains(`phase-${currentPhase}`));
+      });
+
+      document.getElementById('progress').style.width = Math.min((elapsed / TOTAL_DURATION) * 100, 100) + '%';
+
+      if (elapsed < TOTAL_DURATION) {
+        animationFrame = requestAnimationFrame(updateAnimation);
+      } else {
+        isPlaying = false;
+      }
+    }
+
+    function start() {
+      if (isPlaying) return;
+      isPlaying = true;
+      startTime = null;
+      animationFrame = requestAnimationFrame(updateAnimation);
+    }
+
+    function restart() {
+      if (animationFrame) cancelAnimationFrame(animationFrame);
+      document.querySelectorAll('.phase').forEach(p => p.classList.remove('active'));
+      document.getElementById('progress').style.width = '0%';
+      setTimeout(start, 100);
+    }
+
+    window.addEventListener('load', () => setTimeout(start, 500));
+  </script>
+</body>
+</html>

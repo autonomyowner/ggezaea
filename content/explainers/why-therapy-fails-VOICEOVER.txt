@@ -1,0 +1,115 @@
+TIKTOK EXPLAINER: Why Therapy Isn't Working For You
+====================================================
+
+TOTAL DURATION: 22 seconds
+ELEVENLABS VOICE: Adam (authoritative, confident, direct)
+SETTINGS: Stability 0.6 | Clarity 0.85 | Style 0.5
+
+VOICEOVER SCRIPT:
+-----------------
+
+[0:00-0:04]
+"You've been in therapy for months. Maybe years. But nothing's changed. You're still stuck."
+
+[0:04-0:08]
+"Here's why. Traditional therapy asks you to talk about your problems. But talking isn't healing."
+
+[0:08-0:13]
+"Your brain needs action, not words. It needs patterns broken, not just discussed."
+
+[0:13-0:18]
+"That's why Matcha uses proven techniques. Flash for trauma. CBT for thinking. Real-time insights that actually work."
+
+[0:18-0:22]
+"Stop talking in circles. Start breaking patterns. Real progress starts now."
+
+
+ALTERNATIVE VOICES:
+-------------------
+- Adam: Authoritative, confident (RECOMMENDED)
+- Josh: Strong, direct (male)
+- Rachel: Clear, professional (female alternative)
+- Bella: Warm but firm (female alternative)
+
+
+EMPHASIS POINTS:
+----------------
+- "months... maybe years" (0:01)
+- "still stuck" (0:03)
+- "talking isn't healing" (0:07)
+- "action, not words" (0:09)
+- "patterns broken" (0:12)
+- "actually work" (0:17)
+- "Stop talking in circles" (0:18-0:19)
+
+
+TONE GUIDANCE:
+--------------
+- Direct and confident, not harsh
+- Speak with authority but empathy
+- Slightly faster pace than other explainers
+- Emphasize the contrast between talking and action
+- Make "Real progress starts now" sound decisive
+
+
+RECORDING TIPS:
+---------------
+1. Use a firm, confident tone throughout
+2. No-nonsense delivery - get straight to the point
+3. Pause briefly after "Here's why" (0:04)
+4. Emphasize "action" vs "words" contrast
+5. Make the CTA sound urgent and empowering
+
+
+SYNC WITH ANIMATION:
+--------------------
+- Rotating "stuck" circle (0-4s)
+- "Talking isn't healing" text emphasis (4-8s)
+- Action ≠ Words comparison boxes (8-13s)
+- Three technique cards appear (Flash, CBT, Real-Time) (13-18s)
+- Green gradient CTA box (18-22s)
+
+
+PRODUCTION WORKFLOW:
+--------------------
+1. Open why-therapy-fails.html in browser
+2. Press F11 for fullscreen
+3. Start screen recording (1080x1920 vertical)
+4. Let animation play through once (22s)
+5. Edit in CapCut/Premiere:
+   - Import screen recording
+   - Import ElevenLabs voiceover
+   - Sync audio to video
+   - Optional: Add punch/impact sound at "actually work"
+6. Export vertical 9:16 for TikTok
+
+
+HASHTAGS (TikTok):
+------------------
+#therapy #mentalhealth #therapytok #therapyisntworking #cbt
+#traumahealing #mentalhealthmatters #healingjourney #matchaai
+#breakthecycle #therapyalternatives #realhealing
+
+
+CAPTION IDEAS:
+--------------
+1. "If therapy isn't working, this might be why 🎯"
+2. "You're not broken. Your approach is. 💡"
+3. "Talking about problems ≠ Solving them 🔄"
+4. "Here's what actually works (backed by science) ✨"
+5. "Real progress looks different than you think 🌱"
+
+
+BEST POSTING TIMES:
+-------------------
+- Monday 7-9am (frustrated with weekend therapy)
+- Wednesday 12-1pm (mid-week reflections)
+- Sunday 8-10pm (pre-therapy anxiety)
+
+
+FOLLOW-UP CONTENT IDEAS:
+-------------------------
+- "What to ask your therapist" explainer
+- "Signs your therapist isn't right for you"
+- "How Matcha is different from therapy"
+- "CBT vs Talk Therapy explained"

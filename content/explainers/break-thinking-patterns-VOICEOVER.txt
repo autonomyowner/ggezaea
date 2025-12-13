@@ -1,0 +1,160 @@
+TIKTOK EXPLAINER: Break Toxic Thinking Patterns
+================================================
+
+TOTAL DURATION: 26 seconds
+ELEVENLABS VOICE: Rachel (empowering, warm, motivational)
+SETTINGS: Stability 0.6 | Clarity 0.75 | Style 0.35
+
+VOICEOVER SCRIPT:
+-----------------
+
+[0:00-0:04]
+"That voice in your head? The one that says you're not good enough? It's a pattern. Not the truth."
+
+[0:04-0:08]
+"Your brain learned it years ago. Now it runs on autopilot. Sabotaging every good thing."
+
+[0:08-0:13]
+"All-or-nothing thinking. Catastrophizing. Overgeneralizing. These aren't personality traits. They're bugs in your code."
+
+[0:13-0:17]
+"And just like code, they can be rewritten. Matcha identifies the pattern. Then shows you how to break it."
+
+[0:17-0:22]
+"One thought at a time. One pattern at a time. Until the voice changes."
+
+[0:22-0:26]
+"Stop fighting your mind. Reprogram it. Start with Matcha."
+
+
+ALTERNATIVE VOICES:
+-------------------
+- Rachel: Empowering, warm (RECOMMENDED)
+- Bella: Gentle, encouraging (female alternative)
+- Charlotte: Clear, supportive (female alternative)
+- Natasha: Strong, confident (female alternative)
+
+
+EMPHASIS POINTS:
+----------------
+- "That voice in your head" (0:00)
+- "not good enough" (0:02)
+- "pattern. Not the truth." (0:03)
+- "on autopilot" (0:06)
+- "sabotaging every good thing" (0:07)
+- "All-or-nothing" (0:08)
+- "bugs in your code" (0:12)
+- "can be rewritten" (0:14)
+- "voice changes" (0:21)
+- "Reprogram it" (0:24)
+
+
+TONE GUIDANCE:
+--------------
+- Start relatable and compassionate
+- Build understanding and validation
+- Shift to empowerment and possibility
+- Use confident, motivating energy
+- End with actionable hope
+
+
+RECORDING TIPS:
+---------------
+1. Make "not good enough" sound familiar and relatable
+2. Say "pattern. Not the truth." with clear separation
+3. List the three patterns distinctly with slight pauses
+4. Emphasize the code metaphor - make it click
+5. Build momentum through "one thought at a time"
+6. Make "Reprogram it" sound empowering, not clinical
+
+
+SYNC WITH ANIMATION:
+--------------------
+- "Not good enough" voice card (0-4s)
+- Brain autopilot visual (4-8s)
+- Three pattern cards appear (All-or-Nothing, Catastrophizing, Overgeneralizing) (8-13s)
+- Code rewrite visual (strikethrough → new) (13-17s)
+- Toxic → Kind transformation (17-22s)
+- Green gradient CTA (22-26s)
+
+
+PRODUCTION WORKFLOW:
+--------------------
+1. Open break-thinking-patterns.html in browser
+2. Press F11 for fullscreen
+3. Start screen recording (1080x1920 vertical)
+4. Let animation play through once (26s)
+5. Edit in CapCut/Premiere:
+   - Import screen recording
+   - Import ElevenLabs voiceover
+   - Sync audio to video timestamps
+   - Optional: Add soft "typing" sound during code rewrite
+   - Optional: Add gentle "chime" when voice changes
+6. Export vertical 9:16 for TikTok
+
+
+HASHTAGS (TikTok):
+------------------
+#thinkingpatterns #toxicthoughts #innercritic #cbt #mentalhealth
+#negativeselftalk #selfcompassion #mindsetshift #overthinking
+#allornothingthinking #catastrophizing #matchaai #mentalhealthmatters
+#selfimprovement #personalgrowth
+
+
+CAPTION IDEAS:
+--------------
+1. "That mean voice isn't you. It's a pattern. 🔄"
+2. "Your thoughts are code. Time to debug. 💻"
+3. "Stop fighting your mind. Reprogram it. 🧠✨"
+4. "POV: You realize your inner critic is a bug 🐛❌"
+5. "These patterns aren't permanent. Here's proof. 🌱"
+
+
+BEST POSTING TIMES:
+-------------------
+- Monday 6-8am (starting week with negative thoughts)
+- Thursday 8-10pm (self-reflection time)
+- Sunday 9-11am (morning motivation)
+
+
+FOLLOW-UP CONTENT IDEAS:
+-------------------------
+- "10 toxic thinking patterns explained"
+- "How to identify your thought patterns"
+- "Catastrophizing: why your brain does this"
+- "All-or-nothing thinking in relationships"
+- "Rewriting negative self-talk (step-by-step)"
+- "The inner critic vs inner coach"
+
+
+ENGAGEMENT HOOKS:
+-----------------
+- Ask: "What's YOUR inner critic's favorite phrase? 👇"
+- Poll: "Which pattern do you struggle with most?"
+- Challenge: "Catch yourself catastrophizing today"
+- Question: "When did you first learn this thought?"
+- Share: "Comment your 'before' thought and I'll help rewrite it"
+
+
+PATTERN EXAMPLES (for follow-up content):
+------------------------------------------
+
+**All-or-Nothing:**
+- Old: "I ate one cookie, diet ruined, might as well eat the whole box"
+- New: "One cookie is normal. I can enjoy it and move on."
+
+**Catastrophizing:**
+- Old: "They didn't text back. They hate me. I'll be alone forever."
+- New: "They're probably busy. I'll check in later if needed."
+
+**Overgeneralizing:**
+- Old: "I failed once. I always fail at everything."
+- New: "I had one setback. I've succeeded before and can again."
+
+**Mind Reading:**
+- Old: "They think I'm stupid. I can tell."
+- New: "I can't know their thoughts. I'll ask if I need clarity."
+
+**Emotional Reasoning:**
+- Old: "I feel like a failure, so I must be one."
+- New: "Feelings aren't facts. Let me look at evidence."

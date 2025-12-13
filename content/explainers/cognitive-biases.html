@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Your Brain is Lying to You</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=DM+Serif+Display:ital@0;1&display=swap" rel="stylesheet">
+  <!--
+  VOICEOVER SCRIPT (ElevenLabs - Voice: Bella, engaging):
+
+  [0:00-0:04] "Your brain is lying to you. Every single day. And you don't even know it."
+  [0:04-0:09] "It's called cognitive bias. Your mind takes shortcuts. Distorts reality. Makes you see threats that don't exist."
+  [0:09-0:14] "Negativity bias makes you focus on what's wrong. Confirmation bias keeps you stuck in the same beliefs."
+  [0:14-0:18] "And the worst part? You can't see it happening. You need AI to catch what your mind hides."
+  [0:18-0:23] "Matcha spots every bias in real-time. Shows you the truth your brain won't let you see."
+  [0:23-0:27] "Stop living in distortion. See reality clearly. Try Matcha free."
+
+  TOTAL: 27 seconds
+  ELEVENLABS SETTINGS: Stability 0.55, Clarity 0.8, Style 0.45
+  -->
+  <style>
+    :root {
+      --matcha-50: #f0fdf4; --matcha-100: #dcfce7; --matcha-200: #bbf7d0;
+      --matcha-300: #86efac; --matcha-400: #4ade80; --matcha-500: #68a67d;
+      --matcha-600: #5a9470; --matcha-700: #4a7c5d;
+      --cream-50: #fefdfb; --cream-100: #fdf8f3; --cream-200: #f5ebe0;
+      --terra-300: #f5a572; --terra-400: #e07b4c; --terra-500: #c45d2c;
+      --text-primary: #2d3a2e; --text-secondary: #5a6b5c; --text-muted: #8a9a8c;
+      --text-inverse: #fefdfb;
+      --shadow-md: 0 4px 16px rgba(45, 58, 46, 0.08);
+      --shadow-lg: 0 8px 32px rgba(45, 58, 46, 0.12);
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      width: 100vw; height: 100vh; background: var(--cream-50);
+      display: flex; align-items: center; justify-content: center; overflow: hidden;
+      font-family: 'DM Sans', sans-serif;
+    }
+    .container {
+      width: 1080px; height: 1920px; transform: scale(0.45); transform-origin: center;
+      background: linear-gradient(180deg, var(--cream-50), var(--cream-100), var(--cream-200));
+      position: relative; overflow: hidden;
+    }
+    .blob {
+      position: absolute; pointer-events: none; opacity: 0.26;
+      border-radius: 60% 40% 30% 70% / 60% 30% 70% 40%;
+      animation: blob-float 24s ease-in-out infinite;
+    }
+    .blob-1 {
+      width: 620px; height: 620px; top: -170px; right: -230px;
+      background: radial-gradient(circle, var(--matcha-200) 0%, transparent 70%);
+    }
+    .blob-2 {
+      width: 540px; height: 540px; bottom: -130px; left: -190px;
+      background: radial-gradient(circle, var(--terra-300) 0%, transparent 70%);
+      border-radius: 30% 70% 70% 30% / 30% 30% 70% 70%;
+      animation: blob-float 19s ease-in-out infinite reverse;
+    }
+    @keyframes blob-float {
+      0%, 100% { transform: translate(0, 0) scale(1); }
+      50% { transform: translate(22px, -22px) scale(1.06); }
+    }
+    .phase {
+      position: absolute; width: 100%; height: 100%;
+      display: flex; align-items: center; justify-content: center;
+      padding: 120px 100px; opacity: 0;
+      transition: opacity 0.95s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    .phase.active { opacity: 1; }
+    .phase-content { width: 100%; max-width: 880px; text-align: center; }
+    .hook {
+      font-family: 'DM Serif Display', Georgia, serif;
+      font-size: 125px; font-weight: 400; color: var(--text-primary);
+      line-height: 1.12; letter-spacing: -3px; margin-bottom: 70px;
+    }
+    .text-gradient {
+      background: linear-gradient(135deg, var(--matcha-600) 0%, var(--matcha-500) 50%, var(--terra-400) 100%);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+    }
+    .large-text {
+      font-family: 'DM Serif Display', Georgia, serif;
+      font-size: 98px; font-weight: 400; color: var(--text-primary);
+      line-height: 1.25; margin-bottom: 60px;
+    }
+    .medium-text {
+      font-family: 'DM Sans', sans-serif;
+      font-size: 62px; font-weight: 500; color: var(--text-secondary);
+      line-height: 1.45; margin-bottom: 40px;
+    }
+    .brain-visual {
+      width: 550px; height: 550px; margin: 0 auto 70px;
+      position: relative;
+    }
+    .brain-circle {
+      width: 100%; height: 100%;
+      border: 4px solid rgba(224, 123, 76, 0.3);
+      border-radius: 50%; position: relative;
+    }
+    .brain-line {
+      position: absolute; height: 3px; background: var(--terra-400);
+      top: 50%; left: 50%; transform-origin: left center;
+      opacity: 0.6;
+    }
+    .brain-line:nth-child(1) { width: 180px; transform: rotate(0deg) translateX(-90px); }
+    .brain-line:nth-child(2) { width: 160px; transform: rotate(60deg) translateX(-80px); }
+    .brain-line:nth-child(3) { width: 170px; transform: rotate(120deg) translateX(-85px); }
+    .brain-line:nth-child(4) { width: 150px; transform: rotate(180deg) translateX(-75px); }
+    .brain-line:nth-child(5) { width: 165px; transform: rotate(240deg) translateX(-82px); }
+    .brain-line:nth-child(6) { width: 155px; transform: rotate(300deg) translateX(-77px); }
+    .brain-center {
+      position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+      width: 80px; height: 80px; background: var(--terra-500);
+      border-radius: 50%; box-shadow: 0 0 50px rgba(196, 93, 44, 0.6);
+      animation: pulse-brain 2.5s ease-in-out infinite;
+    }
+    @keyframes pulse-brain {
+      0%, 100% { transform: translate(-50%, -50%) scale(1); }
+      50% { transform: translate(-50%, -50%) scale(1.15); }
+    }
+    .bias-grid {
+      display: grid; grid-template-columns: 1fr 1fr;
+      gap: 45px; margin-top: 75px;
+    }
+    .bias-card {
+      background: white; border-radius: 28px; padding: 60px 45px;
+      box-shadow: var(--shadow-md); border: 2px solid rgba(104, 166, 125, 0.12);
+      transition: all 0.35s ease;
+    }
+    .bias-card:hover {
+      transform: translateY(-7px); box-shadow: var(--shadow-lg);
+    }
+    .bias-name {
+      font-family: 'DM Sans', sans-serif; font-size: 40px;
+      font-weight: 700; color: var(--matcha-600);
+      margin-bottom: 28px; text-transform: uppercase; letter-spacing: 0.5px;
+    }
+    .bias-desc {
+      font-family: 'DM Sans', sans-serif; font-size: 46px;
+      color: var(--text-primary); line-height: 1.35;
+    }
+    .ai-badge {
+      display: inline-block; background: var(--matcha-100);
+      border: 2px solid var(--matcha-300); border-radius: 60px;
+      padding: 22px 54px; font-size: 42px; font-weight: 600;
+      color: var(--matcha-700); margin-bottom: 65px;
+      text-transform: uppercase; letter-spacing: 0.5px;
+    }
+    .cta-box {
+      background: linear-gradient(135deg, var(--matcha-500) 0%, var(--matcha-600) 100%);
+      border-radius: 48px; padding: 88px 88px;
+      box-shadow: 0 20px 60px rgba(104, 166, 125, 0.35);
+    }
+    .cta-text {
+      font-family: 'DM Serif Display', Georgia, serif;
+      font-size: 94px; font-weight: 400; color: var(--text-inverse);
+      line-height: 1.22; margin-bottom: 48px;
+    }
+    .cta-sub {
+      font-family: 'DM Sans', sans-serif; font-size: 53px;
+      color: rgba(254, 253, 251, 0.9); font-weight: 500;
+    }
+    .progress {
+      position: absolute; bottom: 0; left: 0; height: 8px;
+      background: linear-gradient(90deg, var(--matcha-500), var(--matcha-400));
+      width: 0%; transition: width 0.1s linear; border-radius: 9999px;
+    }
+    .restart-hint {
+      position: absolute; bottom: 60px; left: 50%; transform: translateX(-50%);
+      font-size: 32px; color: var(--text-muted); opacity: 0;
+      transition: opacity 0.4s; padding: 16px 32px; background: white;
+      border-radius: 12px; border: 1px solid rgba(104, 166, 125, 0.15);
+    }
+    .container:hover .restart-hint { opacity: 1; }
+  </style>
+</head>
+<body>
+  <div class="container" onclick="restart()">
+    <div class="blob blob-1"></div>
+    <div class="blob blob-2"></div>
+
+    <!-- Phase 1: Hook (0-4s) -->
+    <div class="phase phase-hook">
+      <div class="phase-content">
+        <div class="hook">Your brain is<br><span class="text-gradient">lying</span> to you</div>
+        <div class="brain-visual">
+          <div class="brain-circle">
+            <div class="brain-line"></div>
+            <div class="brain-line"></div>
+            <div class="brain-line"></div>
+            <div class="brain-line"></div>
+            <div class="brain-line"></div>
+            <div class="brain-line"></div>
+            <div class="brain-center"></div>
+          </div>
+        </div>
+        <div class="medium-text">Every single day<br>And you don't even know it</div>
+      </div>
+    </div>
+
+    <!-- Phase 2: Problem (4-9s) -->
+    <div class="phase phase-problem">
+      <div class="phase-content">
+        <div class="large-text">It's called<br><span class="text-gradient">cognitive bias</span></div>
+        <div class="medium-text">Your mind takes shortcuts<br>Distorts reality<br>Makes you see threats<br>that don't exist</div>
+      </div>
+    </div>
+
+    <!-- Phase 3: Examples (9-14s) -->
+    <div class="phase phase-examples">
+      <div class="phase-content">
+        <div class="bias-grid">
+          <div class="bias-card">
+            <div class="bias-name">Negativity Bias</div>
+            <div class="bias-desc">Focus on what's wrong</div>
+          </div>
+          <div class="bias-card">
+            <div class="bias-name">Confirmation Bias</div>
+            <div class="bias-desc">Stuck in same beliefs</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Phase 4: Insight (14-18s) -->
+    <div class="phase phase-insight">
+      <div class="phase-content">
+        <div class="large-text">And the <span class="text-gradient">worst</span> part?</div>
+        <div class="medium-text" style="margin-top: 70px;">You can't see it happening</div>
+        <div class="medium-text" style="color: var(--matcha-600); margin-top: 50px;">You need AI to catch<br>what your mind hides</div>
+      </div>
+    </div>
+
+    <!-- Phase 5: Solution (18-23s) -->
+    <div class="phase phase-solution">
+      <div class="phase-content">
+        <div class="ai-badge">AI-Powered</div>
+        <div class="large-text"><span class="text-gradient">Matcha</span> spots<br>every bias<br>in real-time</div>
+        <div class="medium-text">Shows you the truth<br>your brain won't let you see</div>
+      </div>
+    </div>
+
+    <!-- Phase 6: CTA (23-27s) -->
+    <div class="phase phase-cta">
+      <div class="phase-content">
+        <div class="cta-box">
+          <div class="cta-text">Stop living<br>in distortion</div>
+          <div class="cta-sub">See reality clearly<br>Try Matcha free</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="progress" id="progress"></div>
+    <div class="restart-hint">Click anywhere to restart →</div>
+  </div>
+
+  <script>
+    const TIMELINE = {
+      hook: { start: 0, end: 4000 },
+      problem: { start: 4000, end: 9000 },
+      examples: { start: 9000, end: 14000 },
+      insight: { start: 14000, end: 18000 },
+      solution: { start: 18000, end: 23000 },
+      cta: { start: 23000, end: 27000 }
+    };
+    const TOTAL_DURATION = 27000;
+    let startTime = null, animationFrame = null, isPlaying = false;
+
+    function getPhase(time) {
+      if (time < TIMELINE.hook.end) return 'hook';
+      if (time < TIMELINE.problem.end) return 'problem';
+      if (time < TIMELINE.examples.end) return 'examples';
+      if (time < TIMELINE.insight.end) return 'insight';
+      if (time < TIMELINE.solution.end) return 'solution';
+      return 'cta';
+    }
+
+    function updateAnimation(timestamp) {
+      if (!startTime) startTime = timestamp;
+      const elapsed = timestamp - startTime;
+      const currentPhase = getPhase(elapsed);
+
+      document.querySelectorAll('.phase').forEach(phase => {
+        phase.classList.toggle('active', phase.classList.contains(`phase-${currentPhase}`));
+      });
+
+      document.getElementById('progress').style.width = Math.min((elapsed / TOTAL_DURATION) * 100, 100) + '%';
+
+      if (elapsed < TOTAL_DURATION) {
+        animationFrame = requestAnimationFrame(updateAnimation);
+      } else {
+        isPlaying = false;
+      }
+    }
+
+    function start() {
+      if (isPlaying) return;
+      isPlaying = true;
+      startTime = null;
+      animationFrame = requestAnimationFrame(updateAnimation);
+    }
+
+    function restart() {
+      if (animationFrame) cancelAnimationFrame(animationFrame);
+      document.querySelectorAll('.phase').forEach(p => p.classList.remove('active'));
+      document.getElementById('progress').style.width = '0%';
+      setTimeout(start, 100);
+    }
+
+    window.addEventListener('load', () => setTimeout(start, 500));
+  </script>
+</body>
+</html>

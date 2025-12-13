@@ -1,0 +1,573 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Stop Scrolling</title>
+  <!--
+  VOICEOVER SCRIPT:
+  [0:00-0:02] *ambient builds* (no voice - just visual hook)
+  [0:02-0:06] "The people who changed your life... never asked for permission."
+  [0:06-0:10] "They just showed up. And stayed."
+  [0:10-0:14] "Be that person for someone."
+  [0:14-0:16] "Follow for more."
+
+  ELEVENLABS VOICE: Adam (deep, authoritative) or Marcus (warm, wise)
+  -->
+  <style>
+    :root {
+      --bg-primary: #030303;
+      --bg-secondary: #0a0814;
+      --accent: #a855f7;
+      --accent-secondary: #6366f1;
+      --accent-glow: rgba(168, 85, 247, 0.5);
+      --text: #ffffff;
+      --text-muted: #666;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      width: 100vw;
+      height: 100vh;
+      background: #000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+    }
+
+    .container {
+      width: 1080px;
+      height: 1920px;
+      transform: scale(0.5);
+      transform-origin: center;
+      background: var(--bg-primary);
+      position: relative;
+      overflow: hidden;
+    }
+
+    /* === AMBIENT LAYER === */
+    .ambient {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      z-index: 1;
+    }
+
+    /* Morphing gradient blobs */
+    .blob {
+      position: absolute;
+      border-radius: 40% 60% 70% 30% / 40% 50% 60% 50%;
+      filter: blur(120px);
+      opacity: 0;
+      animation: blob-fade-in 2s ease forwards;
+    }
+
+    .blob-1 {
+      width: 700px;
+      height: 700px;
+      background: linear-gradient(135deg, var(--accent), var(--accent-secondary));
+      top: -150px;
+      right: -200px;
+      animation: morph 18s ease-in-out infinite, blob-fade-in 2s ease forwards;
+    }
+
+    .blob-2 {
+      width: 600px;
+      height: 600px;
+      background: linear-gradient(225deg, var(--accent-secondary), var(--accent));
+      bottom: 300px;
+      left: -200px;
+      animation: morph 18s ease-in-out infinite reverse, blob-fade-in 2s ease 0.5s forwards;
+    }
+
+    .blob-3 {
+      width: 400px;
+      height: 400px;
+      background: var(--accent);
+      bottom: -100px;
+      right: 100px;
+      animation: morph 15s ease-in-out infinite, blob-fade-in 2s ease 1s forwards;
+    }
+
+    @keyframes blob-fade-in {
+      from { opacity: 0; }
+      to { opacity: 0.15; }
+    }
+
+    @keyframes morph {
+      0%, 100% {
+        border-radius: 40% 60% 70% 30% / 40% 50% 60% 50%;
+        transform: translate(0, 0) rotate(0deg) scale(1);
+      }
+      25% {
+        border-radius: 70% 30% 50% 50% / 30% 30% 70% 70%;
+        transform: translate(40px, -30px) rotate(90deg) scale(1.05);
+      }
+      50% {
+        border-radius: 50% 60% 30% 60% / 70% 40% 70% 30%;
+        transform: translate(-30px, 40px) rotate(180deg) scale(0.95);
+      }
+      75% {
+        border-radius: 30% 60% 70% 40% / 50% 60% 30% 60%;
+        transform: translate(20px, 20px) rotate(270deg) scale(1.02);
+      }
+    }
+
+    /* Floating particles */
+    .particles {
+      position: absolute;
+      inset: 0;
+      z-index: 2;
+    }
+
+    .particle {
+      position: absolute;
+      border-radius: 50%;
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    .particle-dot {
+      width: 4px;
+      height: 4px;
+      background: var(--accent);
+      box-shadow: 0 0 10px var(--accent-glow);
+    }
+
+    .particle-line {
+      width: 2px;
+      height: 20px;
+      background: linear-gradient(to bottom, var(--accent), transparent);
+    }
+
+    /* Scan lines for texture */
+    .scanlines {
+      position: absolute;
+      inset: 0;
+      background: repeating-linear-gradient(
+        0deg,
+        transparent,
+        transparent 2px,
+        rgba(0, 0, 0, 0.1) 2px,
+        rgba(0, 0, 0, 0.1) 4px
+      );
+      pointer-events: none;
+      opacity: 0.3;
+      z-index: 10;
+    }
+
+    /* === CONTENT LAYER === */
+    .content {
+      position: absolute;
+      inset: 0;
+      z-index: 5;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding: 80px;
+    }
+
+    /* Main quote */
+    .quote-container {
+      position: relative;
+    }
+
+    .quote-line {
+      overflow: hidden;
+      margin-bottom: 20px;
+    }
+
+    .quote-text {
+      font-size: 72px;
+      font-weight: 700;
+      color: var(--text);
+      line-height: 1.15;
+      letter-spacing: -2px;
+      transform: translateY(100%);
+      opacity: 0;
+    }
+
+    .quote-text.visible {
+      animation: text-reveal 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    }
+
+    @keyframes text-reveal {
+      to {
+        transform: translateY(0);
+        opacity: 1;
+      }
+    }
+
+    .highlight {
+      color: var(--accent);
+      text-shadow: 0 0 40px var(--accent-glow);
+    }
+
+    .highlight.glow {
+      animation: glow-intense 2s ease-in-out infinite;
+    }
+
+    @keyframes glow-intense {
+      0%, 100% {
+        text-shadow: 0 0 20px var(--accent-glow), 0 0 40px var(--accent-glow);
+        filter: brightness(1);
+      }
+      50% {
+        text-shadow: 0 0 40px var(--accent-glow), 0 0 80px var(--accent-glow), 0 0 120px var(--accent-glow);
+        filter: brightness(1.15);
+      }
+    }
+
+    /* Second part of quote */
+    .quote-part-2 {
+      margin-top: 60px;
+      opacity: 0;
+      transform: translateY(30px);
+    }
+
+    .quote-part-2.visible {
+      animation: fade-up 1s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    }
+
+    .quote-part-2 .quote-text {
+      font-size: 64px;
+      color: var(--text-muted);
+      transform: none;
+      opacity: 1;
+    }
+
+    @keyframes fade-up {
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    /* CTA */
+    .cta-container {
+      position: absolute;
+      bottom: 200px;
+      left: 80px;
+      right: 80px;
+      opacity: 0;
+      transform: translateY(20px);
+    }
+
+    .cta-container.visible {
+      animation: fade-up 0.8s ease forwards;
+    }
+
+    .cta-text {
+      font-size: 48px;
+      font-weight: 600;
+      color: var(--text);
+      text-align: center;
+      padding: 40px 60px;
+      border: 3px solid rgba(168, 85, 247, 0.5);
+      border-radius: 20px;
+      background: rgba(168, 85, 247, 0.1);
+      backdrop-filter: blur(10px);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .cta-text::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(168, 85, 247, 0.2), transparent);
+      animation: shimmer 3s ease-in-out infinite;
+    }
+
+    @keyframes shimmer {
+      0% { left: -100%; }
+      50%, 100% { left: 100%; }
+    }
+
+    /* Decorative line */
+    .deco-line {
+      position: absolute;
+      top: 120px;
+      left: 80px;
+      width: 120px;
+      height: 4px;
+      background: linear-gradient(90deg, var(--accent), transparent);
+      transform: scaleX(0);
+      transform-origin: left;
+    }
+
+    .deco-line.visible {
+      animation: line-reveal 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    }
+
+    @keyframes line-reveal {
+      to { transform: scaleX(1); }
+    }
+
+    /* Focus burst effect */
+    .focus-burst {
+      position: absolute;
+      width: 600px;
+      height: 600px;
+      left: 50%;
+      top: 50%;
+      transform: translate(-50%, -50%);
+      border-radius: 50%;
+      background: radial-gradient(circle, var(--accent-glow) 0%, transparent 70%);
+      opacity: 0;
+      pointer-events: none;
+      z-index: 3;
+    }
+
+    .focus-burst.active {
+      animation: burst 1.5s ease-out forwards;
+    }
+
+    @keyframes burst {
+      0% {
+        opacity: 0.8;
+        transform: translate(-50%, -50%) scale(0.5);
+      }
+      100% {
+        opacity: 0;
+        transform: translate(-50%, -50%) scale(2);
+      }
+    }
+
+    /* Breathing ambient pulse */
+    .breath-pulse {
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(ellipse at 50% 50%, var(--accent-glow), transparent 70%);
+      opacity: 0;
+      animation: breath 4s ease-in-out infinite;
+      z-index: 2;
+    }
+
+    @keyframes breath {
+      0%, 100% { opacity: 0; }
+      50% { opacity: 0.05; }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <!-- Ambient background -->
+    <div class="ambient">
+      <div class="blob blob-1"></div>
+      <div class="blob blob-2"></div>
+      <div class="blob blob-3"></div>
+    </div>
+
+    <!-- Particles -->
+    <div class="particles" id="particles"></div>
+
+    <!-- Breathing pulse -->
+    <div class="breath-pulse"></div>
+
+    <!-- Focus burst -->
+    <div class="focus-burst" id="burst"></div>
+
+    <!-- Decorative line -->
+    <div class="deco-line" id="deco"></div>
+
+    <!-- Main content -->
+    <div class="content">
+      <div class="quote-container">
+        <div class="quote-line">
+          <div class="quote-text" id="line1">The people who</div>
+        </div>
+        <div class="quote-line">
+          <div class="quote-text" id="line2"><span class="highlight">changed your life</span></div>
+        </div>
+        <div class="quote-line">
+          <div class="quote-text" id="line3">never asked for</div>
+        </div>
+        <div class="quote-line">
+          <div class="quote-text" id="line4"><span class="highlight">permission.</span></div>
+        </div>
+
+        <div class="quote-part-2" id="part2">
+          <div class="quote-line">
+            <div class="quote-text">They just showed up.</div>
+          </div>
+          <div class="quote-line" style="margin-top: 16px;">
+            <div class="quote-text">And <span class="highlight glow">stayed.</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- CTA -->
+    <div class="cta-container" id="cta">
+      <div class="cta-text">Be that person</div>
+    </div>
+
+    <!-- Scanlines overlay -->
+    <div class="scanlines"></div>
+  </div>
+
+  <script>
+    // Particle system
+    function createParticles() {
+      const container = document.getElementById('particles');
+      const particleCount = 40;
+
+      for (let i = 0; i < particleCount; i++) {
+        const p = document.createElement('div');
+        const isLine = Math.random() > 0.7;
+        p.className = `particle ${isLine ? 'particle-line' : 'particle-dot'}`;
+
+        const startX = Math.random() * 100;
+        const startY = 50 + Math.random() * 50;
+        const duration = 8 + Math.random() * 8;
+        const delay = Math.random() * 10;
+
+        p.style.cssText = `
+          left: ${startX}%;
+          top: ${startY}%;
+          animation: particle-rise ${duration}s linear ${delay}s infinite;
+        `;
+
+        container.appendChild(p);
+      }
+    }
+
+    // Add particle animation
+    const styleSheet = document.createElement('style');
+    styleSheet.textContent = `
+      @keyframes particle-rise {
+        0% {
+          opacity: 0;
+          transform: translateY(0) scale(0);
+        }
+        5% {
+          opacity: 0.7;
+          transform: scale(1);
+        }
+        95% {
+          opacity: 0.7;
+        }
+        100% {
+          opacity: 0;
+          transform: translateY(-400px) scale(0);
+        }
+      }
+    `;
+    document.head.appendChild(styleSheet);
+
+    // Timeline
+    class Timeline {
+      constructor() {
+        this.events = [];
+        this.startTime = null;
+      }
+
+      add(time, callback) {
+        this.events.push({ time, callback, fired: false });
+        return this;
+      }
+
+      play() {
+        this.startTime = performance.now();
+        this.events.forEach(e => e.fired = false);
+        this.tick();
+      }
+
+      tick() {
+        const elapsed = performance.now() - this.startTime;
+
+        this.events.forEach(event => {
+          if (!event.fired && elapsed >= event.time) {
+            event.callback();
+            event.fired = true;
+          }
+        });
+
+        if (this.events.some(e => !e.fired)) {
+          requestAnimationFrame(() => this.tick());
+        }
+      }
+    }
+
+    // Initialize
+    createParticles();
+
+    const tl = new Timeline();
+
+    // Deco line appears
+    tl.add(300, () => {
+      document.getElementById('deco').classList.add('visible');
+    });
+
+    // Focus burst
+    tl.add(500, () => {
+      document.getElementById('burst').classList.add('active');
+    });
+
+    // Line 1
+    tl.add(800, () => {
+      document.getElementById('line1').classList.add('visible');
+    });
+
+    // Line 2 (highlighted)
+    tl.add(1400, () => {
+      document.getElementById('line2').classList.add('visible');
+    });
+
+    // Line 3
+    tl.add(2200, () => {
+      document.getElementById('line3').classList.add('visible');
+    });
+
+    // Line 4 (highlighted)
+    tl.add(2800, () => {
+      document.getElementById('line4').classList.add('visible');
+    });
+
+    // Second burst for emphasis
+    tl.add(3500, () => {
+      const burst = document.getElementById('burst');
+      burst.classList.remove('active');
+      setTimeout(() => burst.classList.add('active'), 50);
+    });
+
+    // Part 2 reveal
+    tl.add(5500, () => {
+      document.getElementById('part2').classList.add('visible');
+    });
+
+    // Add glow to final word
+    tl.add(7500, () => {
+      document.querySelector('.highlight.glow')?.classList.add('active');
+    });
+
+    // CTA
+    tl.add(10000, () => {
+      document.getElementById('cta').classList.add('visible');
+    });
+
+    tl.play();
+
+    // Click to restart
+    document.body.addEventListener('click', () => {
+      // Reset all states
+      document.querySelectorAll('.visible, .active').forEach(el => {
+        el.classList.remove('visible', 'active');
+      });
+
+      // Reset burst
+      const burst = document.getElementById('burst');
+      burst.classList.remove('active');
+
+      setTimeout(() => tl.play(), 300);
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,35 @@
+VOICEOVER SCRIPT
+Topic: Example Explainer Template
+Duration: 24 seconds
+Recommended Voice: Bella (warm, engaging)
+ElevenLabs Settings: Stability 0.6, Clarity 0.75, Style 0.3
+
+---
+
+[0:00-0:04]
+Opening hook that grabs attention immediately.
+
+[0:04-0:09]
+First key point explaining the concept clearly.
+
+[0:09-0:14]
+Second point building on the foundation.
+
+[0:14-0:19]
+Third insight or powerful realization.
+
+[0:19-0:24]
+Call to action that inspires next steps.
+
+---
+
+TOTAL DURATION: 24 seconds
+
+INSTRUCTIONS FOR AUDIO GENERATION:
+1. Copy each timestamped section
+2. Paste into ElevenLabs or your audio tool
+3. Use the recommended voice and settings above
+4. Generate each section separately for easier editing
+5. Combine audio with the HTML screen recording
+
+TIP: Record the HTML animation first to match the exact timing, then adjust voiceover speed if needed.

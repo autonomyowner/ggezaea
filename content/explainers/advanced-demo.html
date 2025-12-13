@@ -1,0 +1,421 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Why AI Can't Replace THIS</title>
+  <!--
+  VOICEOVER SCRIPT (ElevenLabs - Voice: Rachel, friendly & engaging):
+
+  [0:00-0:03] "Everyone thinks AI will replace creatives..."
+  [0:03-0:08] "But there's one thing AI can NEVER do. It can't feel what your audience feels."
+  [0:08-0:13] "AI generates 10,000 words in seconds. But can it make someone cry? Can it make them laugh?"
+  [0:13-0:18] "The stats prove it. Human-written content gets 3x more engagement."
+  [0:18-0:22] "Because emotion beats perfection. Every. Single. Time."
+  [0:22-0:26] "So stop competing with AI. Create what only YOU can create."
+
+  TIMING: 26 seconds total
+  STYLE: Dark mode, matcha green accents, smooth phase transitions
+  -->
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      width: 100vw;
+      height: 100vh;
+      background: #000;
+      display: flex;
+      align-items: center;
+      justify-center;
+      overflow: hidden;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Helvetica Neue', sans-serif;
+    }
+
+    .container {
+      width: 1080px;
+      height: 1920px;
+      transform: scale(0.45);
+      transform-origin: center;
+      background: #0a0a0a;
+      position: relative;
+      overflow: hidden;
+    }
+
+    /* Floating ambient orbs */
+    .orb {
+      position: absolute;
+      border-radius: 50%;
+      filter: blur(120px);
+      pointer-events: none;
+    }
+
+    .orb-1 {
+      width: 500px;
+      height: 500px;
+      background: #5a9470;
+      opacity: 0.08;
+      top: -100px;
+      right: -150px;
+      animation: blob-float 25s ease-in-out infinite;
+    }
+
+    .orb-2 {
+      width: 600px;
+      height: 600px;
+      background: #7cb892;
+      opacity: 0.06;
+      bottom: -200px;
+      left: -200px;
+      animation: blob-float 20s ease-in-out infinite reverse;
+    }
+
+    .orb-3 {
+      width: 400px;
+      height: 400px;
+      background: #5a9470;
+      opacity: 0.05;
+      top: 40%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      animation: blob-float 30s ease-in-out infinite;
+    }
+
+    @keyframes blob-float {
+      0%, 100% { transform: translate(0, 0) scale(1); }
+      33% { transform: translate(40px, -60px) scale(1.15); }
+      66% { transform: translate(-30px, 30px) scale(0.85); }
+    }
+
+    /* Phases */
+    .phase {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 100px 80px;
+      opacity: 0;
+      transition: opacity 1s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .phase.active {
+      opacity: 1;
+    }
+
+    .phase-content {
+      width: 100%;
+      max-width: 900px;
+      text-align: center;
+    }
+
+    /* Typography */
+    .hook {
+      font-size: 140px;
+      font-weight: 900;
+      color: #fff;
+      line-height: 1.1;
+      letter-spacing: -4px;
+      margin-bottom: 40px;
+      word-wrap: break-word;
+    }
+
+    .subtitle {
+      font-size: 56px;
+      color: #888;
+      font-weight: 400;
+      line-height: 1.3;
+    }
+
+    .highlight {
+      background: linear-gradient(135deg, #5a9470 0%, #7cb892 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .large-text {
+      font-size: 96px;
+      font-weight: 700;
+      color: #fff;
+      line-height: 1.2;
+      margin-bottom: 60px;
+    }
+
+    .medium-text {
+      font-size: 72px;
+      font-weight: 600;
+      color: #ccc;
+      line-height: 1.3;
+      margin-bottom: 40px;
+    }
+
+    .small-text {
+      font-size: 48px;
+      color: #999;
+      line-height: 1.5;
+    }
+
+    /* Stats box */
+    .stat-box {
+      background: rgba(90, 148, 112, 0.1);
+      border: 3px solid #5a9470;
+      border-radius: 32px;
+      padding: 80px 60px;
+      margin-top: 60px;
+    }
+
+    .stat-number {
+      font-size: 200px;
+      font-weight: 900;
+      background: linear-gradient(135deg, #5a9470 0%, #7cb892 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      line-height: 1;
+      margin-bottom: 20px;
+    }
+
+    .stat-label {
+      font-size: 52px;
+      color: #aaa;
+      font-weight: 500;
+    }
+
+    /* Typing cursor */
+    .cursor {
+      display: inline-block;
+      width: 6px;
+      height: 80px;
+      background: #5a9470;
+      margin-left: 8px;
+      animation: blink 1s step-end infinite;
+    }
+
+    @keyframes blink {
+      0%, 50% { opacity: 1; }
+      51%, 100% { opacity: 0; }
+    }
+
+    /* Final CTA */
+    .cta-box {
+      background: linear-gradient(135deg, #5a9470 0%, #3d654c 100%);
+      border-radius: 40px;
+      padding: 60px 80px;
+      box-shadow: 0 20px 80px rgba(90, 148, 112, 0.4);
+    }
+
+    .cta-text {
+      font-size: 84px;
+      font-weight: 800;
+      color: #fff;
+      line-height: 1.2;
+    }
+
+    /* Animations */
+    .fade-in {
+      animation: fadeIn 1s ease forwards;
+    }
+
+    .slide-up {
+      animation: slideUp 1s ease forwards;
+    }
+
+    .scale-pop {
+      animation: scalePop 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    @keyframes slideUp {
+      from { opacity: 0; transform: translateY(60px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes scalePop {
+      0% { opacity: 0; transform: scale(0.8); }
+      100% { opacity: 1; transform: scale(1); }
+    }
+
+    /* Progress bar */
+    .progress {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      height: 8px;
+      background: #5a9470;
+      width: 0%;
+      transition: width 0.1s linear;
+    }
+
+    /* Click to restart overlay */
+    .restart-hint {
+      position: absolute;
+      bottom: 40px;
+      left: 50%;
+      transform: translateX(-50%);
+      font-size: 32px;
+      color: #555;
+      opacity: 0;
+      transition: opacity 0.3s;
+    }
+
+    .container:hover .restart-hint {
+      opacity: 1;
+    }
+  </style>
+</head>
+<body>
+  <div class="container" onclick="restart()">
+    <!-- Ambient orbs -->
+    <div class="orb orb-1"></div>
+    <div class="orb orb-2"></div>
+    <div class="orb orb-3"></div>
+
+    <!-- Phase 1: Hook (0-3s) -->
+    <div class="phase phase-hook">
+      <div class="phase-content">
+        <div class="hook">Everyone<br>thinks AI<br>will replace<br>creatives...</div>
+      </div>
+    </div>
+
+    <!-- Phase 2: Problem (3-8s) -->
+    <div class="phase phase-problem">
+      <div class="phase-content">
+        <div class="large-text">But there's <span class="highlight">one thing</span><br>AI can NEVER do</div>
+        <div class="medium-text">It can't feel what<br>your audience feels</div>
+      </div>
+    </div>
+
+    <!-- Phase 3: Contrast (8-13s) -->
+    <div class="phase phase-contrast">
+      <div class="phase-content">
+        <div class="large-text">AI generates<br><span class="highlight">10,000 words</span><br>in seconds</div>
+        <div class="medium-text">But can it make<br>someone cry?<br>Can it make them laugh?</div>
+      </div>
+    </div>
+
+    <!-- Phase 4: Stats (13-18s) -->
+    <div class="phase phase-stats">
+      <div class="phase-content">
+        <div class="medium-text">The stats prove it</div>
+        <div class="stat-box">
+          <div class="stat-number" id="counter">0</div>
+          <div class="stat-label">more engagement<br>from human content</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Phase 5: Truth (18-22s) -->
+    <div class="phase phase-truth">
+      <div class="phase-content">
+        <div class="large-text highlight">Emotion beats<br>perfection</div>
+        <div class="medium-text" style="margin-top: 60px">Every. Single. Time.</div>
+      </div>
+    </div>
+
+    <!-- Phase 6: CTA (22-26s) -->
+    <div class="phase phase-cta">
+      <div class="phase-content">
+        <div class="cta-box">
+          <div class="cta-text">Stop competing<br>with AI</div>
+          <div class="medium-text" style="color: rgba(255,255,255,0.8); margin-top: 40px;">Create what only<br><span class="highlight" style="-webkit-text-fill-color: #fff;">YOU</span> can create</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Progress bar -->
+    <div class="progress" id="progress"></div>
+
+    <!-- Restart hint -->
+    <div class="restart-hint">Click to restart →</div>
+  </div>
+
+  <script>
+    // Timeline configuration (milliseconds)
+    const TIMELINE = {
+      hook: { start: 0, end: 3000 },
+      problem: { start: 3000, end: 8000 },
+      contrast: { start: 8000, end: 13000 },
+      stats: { start: 13000, end: 18000 },
+      truth: { start: 18000, end: 22000 },
+      cta: { start: 22000, end: 26000 }
+    };
+
+    const TOTAL_DURATION = 26000;
+    let startTime = null;
+    let animationFrame = null;
+    let isPlaying = false;
+
+    function getPhase(time) {
+      if (time < TIMELINE.hook.end) return 'hook';
+      if (time < TIMELINE.problem.end) return 'problem';
+      if (time < TIMELINE.contrast.end) return 'contrast';
+      if (time < TIMELINE.stats.end) return 'stats';
+      if (time < TIMELINE.truth.end) return 'truth';
+      return 'cta';
+    }
+
+    function updateAnimation(timestamp) {
+      if (!startTime) startTime = timestamp;
+      const elapsed = timestamp - startTime;
+      const currentPhase = getPhase(elapsed);
+
+      // Update phases
+      document.querySelectorAll('.phase').forEach(phase => {
+        if (phase.classList.contains(`phase-${currentPhase}`)) {
+          phase.classList.add('active');
+        } else {
+          phase.classList.remove('active');
+        }
+      });
+
+      // Update progress bar
+      const progress = Math.min((elapsed / TOTAL_DURATION) * 100, 100);
+      document.getElementById('progress').style.width = progress + '%';
+
+      // Animate counter in stats phase
+      if (currentPhase === 'stats' && elapsed >= TIMELINE.stats.start) {
+        const statsElapsed = elapsed - TIMELINE.stats.start;
+        const statsDuration = TIMELINE.stats.end - TIMELINE.stats.start;
+        const counterProgress = Math.min(statsElapsed / statsDuration, 1);
+        const targetValue = 3;
+        const currentValue = Math.floor(counterProgress * targetValue * 10) / 10;
+        document.getElementById('counter').textContent = currentValue.toFixed(1) + 'x';
+      }
+
+      // Continue or end
+      if (elapsed < TOTAL_DURATION) {
+        animationFrame = requestAnimationFrame(updateAnimation);
+      } else {
+        isPlaying = false;
+      }
+    }
+
+    function start() {
+      if (isPlaying) return;
+      isPlaying = true;
+      startTime = null;
+      document.getElementById('counter').textContent = '0';
+      animationFrame = requestAnimationFrame(updateAnimation);
+    }
+
+    function restart() {
+      if (animationFrame) {
+        cancelAnimationFrame(animationFrame);
+      }
+      document.querySelectorAll('.phase').forEach(p => p.classList.remove('active'));
+      document.getElementById('progress').style.width = '0%';
+      setTimeout(start, 100);
+    }
+
+    // Auto-start
+    window.addEventListener('load', () => {
+      setTimeout(start, 500);
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,142 @@
+TIKTOK EXPLAINER: Your Brain is Lying to You (Cognitive Biases)
+================================================================
+
+TOTAL DURATION: 27 seconds
+ELEVENLABS VOICE: Bella (engaging, revealing, conversational)
+SETTINGS: Stability 0.55 | Clarity 0.8 | Style 0.45
+
+VOICEOVER SCRIPT:
+-----------------
+
+[0:00-0:04]
+"Your brain is lying to you. Every single day. And you don't even know it."
+
+[0:04-0:09]
+"It's called cognitive bias. Your mind takes shortcuts. Distorts reality. Makes you see threats that don't exist."
+
+[0:09-0:14]
+"Negativity bias makes you focus on what's wrong. Confirmation bias keeps you stuck in the same beliefs."
+
+[0:14-0:18]
+"And the worst part? You can't see it happening. You need AI to catch what your mind hides."
+
+[0:18-0:23]
+"Matcha spots every bias in real-time. Shows you the truth your brain won't let you see."
+
+[0:23-0:27]
+"Stop living in distortion. See reality clearly. Try Matcha free."
+
+
+ALTERNATIVE VOICES:
+-------------------
+- Bella: Engaging, revealing (RECOMMENDED)
+- Rachel: Friendly, eye-opening (female alternative)
+- Charlotte: Calm, matter-of-fact (female alternative)
+- Adam: Authoritative revelation (male alternative)
+
+
+EMPHASIS POINTS:
+----------------
+- "lying to you" (0:01)
+- "Every single day" (0:02)
+- "you don't even know it" (0:03)
+- "cognitive bias" (0:05)
+- "distorts reality" (0:06)
+- "Negativity bias" (0:09)
+- "Confirmation bias" (0:11)
+- "worst part" (0:14)
+- "can't see it" (0:15)
+- "real-time" (0:20)
+- "living in distortion" (0:23)
+
+
+TONE GUIDANCE:
+--------------
+- Start with intrigue and slight drama
+- Build tension through the revelation
+- Use short, punchy sentences
+- Sound like you're sharing a secret
+- End with empowerment and clarity
+
+
+RECORDING TIPS:
+---------------
+1. Make "lying to you" sound provocative
+2. Pause slightly after "cognitive bias" to let it land
+3. List biases clearly and distinctly
+4. Build to "worst part" with slight dramatic emphasis
+5. Make "real-time" sound impressive
+6. End with confidence and hope
+
+
+SYNC WITH ANIMATION:
+--------------------
+- Pulsing brain with radiating lines (0-4s)
+- Brain distortion visual (4-9s)
+- Two bias cards appear (Negativity, Confirmation) (9-14s)
+- "Can't see it" emphasis (14-18s)
+- AI-Powered badge + Matcha reveal (18-23s)
+- Green gradient CTA (23-27s)
+
+
+PRODUCTION WORKFLOW:
+--------------------
+1. Open cognitive-biases.html in browser
+2. Press F11 for fullscreen
+3. Start screen recording (1080x1920 vertical)
+4. Let animation play through once (27s)
+5. Edit in CapCut/Premiere:
+   - Import screen recording
+   - Import ElevenLabs voiceover
+   - Sync audio to video timestamps
+   - Optional: Add subtle "glitch" sound at "distorts reality"
+6. Export vertical 9:16 for TikTok
+
+
+HASHTAGS (TikTok):
+------------------
+#cognitivebias #psychology #mentalhealth #selfawareness #bias
+#negativitybias #confirmationbias #mindset #brainhacks #psychology101
+#matchaai #selfdiscovery #mindfulness #mentalhealthmatters
+
+
+CAPTION IDEAS:
+--------------
+1. "Your brain is gaslighting you daily 🧠💭"
+2. "POV: You just realized your thoughts aren't facts 🤯"
+3. "This is why you can't trust your own thoughts 👁️"
+4. "Cognitive bias = your brain's autopilot lies ✈️❌"
+5. "Reality vs what your brain shows you 🔍"
+
+
+BEST POSTING TIMES:
+-------------------
+- Tuesday 9-11am (psychology interest peaks)
+- Thursday 1-3pm (mid-week mindfulness)
+- Saturday 6-8pm (self-reflection time)
+
+
+FOLLOW-UP CONTENT IDEAS:
+-------------------------
+- "10 cognitive biases ruining your life"
+- "How confirmation bias keeps you stuck"
+- "The negativity bias explained"
+- "Dunning-Kruger effect in relationships"
+- "Availability bias and anxiety"
+- "How to overcome cognitive biases"
+
+
+ENGAGEMENT HOOKS:
+-----------------
+- Ask: "Which bias controls YOUR life? 👇"
+- Poll: "Are you more negativity or confirmation bias?"
+- Challenge: "Catch yourself in a bias today"
+- Question: "What's one belief you never questioned?"
+
+
+KEY STATISTICS TO MENTION (optional follow-up):
+------------------------------------------------
+- Humans have 180+ documented cognitive biases
+- Negativity bias is 3x stronger than positivity
+- Confirmation bias makes you ignore 70% of contradicting evidence
+- Self-awareness reduces bias impact by 60%
