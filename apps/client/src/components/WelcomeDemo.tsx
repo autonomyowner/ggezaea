@@ -70,7 +70,7 @@ export default function WelcomeDemo() {
       if (!audioRef.current) {
         audioRef.current = new Audio('/welcome-demo.mp3');
         // Required for iOS
-        audioRef.current.playsInline = true;
+        audioRef.current.setAttribute('playsinline', 'true');
         audioRef.current.preload = 'auto';
 
         audioRef.current.onended = () => {
