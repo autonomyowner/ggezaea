@@ -16,6 +16,21 @@ export default function PricingPage() {
 
   return (
     <div className="min-h-screen" style={{ background: 'var(--cream-50)' }}>
+      {/* Beta Banner */}
+      <div
+        className="w-full py-3 px-4 text-center"
+        style={{
+          background: 'linear-gradient(135deg, var(--matcha-500) 0%, var(--matcha-600) 100%)',
+          color: 'white',
+        }}
+      >
+        <p className="text-sm font-medium">
+          {language === 'en'
+            ? "We're in Beta - Everything is FREE to use during this period!"
+            : "Nous sommes en Bêta - Tout est GRATUIT pendant cette période !"}
+        </p>
+      </div>
+
       {/* Decorative Background */}
       <div className="fixed inset-0 pointer-events-none overflow-hidden">
         <div
@@ -254,17 +269,15 @@ export default function PricingPage() {
                 ))}
               </ul>
 
-              <Link
-                href={`/checkout?plan=pro&billing=${billingPeriod}`}
-                className="inline-flex w-full items-center justify-center px-6 py-3 rounded-xl font-medium transition-all"
+              <div
+                className="inline-flex w-full items-center justify-center px-6 py-3 rounded-xl font-medium cursor-not-allowed opacity-70"
                 style={{
                   background: 'white',
                   color: 'var(--matcha-700)',
-                  boxShadow: '0 4px 14px rgba(0, 0, 0, 0.15)',
                 }}
               >
-                {t.pricing.tryPro}
-              </Link>
+                {language === 'en' ? 'Coming Soon' : 'Bientôt disponible'}
+              </div>
             </div>
           </div>
         </div>
@@ -483,12 +496,11 @@ export default function PricingPage() {
             >
               {t.pricing.startFree}
             </Link>
-            <Link
-              href={`/checkout?plan=pro&billing=${billingPeriod}`}
-              className="matcha-btn matcha-btn-secondary text-base px-8 py-4"
+            <div
+              className="matcha-btn matcha-btn-secondary text-base px-8 py-4 cursor-not-allowed opacity-70"
             >
-              {t.pricing.tryPro}
-            </Link>
+              {language === 'en' ? 'Coming Soon' : 'Bientôt disponible'}
+            </div>
           </div>
         </div>
       </section>
