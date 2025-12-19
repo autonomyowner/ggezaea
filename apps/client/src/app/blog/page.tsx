@@ -2,6 +2,7 @@
 
 import Link from 'next/link';
 import { useState } from 'react';
+import { SignedIn, SignedOut } from '@clerk/nextjs';
 import { useLanguage } from '../../components/LanguageProvider';
 
 interface BlogArticle {
@@ -839,16 +840,30 @@ export default function BlogPage() {
                   ? 'Matcha combines proven techniques like EMDR and Flash to support your mental wellness journey.'
                   : 'Matcha combine des techniques éprouvées comme l\'EMDR et Flash pour soutenir votre parcours de bien-être mental.'}
               </p>
-              <Link
-                href="/signup"
-                className="inline-flex items-center justify-center px-8 py-4 rounded-xl font-medium transition-all"
-                style={{
-                  background: 'var(--matcha-500)',
-                  color: 'white',
-                }}
-              >
-                {language === 'en' ? 'Get Started Free' : 'Commencer Gratuitement'}
-              </Link>
+              <SignedOut>
+                <Link
+                  href="/signup"
+                  className="inline-flex items-center justify-center px-8 py-4 rounded-xl font-medium transition-all"
+                  style={{
+                    background: 'var(--matcha-500)',
+                    color: 'white',
+                  }}
+                >
+                  {language === 'en' ? 'Get Started Free' : 'Commencer Gratuitement'}
+                </Link>
+              </SignedOut>
+              <SignedIn>
+                <Link
+                  href="/chat"
+                  className="inline-flex items-center justify-center px-8 py-4 rounded-xl font-medium transition-all"
+                  style={{
+                    background: 'var(--matcha-500)',
+                    color: 'white',
+                  }}
+                >
+                  {language === 'en' ? 'Chat Now' : 'Discuter Maintenant'}
+                </Link>
+              </SignedIn>
             </div>
           </section>
         </>
