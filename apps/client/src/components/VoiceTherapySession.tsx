@@ -1,7 +1,8 @@
 'use client';
 
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useCallback } from 'react';
 import Vapi from '@vapi-ai/web';
+import { VoiceOrb, VoiceOrbStatus } from './VoiceOrb';
 
 interface VoiceTherapySessionProps {
   sessionType?: 'general-therapy' | 'flash-technique' | 'crisis-support';
@@ -20,7 +21,25 @@ export function VoiceTherapySession({
   const [messageVisible, setMessageVisible] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [volumeLevel, setVolumeLevel] = useState(0);
+  const [assistantSpeaking, setAssistantSpeaking] = useState(false);
+  const [isSpeaking, setIsSpeaking] = useState(false);
   const fadeTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const transcriptRef = useRef<Array<{ role: string; text: string; time: Date }>>([]);
+
+  // Volume smoothing callback
+  const smoothVolume = useCallback((newLevel: number) => {
+    setVolumeLevel(prev => prev * 0.6 + newLevel * 0.4);
+    setIsSpeaking(newLevel > 0.1);
+  }, []);
+
+  // Determine orb status
+  const getOrbStatus = (): VoiceOrbStatus => {
+    if (isConnecting) return 'connecting';
+    if (!isCallActive) return 'idle';
+    if (assistantSpeaking) return 'ai-speaking';
+    if (isSpeaking) return 'user-speaking';
+    return 'listening';
+  };
 
   // Initialize Vapi client
   useEffect(() => {
@@ -46,19 +65,23 @@ export function VoiceTherapySession({
       console.log('Voice call ended');
       setIsCallActive(false);
       setIsConnecting(false);
+      setAssistantSpeaking(false);
+      setIsSpeaking(false);
 
-      // Callback with transcript
+      // Callback with transcript using ref to avoid stale closure
       if (onSessionEnd) {
-        onSessionEnd(transcript.map(t => `${t.role}: ${t.text}`));
+        onSessionEnd(transcriptRef.current.map(t => `${t.role}: ${t.text}`));
       }
     });
 
     vapiInstance.on('speech-start', () => {
-      console.log('Speech started');
+      console.log('AI Speech started');
+      setAssistantSpeaking(true);
     });
 
     vapiInstance.on('speech-end', () => {
-      console.log('Speech ended');
+      console.log('AI Speech ended');
+      setAssistantSpeaking(false);
     });
 
     vapiInstance.on('message', (message: any) => {
@@ -73,8 +96,9 @@ export function VoiceTherapySession({
           time: new Date(),
         };
 
-        // Add to full transcript for callback
-        setTranscript(prev => [...prev, newMessage]);
+        // Add to full transcript for callback (update ref to avoid closure issues)
+        transcriptRef.current = [...transcriptRef.current, newMessage];
+        setTranscript(transcriptRef.current);
 
         // Show current message with fade
         setCurrentMessage({ role, text: message.transcript });
@@ -93,7 +117,7 @@ export function VoiceTherapySession({
     });
 
     vapiInstance.on('volume-level', (level: number) => {
-      setVolumeLevel(level);
+      smoothVolume(level);
     });
 
     vapiInstance.on('error', (error: any) => {
@@ -131,6 +155,7 @@ export function VoiceTherapySession({
     setIsConnecting(true);
     setError(null);
     setTranscript([]);
+    transcriptRef.current = [];
 
     try {
       // Build first message based on session type
@@ -298,33 +323,17 @@ export function VoiceTherapySession({
 
           {isCallActive && (
             <>
-              {/* Volume Indicator */}
+              {/* Voice Orb with Volume Indicator */}
               <div className="flex items-center space-x-4 mb-4">
-                <div className="relative w-24 h-24">
-                  {/* Outer glow ring */}
-                  <div
-                    className="absolute inset-0 rounded-full transition-all duration-150"
-                    style={{
-                      background: 'linear-gradient(135deg, var(--matcha-400), var(--matcha-600))',
-                      transform: `scale(${1 + volumeLevel * 0.3})`,
-                      opacity: 0.2 + volumeLevel * 0.3,
-                    }}
-                  />
-                  {/* Inner orb */}
-                  <div
-                    className="absolute inset-2 rounded-full flex items-center justify-center transition-all duration-150"
-                    style={{
-                      background: 'linear-gradient(135deg, var(--matcha-500) 0%, var(--matcha-600) 100%)',
-                      boxShadow: '0 0 40px rgba(104, 166, 125, 0.4)',
-                    }}
-                  >
-                    <svg className="w-10 h-10" style={{ color: 'var(--text-inverse)' }} fill="currentColor" viewBox="0 0 20 20">
-                      <path fillRule="evenodd" d="M7 4a3 3 0 016 0v4a3 3 0 11-6 0V4zm4 10.93A7.001 7.001 0 0017 8a1 1 0 10-2 0A5 5 0 015 8a1 1 0 00-2 0 7.001 7.001 0 006 6.93V17H6a1 1 0 100 2h8a1 1 0 100-2h-3v-2.07z" clipRule="evenodd" />
-                    </svg>
-                  </div>
-                </div>
+                <VoiceOrb
+                  status={getOrbStatus()}
+                  volumeLevel={volumeLevel}
+                  size="md"
+                />
                 <div className="text-center">
-                  <p className="text-sm" style={{ color: 'var(--text-primary)' }}>Session Active</p>
+                  <p className="text-sm" style={{ color: 'var(--text-primary)' }}>
+                    {assistantSpeaking ? 'Matcha is speaking...' : isSpeaking ? 'Listening...' : 'Session Active'}
+                  </p>
                   <p className="text-xs" style={{ color: 'var(--text-muted)' }}>Speak naturally</p>
                 </div>
               </div>

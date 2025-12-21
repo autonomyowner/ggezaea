@@ -1,21 +1,34 @@
 'use client';
 
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@clerk/nextjs';
 import { useFlashSession } from './hooks/useFlashSession';
+import { useFlashSessionVoice } from './hooks/useFlashSessionVoice';
+import { VoiceOrb, VoiceOrbStatus } from '@/components/VoiceOrb';
 import './flash-session.css';
 
 export default function FlashSessionPage() {
   const router = useRouter();
   const { isSignedIn, isLoaded } = useAuth();
   const session = useFlashSession();
+  const voice = useFlashSessionVoice();
+  const [voiceMode, setVoiceMode] = useState(false);
 
   useEffect(() => {
     if (isLoaded && !isSignedIn) {
       router.replace('/login');
     }
   }, [isSignedIn, isLoaded, router]);
+
+  // Get voice orb status
+  const getVoiceOrbStatus = (): VoiceOrbStatus => {
+    if (voice.isVoiceConnecting) return 'connecting';
+    if (!voice.isVoiceConnected) return 'idle';
+    if (voice.assistantSpeaking) return 'ai-speaking';
+    if (voice.isSpeaking) return 'user-speaking';
+    return 'listening';
+  };
 
   // Prevent scroll on this page
   useEffect(() => {
@@ -79,19 +92,38 @@ export default function FlashSessionPage() {
 
       {/* Screen content based on state */}
       {session.state === 'INTRO' && (
-        <IntroScreen session={session} />
+        <IntroScreen
+          session={session}
+          voice={voice}
+          voiceMode={voiceMode}
+          setVoiceMode={setVoiceMode}
+        />
       )}
 
       {session.state === 'SET_ACTIVE' && (
-        <SetActiveScreen session={session} />
+        <SetActiveScreen
+          session={session}
+          voiceMode={voiceMode}
+          getVoiceOrbStatus={getVoiceOrbStatus}
+        />
       )}
 
       {session.state === 'SET_PAUSE' && (
-        <SetPauseScreen session={session} />
+        <SetPauseScreen
+          session={session}
+          voice={voice}
+          voiceMode={voiceMode}
+          getVoiceOrbStatus={getVoiceOrbStatus}
+        />
       )}
 
       {session.state === 'CLOSING' && (
-        <ClosingScreen session={session} />
+        <ClosingScreen
+          session={session}
+          voice={voice}
+          voiceMode={voiceMode}
+          getVoiceOrbStatus={getVoiceOrbStatus}
+        />
       )}
 
       {session.state === 'SUMMARY' && (
@@ -104,8 +136,23 @@ export default function FlashSessionPage() {
 // ============================================
 // INTRO SCREEN
 // ============================================
-function IntroScreen({ session }: { session: ReturnType<typeof useFlashSession> }) {
+function IntroScreen({
+  session,
+  voice,
+  voiceMode,
+  setVoiceMode,
+}: {
+  session: ReturnType<typeof useFlashSession>;
+  voice: ReturnType<typeof useFlashSessionVoice>;
+  voiceMode: boolean;
+  setVoiceMode: (value: boolean) => void;
+}) {
   const canStart = session.data.topic.trim() && session.data.positiveMemory.trim();
+
+  const handleVoiceSetup = async () => {
+    setVoiceMode(true);
+    await voice.startVoicePhase('setup');
+  };
 
   return (
     <div className="screen intro-screen">
@@ -113,70 +160,136 @@ function IntroScreen({ session }: { session: ReturnType<typeof useFlashSession> 
         <h1 className="intro-title">Flash Session</h1>
         <p className="intro-subtitle">A moment of healing, guided by your breath</p>
 
-        <div className="intro-form">
-          <div className="form-group">
-            <label className="form-label">What has been weighing on you?</label>
-            <p className="form-hint">Just the topic - we won&apos;t go into details</p>
-            <input
-              type="text"
-              className="form-input"
-              placeholder="e.g., Work stress, a difficult conversation..."
-              value={session.data.topic}
-              onChange={(e) => session.setTopic(e.target.value)}
-              autoFocus
-            />
-          </div>
-
-          <div className="form-group">
-            <label className="form-label">How distressed do you feel about this?</label>
-            <div className="distress-slider-container">
-              <input
-                type="range"
-                min="0"
-                max="10"
-                value={session.data.distressStart}
-                onChange={(e) => session.setDistressStart(Number(e.target.value))}
-                className="distress-slider"
-              />
-              <div className="distress-labels">
-                <span>0 - None</span>
-                <span className="distress-value">{session.data.distressStart}</span>
-                <span>10 - Extreme</span>
-              </div>
-            </div>
-          </div>
-
-          <div className="form-group">
-            <label className="form-label">Think of a peaceful memory or safe place</label>
-            <p className="form-hint">Somewhere that brings you calm and happiness</p>
-            <input
-              type="text"
-              className="form-input"
-              placeholder="e.g., The beach, my grandmother's garden..."
-              value={session.data.positiveMemory}
-              onChange={(e) => session.setPositiveMemory(e.target.value)}
-            />
-          </div>
-
-          <div className="intro-instructions">
-            <h3>How the Flash Technique works</h3>
-            <ul>
-              <li>Focus completely on your peaceful place - don&apos;t think about the problem</li>
-              <li>Tap your legs slowly - left, right, left, right</li>
-              <li>When you see &quot;Flash&quot; - blink 3 times quickly</li>
-              <li>We&apos;ll do 5 flashes per set, then check how you feel</li>
-              <li>The goal is to reduce distress without having to relive the memory</li>
-            </ul>
-          </div>
-
+        {/* Voice mode toggle */}
+        <div className="voice-mode-toggle">
           <button
-            className={`start-btn ${canStart && !session.isPreloading ? '' : 'disabled'}`}
-            onClick={session.startSession}
-            disabled={!canStart || session.isPreloading}
+            className={`mode-btn ${!voiceMode ? 'active' : ''}`}
+            onClick={() => {
+              setVoiceMode(false);
+              voice.endVoicePhase();
+            }}
           >
-            {session.isPreloading ? 'Loading audio...' : 'Begin Session'}
+            Type Mode
+          </button>
+          <button
+            className={`mode-btn ${voiceMode ? 'active' : ''}`}
+            onClick={handleVoiceSetup}
+            disabled={voice.isVoiceConnecting}
+          >
+            {voice.isVoiceConnecting ? 'Connecting...' : 'Voice Mode'}
           </button>
         </div>
+
+        {/* Voice Setup UI */}
+        {voiceMode && voice.isVoiceConnected && (
+          <div className="voice-setup-container">
+            <VoiceOrb
+              status={
+                voice.assistantSpeaking
+                  ? 'ai-speaking'
+                  : voice.isSpeaking
+                  ? 'user-speaking'
+                  : 'listening'
+              }
+              volumeLevel={voice.volumeLevel}
+              size="lg"
+            />
+            <p className="voice-status-text">
+              {voice.assistantSpeaking
+                ? 'Matcha is speaking...'
+                : voice.isSpeaking
+                ? 'Listening...'
+                : 'Speak to Matcha'}
+            </p>
+            {voice.transcript.length > 0 && (
+              <div className="voice-transcript-preview">
+                {voice.transcript.slice(-2).map((entry, idx) => (
+                  <p key={idx} className={`transcript-entry ${entry.role.toLowerCase()}`}>
+                    <span className="role">{entry.role === 'USER' ? 'You' : 'Matcha'}:</span>{' '}
+                    {entry.content}
+                  </p>
+                ))}
+              </div>
+            )}
+            <button
+              className="start-btn voice-start-btn"
+              onClick={() => {
+                voice.endVoicePhase();
+                session.startSession();
+              }}
+            >
+              Start Session Now
+            </button>
+          </div>
+        )}
+
+        {/* Type Mode Form */}
+        {!voiceMode && (
+          <div className="intro-form">
+            <div className="form-group">
+              <label className="form-label">What has been weighing on you?</label>
+              <p className="form-hint">Just the topic - we won&apos;t go into details</p>
+              <input
+                type="text"
+                className="form-input"
+                placeholder="e.g., Work stress, a difficult conversation..."
+                value={session.data.topic}
+                onChange={(e) => session.setTopic(e.target.value)}
+                autoFocus
+              />
+            </div>
+
+            <div className="form-group">
+              <label className="form-label">How distressed do you feel about this?</label>
+              <div className="distress-slider-container">
+                <input
+                  type="range"
+                  min="0"
+                  max="10"
+                  value={session.data.distressStart}
+                  onChange={(e) => session.setDistressStart(Number(e.target.value))}
+                  className="distress-slider"
+                />
+                <div className="distress-labels">
+                  <span>0 - None</span>
+                  <span className="distress-value">{session.data.distressStart}</span>
+                  <span>10 - Extreme</span>
+                </div>
+              </div>
+            </div>
+
+            <div className="form-group">
+              <label className="form-label">Think of a peaceful memory or safe place</label>
+              <p className="form-hint">Somewhere that brings you calm and happiness</p>
+              <input
+                type="text"
+                className="form-input"
+                placeholder="e.g., The beach, my grandmother's garden..."
+                value={session.data.positiveMemory}
+                onChange={(e) => session.setPositiveMemory(e.target.value)}
+              />
+            </div>
+
+            <div className="intro-instructions">
+              <h3>How the Flash Technique works</h3>
+              <ul>
+                <li>Focus completely on your peaceful place - don&apos;t think about the problem</li>
+                <li>Tap your legs slowly - left, right, left, right</li>
+                <li>When you see &quot;Flash&quot; - blink 3 times quickly</li>
+                <li>We&apos;ll do 5 flashes per set, then check how you feel</li>
+                <li>The goal is to reduce distress without having to relive the memory</li>
+              </ul>
+            </div>
+
+            <button
+              className={`start-btn ${canStart && !session.isPreloading ? '' : 'disabled'}`}
+              onClick={session.startSession}
+              disabled={!canStart || session.isPreloading}
+            >
+              {session.isPreloading ? 'Loading audio...' : 'Begin Session'}
+            </button>
+          </div>
+        )}
       </div>
     </div>
   );
@@ -185,7 +298,15 @@ function IntroScreen({ session }: { session: ReturnType<typeof useFlashSession> 
 // ============================================
 // SET ACTIVE SCREEN - Hands-free tapping
 // ============================================
-function SetActiveScreen({ session }: { session: ReturnType<typeof useFlashSession> }) {
+function SetActiveScreen({
+  session,
+  voiceMode,
+  getVoiceOrbStatus,
+}: {
+  session: ReturnType<typeof useFlashSession>;
+  voiceMode: boolean;
+  getVoiceOrbStatus: () => VoiceOrbStatus;
+}) {
   const progress = Math.min((session.setElapsed / session.setDuration) * 100, 100);
 
   return (
@@ -212,9 +333,18 @@ function SetActiveScreen({ session }: { session: ReturnType<typeof useFlashSessi
         </div>
 
         <div className="bilateral-center">
-          <div className="breath-text">
-            {session.bilateralSide === 'left' ? 'Left' : 'Right'}
-          </div>
+          {/* Show VoiceOrb in voice mode, otherwise show text */}
+          {voiceMode ? (
+            <VoiceOrb
+              status={session.isSpeaking ? 'ai-speaking' : 'idle'}
+              volumeLevel={0}
+              size="sm"
+            />
+          ) : (
+            <div className="breath-text">
+              {session.bilateralSide === 'left' ? 'Left' : 'Right'}
+            </div>
+          )}
         </div>
 
         <div className={`bilateral-circle right ${session.bilateralSide === 'right' ? 'active' : ''}`}>
@@ -233,8 +363,8 @@ function SetActiveScreen({ session }: { session: ReturnType<typeof useFlashSessi
         </div>
       </div>
 
-      {/* Speaking indicator */}
-      {session.isSpeaking && (
+      {/* Speaking indicator - only show when not in voice mode */}
+      {!voiceMode && session.isSpeaking && (
         <div className="speaking-indicator">
           <div className="speaking-wave"></div>
           <div className="speaking-wave"></div>
@@ -253,38 +383,110 @@ function SetActiveScreen({ session }: { session: ReturnType<typeof useFlashSessi
 // ============================================
 // SET PAUSE SCREEN
 // ============================================
-function SetPauseScreen({ session }: { session: ReturnType<typeof useFlashSession> }) {
+function SetPauseScreen({
+  session,
+  voice,
+  voiceMode,
+  getVoiceOrbStatus,
+}: {
+  session: ReturnType<typeof useFlashSession>;
+  voice: ReturnType<typeof useFlashSessionVoice>;
+  voiceMode: boolean;
+  getVoiceOrbStatus: () => VoiceOrbStatus;
+}) {
+  // Start voice check-in when entering pause screen in voice mode
+  useEffect(() => {
+    if (voiceMode && !voice.isVoiceConnected && !voice.isVoiceConnecting) {
+      voice.startVoicePhase('check-in');
+    }
+    return () => {
+      if (voiceMode && voice.isVoiceConnected) {
+        voice.endVoicePhase();
+      }
+    };
+  }, []);
+
+  const handleContinue = () => {
+    if (voice.isVoiceConnected) {
+      voice.endVoicePhase();
+    }
+    session.continueSet();
+  };
+
   return (
     <div className="screen pause-screen">
       <div className="pause-content">
-        <div className="pause-icon">
-          <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1">
-            <circle cx="12" cy="12" r="10"/>
-            <path d="M12 6v6l4 2"/>
-          </svg>
-        </div>
+        {voiceMode && voice.isVoiceConnected ? (
+          // Voice check-in UI
+          <>
+            <VoiceOrb
+              status={getVoiceOrbStatus()}
+              volumeLevel={voice.volumeLevel}
+              size="lg"
+            />
+            <h2 className="pause-title">Check-in</h2>
+            <p className="pause-subtitle">
+              Set {session.data.currentSet} of {session.data.totalSets} complete
+            </p>
+            <p className="voice-status-text">
+              {voice.assistantSpeaking
+                ? 'Matcha is speaking...'
+                : voice.isSpeaking
+                ? 'Listening...'
+                : 'Share what you noticed'}
+            </p>
+            {voice.transcript.length > 0 && (
+              <div className="voice-transcript-preview">
+                {voice.transcript.slice(-2).map((entry, idx) => (
+                  <p key={idx} className={`transcript-entry ${entry.role.toLowerCase()}`}>
+                    <span className="role">{entry.role === 'USER' ? 'You' : 'Matcha'}:</span>{' '}
+                    {entry.content}
+                  </p>
+                ))}
+              </div>
+            )}
+            <div className="pause-actions">
+              <button className="continue-btn" onClick={handleContinue}>
+                Continue to Next Set
+              </button>
+              <button className="end-early-btn" onClick={session.endEarly}>
+                End session early
+              </button>
+            </div>
+          </>
+        ) : (
+          // Text-based pause UI
+          <>
+            <div className="pause-icon">
+              <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1">
+                <circle cx="12" cy="12" r="10"/>
+                <path d="M12 6v6l4 2"/>
+              </svg>
+            </div>
 
-        <h2 className="pause-title">Take a breath</h2>
-        <p className="pause-subtitle">
-          Set {session.data.currentSet} of {session.data.totalSets} complete
-        </p>
+            <h2 className="pause-title">Take a breath</h2>
+            <p className="pause-subtitle">
+              Set {session.data.currentSet} of {session.data.totalSets} complete
+            </p>
 
-        <p className="pause-prompt">What did you notice during that set?</p>
-        <p className="pause-hint">You don&apos;t need to answer - just notice.</p>
+            <p className="pause-prompt">What did you notice during that set?</p>
+            <p className="pause-hint">You don&apos;t need to answer - just notice.</p>
 
-        <div className="pause-actions">
-          <button className="continue-btn" onClick={session.continueSet}>
-            Continue to Next Set
-          </button>
+            <div className="pause-actions">
+              <button className="continue-btn" onClick={session.continueSet}>
+                Continue to Next Set
+              </button>
 
-          <button className="need-moment-btn" onClick={() => {}}>
-            I need a moment
-          </button>
+              <button className="need-moment-btn" onClick={() => {}}>
+                I need a moment
+              </button>
 
-          <button className="end-early-btn" onClick={session.endEarly}>
-            End session early
-          </button>
-        </div>
+              <button className="end-early-btn" onClick={session.endEarly}>
+                End session early
+              </button>
+            </div>
+          </>
+        )}
       </div>
     </div>
   );
@@ -293,38 +495,102 @@ function SetPauseScreen({ session }: { session: ReturnType<typeof useFlashSessio
 // ============================================
 // CLOSING SCREEN
 // ============================================
-function ClosingScreen({ session }: { session: ReturnType<typeof useFlashSession> }) {
+function ClosingScreen({
+  session,
+  voice,
+  voiceMode,
+  getVoiceOrbStatus,
+}: {
+  session: ReturnType<typeof useFlashSession>;
+  voice: ReturnType<typeof useFlashSessionVoice>;
+  voiceMode: boolean;
+  getVoiceOrbStatus: () => VoiceOrbStatus;
+}) {
+  // Start voice closing when entering in voice mode
+  useEffect(() => {
+    if (voiceMode && !voice.isVoiceConnected && !voice.isVoiceConnecting) {
+      voice.startVoicePhase('closing');
+    }
+    return () => {
+      if (voiceMode && voice.isVoiceConnected) {
+        voice.endVoicePhase();
+      }
+    };
+  }, []);
+
+  const handleComplete = () => {
+    if (voice.isVoiceConnected) {
+      voice.endVoicePhase();
+    }
+    session.completeSession();
+  };
+
   return (
     <div className="screen closing-screen">
       <div className="closing-content">
-        <h2 className="closing-title">Almost done</h2>
-        <p className="closing-subtitle">
-          Gently bring to mind what was bothering you earlier...
-        </p>
-        <p className="closing-topic">&quot;{session.data.topic}&quot;</p>
-
-        <div className="closing-question">
-          <label className="form-label">How does it feel now?</label>
-          <div className="distress-slider-container final">
-            <input
-              type="range"
-              min="0"
-              max="10"
-              value={session.data.distressEnd ?? session.data.distressStart}
-              onChange={(e) => session.setDistressEnd(Number(e.target.value))}
-              className="distress-slider"
+        {voiceMode && voice.isVoiceConnected ? (
+          // Voice closing UI
+          <>
+            <VoiceOrb
+              status={getVoiceOrbStatus()}
+              volumeLevel={voice.volumeLevel}
+              size="lg"
             />
-            <div className="distress-labels">
-              <span>0 - None</span>
-              <span className="distress-value">{session.data.distressEnd ?? session.data.distressStart}</span>
-              <span>10 - Extreme</span>
-            </div>
-          </div>
-        </div>
+            <h2 className="closing-title">Almost done</h2>
+            <p className="voice-status-text">
+              {voice.assistantSpeaking
+                ? 'Matcha is speaking...'
+                : voice.isSpeaking
+                ? 'Listening...'
+                : 'Share how you feel'}
+            </p>
+            {voice.transcript.length > 0 && (
+              <div className="voice-transcript-preview">
+                {voice.transcript.slice(-2).map((entry, idx) => (
+                  <p key={idx} className={`transcript-entry ${entry.role.toLowerCase()}`}>
+                    <span className="role">{entry.role === 'USER' ? 'You' : 'Matcha'}:</span>{' '}
+                    {entry.content}
+                  </p>
+                ))}
+              </div>
+            )}
+            <button className="complete-btn" onClick={handleComplete}>
+              Complete Session
+            </button>
+          </>
+        ) : (
+          // Text-based closing UI
+          <>
+            <h2 className="closing-title">Almost done</h2>
+            <p className="closing-subtitle">
+              Gently bring to mind what was bothering you earlier...
+            </p>
+            <p className="closing-topic">&quot;{session.data.topic}&quot;</p>
 
-        <button className="complete-btn" onClick={session.completeSession}>
-          Complete Session
-        </button>
+            <div className="closing-question">
+              <label className="form-label">How does it feel now?</label>
+              <div className="distress-slider-container final">
+                <input
+                  type="range"
+                  min="0"
+                  max="10"
+                  value={session.data.distressEnd ?? session.data.distressStart}
+                  onChange={(e) => session.setDistressEnd(Number(e.target.value))}
+                  className="distress-slider"
+                />
+                <div className="distress-labels">
+                  <span>0 - None</span>
+                  <span className="distress-value">{session.data.distressEnd ?? session.data.distressStart}</span>
+                  <span>10 - Extreme</span>
+                </div>
+              </div>
+            </div>
+
+            <button className="complete-btn" onClick={session.completeSession}>
+              Complete Session
+            </button>
+          </>
+        )}
       </div>
     </div>
   );

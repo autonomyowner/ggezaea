@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useRef, useCallback } from 'react';
 import Vapi from '@vapi-ai/web';
+import { VoiceOrb, VoiceOrbStatus } from './VoiceOrb';
 
 interface VoiceChatProps {
   onTranscript?: (messages: Array<{ role: 'USER' | 'ASSISTANT'; content: string }>) => void;
@@ -24,6 +25,21 @@ export function VoiceChat({ onTranscript, onSessionEnd, isVisible = true }: Voic
   const [volumeLevel, setVolumeLevel] = useState(0);
   const [isSpeaking, setIsSpeaking] = useState(false);
   const [assistantSpeaking, setAssistantSpeaking] = useState(false);
+
+  // Volume smoothing callback
+  const smoothVolume = useCallback((newLevel: number) => {
+    setVolumeLevel(prev => prev * 0.6 + newLevel * 0.4);
+    setIsSpeaking(newLevel > 0.1);
+  }, []);
+
+  // Determine orb status
+  const getOrbStatus = (): VoiceOrbStatus => {
+    if (isConnecting) return 'connecting';
+    if (!isActive) return 'idle';
+    if (assistantSpeaking) return 'ai-speaking';
+    if (isSpeaking) return 'user-speaking';
+    return 'listening';
+  };
 
   // Report transcripts back to parent
   useEffect(() => {
@@ -83,12 +99,7 @@ export function VoiceChat({ onTranscript, onSessionEnd, isVisible = true }: Voic
     });
 
     vapiInstance.on('volume-level', (level: number) => {
-      setVolumeLevel(level);
-      if (level > 0.1) {
-        setIsSpeaking(true);
-      } else {
-        setIsSpeaking(false);
-      }
+      smoothVolume(level);
     });
 
     vapiInstance.on('error', (error: any) => {
@@ -216,39 +227,11 @@ Speak naturally as if in a caring conversation with a friend.`
       {/* Active Call Overlay */}
       {isActive && (
         <div className="voice-active-indicator">
-          <div className={`voice-orb ${assistantSpeaking ? 'speaking' : ''} ${isSpeaking ? 'listening' : ''}`}>
-            <div className="voice-orb-inner">
-              <div
-                className="voice-orb-pulse"
-                style={{
-                  transform: `scale(${1 + volumeLevel * 0.5})`,
-                  opacity: 0.3 + volumeLevel * 0.4
-                }}
-              />
-              <div
-                className="voice-orb-pulse-2"
-                style={{
-                  transform: `scale(${1.2 + volumeLevel * 0.3})`,
-                  opacity: 0.2 + volumeLevel * 0.2
-                }}
-              />
-              <div className="voice-orb-core">
-                {assistantSpeaking ? (
-                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                    <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z" />
-                    <path d="M19 10v2a7 7 0 0 1-14 0v-2" />
-                  </svg>
-                ) : (
-                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                    <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z" />
-                    <path d="M19 10v2a7 7 0 0 1-14 0v-2" />
-                    <line x1="12" y1="19" x2="12" y2="23" />
-                    <line x1="8" y1="23" x2="16" y2="23" />
-                  </svg>
-                )}
-              </div>
-            </div>
-          </div>
+          <VoiceOrb
+            status={getOrbStatus()}
+            volumeLevel={volumeLevel}
+            size="lg"
+          />
           <div className="voice-status">
             {assistantSpeaking ? 'Matcha is speaking...' : isSpeaking ? 'Listening...' : 'Speak naturally'}
           </div>
@@ -398,6 +381,7 @@ Speak naturally as if in a caring conversation with a friend.`
           flex-direction: column;
           align-items: center;
           justify-content: center;
+          gap: 24px;
           z-index: 1000;
           animation: fadeIn 0.3s ease;
           backdrop-filter: blur(8px);
@@ -408,58 +392,9 @@ Speak naturally as if in a caring conversation with a friend.`
           to { opacity: 1; }
         }
 
-        .voice-orb {
-          position: relative;
-          width: 160px;
-          height: 160px;
-          margin-bottom: 32px;
-        }
-
-        .voice-orb-inner {
-          position: relative;
-          width: 100%;
-          height: 100%;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-        }
-
-        .voice-orb-pulse,
-        .voice-orb-pulse-2 {
-          position: absolute;
-          inset: 0;
-          border-radius: 50%;
-          background: linear-gradient(135deg, var(--matcha-400), var(--matcha-600));
-          transition: transform 0.15s ease, opacity 0.15s ease;
-        }
-
-        .voice-orb-core {
-          position: relative;
-          width: 80px;
-          height: 80px;
-          border-radius: 50%;
-          background: linear-gradient(135deg, var(--matcha-500) 0%, var(--matcha-600) 100%);
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          color: white;
-          box-shadow: 0 8px 32px rgba(104, 166, 125, 0.5);
-          z-index: 1;
-        }
-
-        .voice-orb.speaking .voice-orb-core {
-          animation: pulse 1.5s ease-in-out infinite;
-        }
-
-        @keyframes pulse {
-          0%, 100% { transform: scale(1); }
-          50% { transform: scale(1.05); }
-        }
-
         .voice-status {
           color: rgba(255, 255, 255, 0.9);
           font-size: 16px;
-          margin-bottom: 24px;
           animation: fadeInUp 0.3s ease 0.1s backwards;
         }
 
