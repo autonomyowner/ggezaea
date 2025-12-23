@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { useSearchParams, useRouter } from 'next/navigation';
 import { useState, Suspense } from 'react';
 import { useLanguage } from '../../components/LanguageProvider';
+import { trackBeginCheckout } from '../../lib/analytics';
 
 function CheckoutContent() {
   const searchParams = useSearchParams();
@@ -79,6 +80,9 @@ function CheckoutContent() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsProcessing(true);
+
+    // Track checkout initiation
+    trackBeginCheckout(billing as 'monthly' | 'yearly', price);
 
     try {
       // Create Stripe Checkout session via API

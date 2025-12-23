@@ -6,6 +6,7 @@ import { useAuth } from '@clerk/nextjs';
 import { useLanguage } from '../../components/LanguageProvider';
 import { api, Conversation, Message, AnalysisData } from '../../lib/api';
 import { VoiceTherapySession } from '../../components/VoiceTherapySession';
+import { trackChatSessionStart, trackMessageSent } from '../../lib/analytics';
 
 
 const formatTime = (dateString: string) => {
@@ -186,7 +187,11 @@ export default function ChatPage() {
       if (!activeConversationId) {
         setActiveConversationId(response.conversationId);
         loadConversations();
+        trackChatSessionStart();
       }
+
+      // Track message sent with conversation length
+      trackMessageSent(messages.length + 2); // +2 for user message and response
 
       setMessages((prev) => [
         ...prev.filter((m) => m.id !== tempUserMessage.id),

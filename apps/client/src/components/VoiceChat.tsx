@@ -3,6 +3,7 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
 import Vapi from '@vapi-ai/web';
 import { VoiceOrb, VoiceOrbStatus } from './VoiceOrb';
+import { trackVoiceSessionStart, trackVoiceSessionEnd } from '../lib/analytics';
 
 interface VoiceChatProps {
   onTranscript?: (messages: Array<{ role: 'USER' | 'ASSISTANT'; content: string }>) => void;
@@ -64,6 +65,7 @@ export function VoiceChat({ onTranscript, onSessionEnd, isVisible = true }: Voic
       setIsActive(true);
       setIsConnecting(false);
       setError(null);
+      trackVoiceSessionStart('general-therapy');
     });
 
     vapiInstance.on('call-end', () => {

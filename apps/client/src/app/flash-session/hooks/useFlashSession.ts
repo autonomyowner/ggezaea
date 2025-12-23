@@ -2,6 +2,7 @@
 
 import { useState, useCallback, useRef, useEffect } from 'react';
 import { useTTS } from './useTTS';
+import { trackFlashSessionStart, trackFlashSessionComplete } from '../../../lib/analytics';
 
 export type FlashSessionState =
   | 'INTRO'
@@ -299,6 +300,7 @@ export function useFlashSession(): UseFlashSessionReturn {
     }));
     setSetElapsed(0);
     setState('SET_ACTIVE');
+    trackFlashSessionStart();
   }, [tts]);
 
   const pauseSet = useCallback(() => {
@@ -324,9 +326,18 @@ export function useFlashSession(): UseFlashSessionReturn {
 
   const completeSession = useCallback(() => {
     tts.stop();
-    setData(prev => ({ ...prev, endTime: new Date() }));
+    const endTime = new Date();
+    setData(prev => ({ ...prev, endTime }));
     setState('SUMMARY');
     setTimeout(() => speakSeq(VOICE_SCRIPTS.complete), 100);
+
+    // Track session completion
+    const currentData = dataRef.current;
+    const distressReduction = currentData.distressStart - (currentData.distressEnd ?? currentData.distressStart);
+    const durationMinutes = currentData.startTime
+      ? Math.round((endTime.getTime() - currentData.startTime.getTime()) / 60000)
+      : 0;
+    trackFlashSessionComplete(distressReduction, durationMinutes);
   }, [tts, speakSeq]);
 
   const toggleMute = useCallback(() => {

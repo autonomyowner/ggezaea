@@ -3,6 +3,7 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
 import Vapi from '@vapi-ai/web';
 import { VoiceOrb, VoiceOrbStatus } from './VoiceOrb';
+import { trackVoiceSessionStart, trackVoiceSessionEnd } from '../lib/analytics';
 
 interface VoiceTherapySessionProps {
   sessionType?: 'general-therapy' | 'flash-technique' | 'crisis-support';
@@ -25,6 +26,7 @@ export function VoiceTherapySession({
   const [isSpeaking, setIsSpeaking] = useState(false);
   const fadeTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   const transcriptRef = useRef<Array<{ role: string; text: string; time: Date }>>([]);
+  const sessionStartTimeRef = useRef<Date | null>(null);
 
   // Volume smoothing callback
   const smoothVolume = useCallback((newLevel: number) => {
@@ -59,6 +61,8 @@ export function VoiceTherapySession({
       setIsCallActive(true);
       setIsConnecting(false);
       setError(null);
+      sessionStartTimeRef.current = new Date();
+      trackVoiceSessionStart(sessionType);
     });
 
     vapiInstance.on('call-end', () => {
@@ -67,6 +71,14 @@ export function VoiceTherapySession({
       setIsConnecting(false);
       setAssistantSpeaking(false);
       setIsSpeaking(false);
+
+      // Track session end with duration
+      if (sessionStartTimeRef.current) {
+        const durationSeconds = Math.round(
+          (new Date().getTime() - sessionStartTimeRef.current.getTime()) / 1000
+        );
+        trackVoiceSessionEnd(sessionType, durationSeconds);
+      }
 
       // Callback with transcript using ref to avoid stale closure
       if (onSessionEnd) {
@@ -144,7 +156,7 @@ export function VoiceTherapySession({
         clearTimeout(fadeTimeoutRef.current);
       }
     };
-  }, []);
+  }, [sessionType]);
 
   const startCall = async () => {
     if (!vapi) {

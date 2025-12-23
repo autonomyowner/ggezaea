@@ -1,21 +1,55 @@
 'use client';
 
-import { useEffect } from 'react';
-import { useRouter } from 'next/navigation';
+import { useEffect, useRef, Suspense } from 'react';
+import { useRouter, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import { useUser, useAuth } from '@clerk/nextjs';
 import { useLanguage } from '../../components/LanguageProvider';
 import { Button } from '../../components/ui/Button';
 import { useDashboard } from '../../hooks/useApi';
+import { trackSignup, trackPurchase } from '../../lib/analytics';
 
-export default function DashboardPage() {
+function DashboardContent() {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const { user, isLoaded: userLoaded } = useUser();
   const { isSignedIn, isLoaded: authLoaded } = useAuth();
   const { t, language } = useLanguage();
   const { data: dashboardData, isLoading: dashboardLoading, error: dashboardError } = useDashboard();
+  const hasTrackedRef = useRef(false);
 
   const isLoading = !userLoaded || !authLoaded || dashboardLoading;
+
+  // Track signup for new users (created within last 60 seconds)
+  useEffect(() => {
+    if (hasTrackedRef.current || !user || !userLoaded) return;
+
+    const createdAt = user.createdAt ? new Date(user.createdAt).getTime() : 0;
+    const now = Date.now();
+    const isNewUser = now - createdAt < 60000; // Within last 60 seconds
+
+    // Check localStorage to avoid duplicate tracking
+    const signupTrackedKey = `matcha_signup_tracked_${user.id}`;
+    const alreadyTracked = localStorage.getItem(signupTrackedKey);
+
+    if (isNewUser && !alreadyTracked) {
+      trackSignup('email');
+      localStorage.setItem(signupTrackedKey, 'true');
+      hasTrackedRef.current = true;
+    }
+  }, [user, userLoaded]);
+
+  // Track successful Pro upgrade
+  useEffect(() => {
+    const upgraded = searchParams.get('upgraded');
+    if (upgraded === 'true' && !hasTrackedRef.current) {
+      // Monthly: $15, Yearly: $144 (could be refined with actual billing info)
+      trackPurchase('monthly', 15);
+      hasTrackedRef.current = true;
+      // Clean up URL
+      router.replace('/dashboard');
+    }
+  }, [searchParams, router]);
 
   // Fallback data when API is not available or still loading
   const fallbackBiases = [
@@ -503,5 +537,17 @@ export default function DashboardPage() {
         </div>
       </div>
     </div>
+  );
+}
+
+export default function DashboardPage() {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen flex items-center justify-center" style={{ background: 'var(--cream-50)' }}>
+        <p style={{ color: 'var(--text-secondary)' }}>Loading...</p>
+      </div>
+    }>
+      <DashboardContent />
+    </Suspense>
   );
 }

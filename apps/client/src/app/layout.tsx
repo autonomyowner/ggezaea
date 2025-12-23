@@ -1,9 +1,12 @@
 import type { Metadata } from "next";
+import Script from "next/script";
 import { DM_Sans, DM_Serif_Display } from "next/font/google";
 import { ClerkProvider } from "@clerk/nextjs";
 import Header from "../components/Header";
 import { LanguageProvider } from "../components/LanguageProvider";
 import "./globals.css";
+
+const GA_MEASUREMENT_ID = "G-X3NN5L7W36";
 
 const dmSans = DM_Sans({
   variable: "--font-dm-sans",
@@ -86,6 +89,20 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
+      <head>
+        <Script
+          src={`https://www.googletagmanager.com/gtag/js?id=${GA_MEASUREMENT_ID}`}
+          strategy="afterInteractive"
+        />
+        <Script id="google-analytics" strategy="afterInteractive">
+          {`
+            window.dataLayer = window.dataLayer || [];
+            function gtag(){dataLayer.push(arguments);}
+            gtag('js', new Date());
+            gtag('config', '${GA_MEASUREMENT_ID}');
+          `}
+        </Script>
+      </head>
       <body
         className={`${dmSans.variable} ${dmSerif.variable} antialiased min-h-screen`}
         style={{
