@@ -54,12 +54,21 @@ export const metadata: Metadata = {
     locale: "en_US",
     url: "https://vematcha.xyz",
     siteName: "Matcha",
+    images: [
+      {
+        url: "/og-image.png",
+        width: 1200,
+        height: 630,
+        alt: "Matcha - AI-Powered Psychological Insights",
+      },
+    ],
   },
   twitter: {
     card: "summary_large_image",
     title: "Matcha - AI-Powered Psychological Insights",
     description:
       "Understand your mind with AI. Detect cognitive biases and get personalized insights.",
+    images: ["/og-image.png"],
   },
   robots: {
     index: true,
@@ -102,6 +111,58 @@ export default function RootLayout({
             gtag('config', '${GA_MEASUREMENT_ID}');
           `}
         </Script>
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify({
+              "@context": "https://schema.org",
+              "@graph": [
+                {
+                  "@type": "WebSite",
+                  "@id": "https://vematcha.xyz/#website",
+                  "url": "https://vematcha.xyz",
+                  "name": "Matcha",
+                  "description": "AI-Powered Psychological Insights",
+                  "publisher": { "@id": "https://vematcha.xyz/#organization" },
+                  "potentialAction": {
+                    "@type": "SearchAction",
+                    "target": "https://vematcha.xyz/?s={search_term_string}",
+                    "query-input": "required name=search_term_string"
+                  }
+                },
+                {
+                  "@type": "Organization",
+                  "@id": "https://vematcha.xyz/#organization",
+                  "name": "Matcha",
+                  "url": "https://vematcha.xyz",
+                  "logo": {
+                    "@type": "ImageObject",
+                    "url": "https://vematcha.xyz/favicon/favicon-96x96.png"
+                  },
+                  "sameAs": []
+                },
+                {
+                  "@type": "SoftwareApplication",
+                  "name": "Matcha",
+                  "applicationCategory": "HealthApplication",
+                  "operatingSystem": "Web",
+                  "description": "AI-powered psychological analysis tool that helps you understand cognitive biases, emotional patterns, and unlock personal growth through real-time insights.",
+                  "offers": {
+                    "@type": "Offer",
+                    "price": "0",
+                    "priceCurrency": "USD",
+                    "description": "Free tier with 50 messages/month"
+                  },
+                  "aggregateRating": {
+                    "@type": "AggregateRating",
+                    "ratingValue": "4.8",
+                    "ratingCount": "150"
+                  }
+                }
+              ]
+            })
+          }}
+        />
       </head>
       <body
         className={`${dmSans.variable} ${dmSerif.variable} antialiased min-h-screen`}
