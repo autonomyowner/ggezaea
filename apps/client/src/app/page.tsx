@@ -15,34 +15,36 @@ export default function LandingPage() {
   }, []);
 
   return (
-    <div className="min-h-screen overflow-hidden" style={{ background: 'var(--cream-50)' }}>
+    <div className="min-h-screen overflow-hidden relative bg-warm-gradient">
+      {/* Noise Texture Overlay */}
+      <div className="fixed inset-0 pointer-events-none opacity-40 bg-noise z-0" />
       {/* Decorative Background Elements */}
-      <div className="fixed inset-0 pointer-events-none overflow-hidden">
+      <div className="fixed inset-0 pointer-events-none overflow-hidden z-0">
         {/* Large organic blob top right */}
         <div
-          className="absolute -top-32 -right-32 w-[600px] h-[600px] opacity-30"
+          className="absolute -top-32 -right-32 w-[800px] h-[800px] opacity-40 mix-blend-multiply filter blur-3xl"
           style={{
-            background: 'radial-gradient(circle, var(--matcha-200) 0%, transparent 70%)',
-            borderRadius: '60% 40% 30% 70% / 60% 30% 70% 40%',
-            animation: 'blob-float 20s ease-in-out infinite',
+            background: 'radial-gradient(circle, var(--matcha-200) 0%, rgba(255,255,255,0) 70%)',
+            animation: 'blob-float 25s ease-in-out infinite',
+            transformOrigin: 'center center',
           }}
         />
         {/* Medium blob left */}
         <div
-          className="absolute top-1/3 -left-20 w-[400px] h-[400px] opacity-20"
+          className="absolute top-1/4 -left-40 w-[600px] h-[600px] opacity-30 mix-blend-multiply filter blur-3xl"
           style={{
-            background: 'radial-gradient(circle, var(--terra-300) 0%, transparent 70%)',
-            borderRadius: '30% 70% 70% 30% / 30% 30% 70% 70%',
-            animation: 'blob-float 15s ease-in-out infinite reverse',
+            background: 'radial-gradient(circle, var(--terra-300) 0%, rgba(255,255,255,0) 70%)',
+            animation: 'blob-float 20s ease-in-out infinite reverse',
+            transformOrigin: 'center center',
           }}
         />
         {/* Small accent blob */}
         <div
-          className="absolute bottom-1/4 right-1/4 w-[200px] h-[200px] opacity-25"
+          className="absolute bottom-1/4 right-1/4 w-[400px] h-[400px] opacity-30 mix-blend-multiply filter blur-3xl"
           style={{
-            background: 'radial-gradient(circle, var(--matcha-300) 0%, transparent 70%)',
-            borderRadius: '70% 30% 50% 50% / 50% 50% 50% 50%',
-            animation: 'blob-float 12s ease-in-out infinite',
+            background: 'radial-gradient(circle, var(--matcha-300) 0%, rgba(255,255,255,0) 70%)',
+            animation: 'blob-float 18s ease-in-out infinite',
+            transformOrigin: 'center center',
           }}
         />
       </div>
@@ -298,6 +300,79 @@ export default function LandingPage() {
 
       {/* Interactive Demo Section */}
       <InteractiveDemo />
+
+      {/* Testimonial Section */}
+      <section className="py-20 px-4">
+        <div className="max-w-3xl mx-auto">
+          <div
+            className="matcha-card p-10 md:p-12 relative overflow-hidden"
+          >
+            {/* Decorative quote marks */}
+            <div
+              className="absolute top-6 left-8 text-7xl opacity-10 leading-none"
+              style={{
+                fontFamily: 'var(--font-dm-serif), Georgia, serif',
+                color: 'var(--matcha-600)',
+              }}
+            >
+              "
+            </div>
+
+            <div className="relative z-10">
+              <blockquote
+                className="text-lg md:text-xl leading-relaxed mb-8"
+                style={{
+                  color: 'var(--text-primary)',
+                  fontStyle: 'italic',
+                }}
+              >
+                <p className="mb-4">
+                  Matcha is a really good idea.
+                </p>
+                <p className="mb-4">
+                  I spent a long time thinking about visiting a psychologist, but I didn't feel comfortable sharing my real thoughts with a person. I was afraid of being judged; I also know that when I am talking to a professional, I am not truly myself—even when I try to act natural.
+                </p>
+                <p className="mb-4">
+                  I also tried talking to ChatGPT so I could have a session where it could analyze my thoughts and tell me what is wrong with me. In the end, ChatGPT didn't give me the session I needed and didn't help me.
+                </p>
+                <p>
+                  However, <span style={{ color: 'var(--matcha-600)', fontWeight: 500 }}>Matcha really applied the concept in my real-life situation.</span>
+                </p>
+              </blockquote>
+
+              <div className="flex items-center gap-4">
+                <div
+                  className="w-12 h-12 rounded-full flex items-center justify-center"
+                  style={{
+                    background: 'linear-gradient(135deg, var(--matcha-200) 0%, var(--matcha-300) 100%)',
+                  }}
+                >
+                  <span
+                    className="text-sm font-medium"
+                    style={{ color: 'var(--matcha-700)' }}
+                  >
+                    IK
+                  </span>
+                </div>
+                <div>
+                  <p
+                    className="font-medium"
+                    style={{ color: 'var(--text-primary)' }}
+                  >
+                    Anonymous User
+                  </p>
+                  <p
+                    className="text-sm"
+                    style={{ color: 'var(--text-muted)' }}
+                  >
+                    First Matcha User
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
 
       {/* Features Section */}
       <section
