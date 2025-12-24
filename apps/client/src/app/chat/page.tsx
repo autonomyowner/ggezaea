@@ -4,7 +4,7 @@ import { useState, useEffect, useRef, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@clerk/nextjs';
 import { useLanguage } from '../../components/LanguageProvider';
-import { api, Conversation, Message, AnalysisData } from '../../lib/api';
+import { api, ApiError, Conversation, Message, AnalysisData } from '../../lib/api';
 import { VoiceTherapySession } from '../../components/VoiceTherapySession';
 import { trackChatSessionStart, trackMessageSent } from '../../lib/analytics';
 
@@ -63,6 +63,8 @@ export default function ChatPage() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [analysisPanelOpen, setAnalysisPanelOpen] = useState(false);
   const [showVoiceSession, setShowVoiceSession] = useState(false);
+  const [showUpgradeModal, setShowUpgradeModal] = useState(false);
+  const [usageLimitInfo, setUsageLimitInfo] = useState<{ limit: number } | null>(null);
 
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLTextAreaElement>(null);
@@ -206,6 +208,17 @@ export default function ChatPage() {
     } catch (error) {
       console.error('Failed to send message:', error);
       setMessages((prev) => prev.filter((m) => m.id !== tempUserMessage.id));
+
+      // Check if it's a usage limit error
+      if (error instanceof ApiError && error.status === 403) {
+        const errorData = error.data as { code?: string; limit?: number };
+        if (errorData?.code === 'USAGE_LIMIT_EXCEEDED') {
+          setUsageLimitInfo({ limit: errorData.limit || 50 });
+          setShowUpgradeModal(true);
+          return; // Don't restore input - show modal instead
+        }
+      }
+
       setInputValue(userMessage);
     } finally {
       setIsSending(false);
@@ -828,6 +841,119 @@ export default function ChatPage() {
               sessionType="general-therapy"
               onSessionEnd={handleVoiceSessionEnd}
             />
+          </div>
+        </div>
+      )}
+
+      {/* Usage Limit / Upgrade Modal */}
+      {showUpgradeModal && (
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center backdrop-blur-sm"
+          style={{
+            background: 'rgba(0, 0, 0, 0.6)',
+            animation: 'fadeIn 200ms ease',
+          }}
+        >
+          <div
+            className="relative w-full max-w-md mx-4 p-6 rounded-2xl"
+            style={{
+              background: 'var(--bg-card)',
+              boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.25)',
+              animation: 'slideUp 300ms ease',
+            }}
+          >
+            {/* Close button */}
+            <button
+              onClick={() => setShowUpgradeModal(false)}
+              className="absolute top-4 right-4 p-1 rounded-lg transition-colors hover:bg-[var(--cream-100)]"
+              style={{ color: 'var(--text-muted)' }}
+            >
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <line x1="18" y1="6" x2="6" y2="18" />
+                <line x1="6" y1="6" x2="18" y2="18" />
+              </svg>
+            </button>
+
+            {/* Content */}
+            <div className="text-center">
+              <div
+                className="w-16 h-16 mx-auto mb-4 rounded-2xl flex items-center justify-center"
+                style={{ background: 'var(--terra-100)' }}
+              >
+                <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="var(--terra-500)" strokeWidth="2">
+                  <path d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                </svg>
+              </div>
+
+              <h2
+                className="text-xl font-semibold mb-2"
+                style={{ color: 'var(--text-primary)' }}
+              >
+                Monthly Limit Reached
+              </h2>
+
+              <p
+                className="mb-6 leading-relaxed"
+                style={{ color: 'var(--text-secondary)' }}
+              >
+                You&apos;ve used all {usageLimitInfo?.limit || 50} free messages this month.
+                Upgrade to Pro for unlimited conversations and deeper insights.
+              </p>
+
+              {/* Benefits */}
+              <div
+                className="p-4 rounded-xl mb-6 text-left"
+                style={{ background: 'var(--cream-100)' }}
+              >
+                <p className="text-sm font-medium mb-3" style={{ color: 'var(--text-primary)' }}>
+                  Pro includes:
+                </p>
+                <ul className="space-y-2">
+                  {[
+                    'Unlimited messages',
+                    'Voice therapy sessions',
+                    'Deep psychological analysis',
+                    'Priority support',
+                  ].map((benefit, i) => (
+                    <li key={i} className="flex items-center gap-2 text-sm" style={{ color: 'var(--text-secondary)' }}>
+                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--matcha-500)" strokeWidth="2">
+                        <polyline points="20 6 9 17 4 12" />
+                      </svg>
+                      {benefit}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+
+              {/* Actions */}
+              <div className="flex flex-col gap-3">
+                <button
+                  onClick={() => router.push('/pricing')}
+                  className="w-full py-3 px-4 rounded-xl font-medium transition-all hover:scale-[1.02]"
+                  style={{
+                    background: 'linear-gradient(135deg, var(--matcha-500) 0%, var(--matcha-600) 100%)',
+                    color: 'white',
+                    boxShadow: '0 4px 14px rgba(104, 166, 125, 0.35)',
+                  }}
+                >
+                  Upgrade to Pro
+                </button>
+                <button
+                  onClick={() => setShowUpgradeModal(false)}
+                  className="w-full py-3 px-4 rounded-xl font-medium transition-colors"
+                  style={{
+                    background: 'var(--cream-100)',
+                    color: 'var(--text-secondary)',
+                  }}
+                >
+                  Maybe Later
+                </button>
+              </div>
+
+              <p className="mt-4 text-xs" style={{ color: 'var(--text-muted)' }}>
+                Your limit resets at the start of each month
+              </p>
+            </div>
           </div>
         </div>
       )}
