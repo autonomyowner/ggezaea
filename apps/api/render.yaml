@@ -1,11 +1,34 @@
+# =============================================================================
+# MATCHA API - Render Deployment Configuration
+# =============================================================================
+#
+# TWO OPTIONS:
+#
+# OPTION A: Budget Mode (Current - $7-14/month)
+#   - Single API instance with built-in job processing
+#   - Free Redis tier (25MB) or Upstash free tier
+#   - Good for: <100 users, low traffic
+#
+# OPTION B: Scale Mode (Uncomment when needed - $28-42/month)
+#   - Multiple API instances with auto-scaling
+#   - Separate worker for background jobs
+#   - Paid Redis ($7/month)
+#   - Good for: 100+ users, high traffic
+#
+# =============================================================================
+
 services:
+  # -----------------------------------------------------
+  # OPTION A: Budget Mode (Single Instance)
+  # -----------------------------------------------------
   - type: web
     name: matcha-api
-    env: node
+    runtime: node
     region: frankfurt
-    plan: free
+    plan: free  # Change to 'starter' ($7/mo) for better performance
     buildCommand: npm install && npx prisma generate && npm run build
     startCommand: npm run start:prod
+    healthCheckPath: /api/health/ready
     envVars:
       - key: NODE_ENV
         value: production
@@ -33,3 +56,79 @@ services:
         sync: false
       - key: FRONTEND_URL
         sync: false
+      - key: OPENROUTER_API_KEY
+        sync: false
+      - key: OPENROUTER_FAST_MODEL
+        sync: false
+      - key: OPENROUTER_DEEP_MODEL
+        sync: false
+      - key: VAPI_API_KEY
+        sync: false
+      - key: VAPI_PUBLIC_KEY
+        sync: false
+      - key: STRIPE_SECRET_KEY
+        sync: false
+      - key: STRIPE_WEBHOOK_SECRET
+        sync: false
+
+# -----------------------------------------------------
+# OPTION B: Scale Mode (Uncomment when you need to scale)
+# -----------------------------------------------------
+#
+#   # API Service (horizontally scalable)
+#   - type: web
+#     name: matcha-api
+#     runtime: node
+#     region: frankfurt
+#     plan: starter
+#     scaling:
+#       minInstances: 1
+#       maxInstances: 3
+#       targetMemoryPercent: 80
+#       targetCPUPercent: 80
+#     buildCommand: npm install && npx prisma generate && npm run build
+#     startCommand: npm run start:prod
+#     healthCheckPath: /api/health/ready
+#     envVars:
+#       - key: NODE_ENV
+#         value: production
+#       - key: PORT
+#         value: 4000
+#       - key: DATABASE_URL
+#         sync: false
+#       - key: REDIS_URL
+#         fromService:
+#           type: redis
+#           name: matcha-redis
+#           property: connectionString
+#       # ... (same env vars as above)
+#
+#   # Background Worker (separate process)
+#   - type: worker
+#     name: matcha-worker
+#     runtime: node
+#     region: frankfurt
+#     plan: starter
+#     buildCommand: npm install && npx prisma generate && npm run build
+#     startCommand: npm run start:worker
+#     envVars:
+#       - key: NODE_ENV
+#         value: production
+#       - key: DATABASE_URL
+#         sync: false
+#       - key: REDIS_URL
+#         fromService:
+#           type: redis
+#           name: matcha-redis
+#           property: connectionString
+#       - key: OPENROUTER_API_KEY
+#         sync: false
+#       - key: FRONTEND_URL
+#         sync: false
+#
+#   # Managed Redis
+#   - type: redis
+#     name: matcha-redis
+#     region: frankfurt
+#     plan: starter
+#     maxmemoryPolicy: allkeys-lru

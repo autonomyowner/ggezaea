@@ -10,9 +10,14 @@ import { OpenRouterProvider, ChatMessage, AnalysisData } from '../../providers/a
 import { SendMessageDto, CreateConversationDto } from './dto/chat.dto';
 import { MessageRole } from '@prisma/client';
 import { getSystemPromptWithAnalysis } from './prompts/matcha-prompt';
+import { SafetyGuardProvider, RiskLevel } from '../../providers/safety/safety-guard.provider';
+import { CacheService } from '../../providers/redis/cache.service';
 
 // FREE tier limits
 const FREE_TIER_MONTHLY_MESSAGES = 50;
+
+// Cache TTLs in seconds
+const USAGE_CACHE_TTL = 60; // 1 minute for usage limits
 
 @Injectable()
 export class ChatService {
@@ -21,6 +26,8 @@ export class ChatService {
   constructor(
     private prisma: PrismaService,
     private openRouter: OpenRouterProvider,
+    private safetyGuard: SafetyGuardProvider,
+    private cacheService: CacheService,
   ) {}
 
   async createConversation(userId: string, data?: CreateConversationDto) {
@@ -127,6 +134,55 @@ export class ChatService {
       take: 20, // Limit context window
     });
 
+    // SAFETY CHECK: Analyze user input for crisis indicators
+    const inputSafety = await this.safetyGuard.checkUserInput(data.message, {
+      userId,
+      previousMessages: messages.slice(-5).map(m => ({
+        role: m.role.toLowerCase(),
+        content: m.content,
+      })),
+    });
+
+    // If CRISIS detected, override with emergency resources immediately
+    if (inputSafety.riskLevel === RiskLevel.CRISIS) {
+      this.logger.warn(`CRISIS DETECTED for user ${userId}: ${inputSafety.flags.join(', ')}`);
+
+      const crisisMessage = this.safetyGuard.getCrisisInterventionMessage(inputSafety.flags);
+
+      const assistantMessage = await this.prisma.message.create({
+        data: {
+          conversationId,
+          role: MessageRole.ASSISTANT,
+          content: crisisMessage,
+        },
+      });
+
+      // Update conversation with crisis flag
+      await this.prisma.conversation.update({
+        where: { id: conversationId },
+        data: {
+          emotionalState: { crisis: true, flags: inputSafety.flags },
+          updatedAt: new Date(),
+        },
+      });
+
+      return {
+        conversationId,
+        message: assistantMessage,
+        analysis: {
+          emotionalState: { primary: 'crisis', intensity: 'high' },
+          riskAssessment: {
+            level: 'crisis',
+            indicators: inputSafety.flags,
+            action: 'IMMEDIATE_CRISIS_INTERVENTION',
+          },
+        },
+        usage: null,
+        modelTier: 'safety-override',
+        crisisDetected: true,
+      };
+    }
+
     // Determine model tier based on context
     const messageCount = messages.length;
     const hasComplexEmotionalContent = this.detectComplexEmotionalContent(data.message);
@@ -187,6 +243,27 @@ export class ChatService {
         userMessage,
         errorMessage,
       });
+    }
+
+    // SAFETY CHECK: Validate AI response before sending to user
+    const responseSafety = await this.safetyGuard.checkAIResponse(
+      response.message,
+      data.message,
+    );
+
+    // If response is unsafe, override with safe alternative
+    if (!responseSafety.isSafe) {
+      this.logger.warn(
+        `Unsafe AI response blocked for conversation ${conversationId}: ${responseSafety.flags.join(', ')}`,
+      );
+
+      // Override with crisis resources if user message was high-risk
+      if (inputSafety.requiresIntervention) {
+        response.message = this.safetyGuard.getCrisisInterventionMessage(inputSafety.flags);
+      } else {
+        // Generic safe fallback
+        response.message = "I want to make sure I'm being helpful and supportive. Can you tell me more about what's going on?";
+      }
     }
 
     // Save assistant message
@@ -344,31 +421,54 @@ export class ChatService {
       },
     });
 
+    // Invalidate cache after usage update
+    await this.invalidateUsageCache(userId);
+
     return true;
   }
 
   /**
-   * Get remaining messages for user
+   * Get remaining messages for user (with caching)
    */
   async getRemainingMessages(userId: string, userTier: 'FREE' | 'PRO'): Promise<number | null> {
     if (userTier === 'PRO') {
       return null; // Unlimited
     }
 
+    // Try cache first
+    const cacheKey = this.cacheService.generateKey('usage', userId, 'remaining');
+    const cached = await this.cacheService.get<number>(cacheKey);
+    if (cached !== null) {
+      return cached;
+    }
+
     const usageLimit = await this.prisma.usageLimit.findUnique({
       where: { userId },
     });
 
+    let remaining: number;
     if (!usageLimit) {
-      return FREE_TIER_MONTHLY_MESSAGES;
+      remaining = FREE_TIER_MONTHLY_MESSAGES;
+    } else {
+      const now = new Date();
+      if (now >= usageLimit.monthResetAt) {
+        remaining = FREE_TIER_MONTHLY_MESSAGES;
+      } else {
+        remaining = Math.max(0, FREE_TIER_MONTHLY_MESSAGES - usageLimit.chatMessagesThisMonth);
+      }
     }
 
-    const now = new Date();
-    if (now >= usageLimit.monthResetAt) {
-      return FREE_TIER_MONTHLY_MESSAGES;
-    }
+    // Cache for 1 minute
+    await this.cacheService.set(cacheKey, remaining, USAGE_CACHE_TTL);
+    return remaining;
+  }
 
-    return Math.max(0, FREE_TIER_MONTHLY_MESSAGES - usageLimit.chatMessagesThisMonth);
+  /**
+   * Invalidate usage cache when limit changes
+   */
+  private async invalidateUsageCache(userId: string): Promise<void> {
+    const cacheKey = this.cacheService.generateKey('usage', userId, 'remaining');
+    await this.cacheService.del(cacheKey);
   }
 
   async deleteConversation(userId: string, conversationId: string) {

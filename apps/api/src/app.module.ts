@@ -14,6 +14,7 @@ import { TtsModule } from './modules/tts/tts.module';
 import { StripeModule } from './modules/stripe/stripe.module';
 import { VoiceModule } from './modules/voice/voice.module';
 import { PrismaModule } from './prisma/prisma.module';
+import { RedisModule, RedisThrottlerStorage } from './providers/redis';
 import configuration from './config/configuration';
 
 @Module({
@@ -22,24 +23,32 @@ import configuration from './config/configuration';
       isGlobal: true,
       load: [configuration],
     }),
-    // Global rate limiting: 100 requests per minute per IP
-    ThrottlerModule.forRoot([
-      {
-        name: 'short',
-        ttl: 1000, // 1 second
-        limit: 3, // 3 requests per second
-      },
-      {
-        name: 'medium',
-        ttl: 60000, // 1 minute
-        limit: 60, // 60 requests per minute
-      },
-      {
-        name: 'long',
-        ttl: 3600000, // 1 hour
-        limit: 1000, // 1000 requests per hour
-      },
-    ]),
+    // Global Redis module (must be before ThrottlerModule)
+    RedisModule,
+    // Global rate limiting with Redis storage for horizontal scaling
+    ThrottlerModule.forRootAsync({
+      useFactory: (storage: RedisThrottlerStorage) => ({
+        throttlers: [
+          {
+            name: 'short',
+            ttl: 1000, // 1 second
+            limit: 3, // 3 requests per second
+          },
+          {
+            name: 'medium',
+            ttl: 60000, // 1 minute
+            limit: 60, // 60 requests per minute
+          },
+          {
+            name: 'long',
+            ttl: 3600000, // 1 hour
+            limit: 1000, // 1000 requests per hour
+          },
+        ],
+        storage,
+      }),
+      inject: [RedisThrottlerStorage],
+    }),
     PrismaModule,
     AuthModule,
     UsersModule,
