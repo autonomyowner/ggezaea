@@ -14,12 +14,22 @@
     ],
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.matcha.app"
+      "bundleIdentifier": "com.matcha.app",
+      "infoPlist": {
+        "NSMicrophoneUsageDescription": "Matcha needs microphone access to enable voice therapy sessions where you can talk with your AI companion.",
+        "UIBackgroundModes": [
+          "audio",
+          "voip"
+        ]
+      }
     },
     "android": {
       "package": "com.matcha.app",
       "softwareKeyboardLayoutMode": "pan",
-      "useNextNotificationsApi": true
+      "useNextNotificationsApi": true,
+      "permissions": [
+        "android.permission.RECORD_AUDIO"
+      ]
     },
     "web": {
       "bundler": "metro",
@@ -36,6 +46,19 @@
           "color": "#5a9470",
           "sounds": []
         }
+      ],
+      [
+        "expo-build-properties",
+        {
+          "android": {
+            "minSdkVersion": 24,
+            "compileSdkVersion": 34,
+            "targetSdkVersion": 34
+          },
+          "ios": {
+            "deploymentTarget": "15.1"
+          }
+        }
       ]
     ],
     "experiments": {
@@ -46,6 +69,12 @@
       "color": "#5a9470",
       "androidMode": "default",
       "androidCollapsedTitle": "Matcha"
+    },
+    "extra": {
+      "router": {},
+      "eas": {
+        "projectId": "1211e16f-59d3-45fe-8f57-63320bcc4039"
+      }
     }
   }
 }

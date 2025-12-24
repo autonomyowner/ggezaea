@@ -1,3 +1,6 @@
+// Required for Daily.co WebRTC - must be imported before other modules
+import 'react-native-get-random-values';
+
 import { useEffect } from 'react';
 import { Stack } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
@@ -47,6 +50,13 @@ function AppContent() {
         />
         <Stack.Screen name="chat/[id]" options={{ headerShown: true, title: 'Chat', headerBackTitle: 'Back' }} />
         <Stack.Screen name="flash-session" options={{ headerShown: false }} />
+        <Stack.Screen
+          name="voice-session"
+          options={{
+            headerShown: false,
+            presentation: 'fullScreenModal',
+          }}
+        />
       </Stack>
     </>
   );
