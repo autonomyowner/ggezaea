@@ -1,7 +1,7 @@
 import { Controller, Get, Inject } from '@nestjs/common';
 import { PrismaService } from '../../prisma/prisma.service';
 import { R2StorageService } from '../../providers/storage/r2.service';
-import { REDIS_CLIENT } from '../../providers/redis/redis.module';
+import { REDIS_CLIENT } from '../../providers/redis';
 import Redis from 'ioredis';
 
 @Controller('health')
