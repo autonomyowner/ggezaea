@@ -1,6 +1,7 @@
 'use client';
 
 import Link from 'next/link';
+import Image from 'next/image';
 import { useEffect, useState } from 'react';
 import InteractiveDemo from '@/components/InteractiveDemo';
 import WelcomeDemo from '@/components/WelcomeDemo';
@@ -480,6 +481,73 @@ export default function LandingPage() {
             >
               {t.landing.seePricing}
             </Link>
+          </div>
+        </div>
+      </section>
+
+      {/* Social Proof Section */}
+      <section className="py-20 px-4">
+        <div className="max-w-4xl mx-auto">
+          <div className="text-center mb-12">
+            <h2
+              className="text-2xl md:text-3xl mb-4"
+              style={{
+                fontFamily: 'var(--font-dm-serif), Georgia, serif',
+                color: 'var(--text-primary)',
+              }}
+            >
+              {t.landing.followUsTitle}
+            </h2>
+          </div>
+
+          {/* Social Media Posts Grid */}
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-10">
+            {[
+              'your mind is not broken it is patterned.png',
+              'you dont overthing you protect.png',
+              'you dont lack discipline you lack safety.png',
+              'your mind isnt chaotic.png',
+            ].map((filename, i) => (
+              <a
+                key={i}
+                href="https://www.facebook.com/profile.php?id=61585651651139"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="relative aspect-square rounded-2xl overflow-hidden group"
+                style={{
+                  boxShadow: 'var(--shadow-md)',
+                  border: '1px solid var(--border-soft)',
+                }}
+              >
+                <Image
+                  src={`/social medea  posts/${filename}`}
+                  alt={`Matcha social media post ${i + 1}`}
+                  fill
+                  className="object-cover transition-transform duration-300 group-hover:scale-105"
+                  sizes="(max-width: 768px) 50vw, 25vw"
+                />
+              </a>
+            ))}
+          </div>
+
+          {/* Social Media Buttons */}
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
+            <a
+              href="https://www.facebook.com/profile.php?id=61585651651139"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="matcha-btn matcha-btn-secondary text-base px-8 py-4"
+            >
+              {t.landing.followFacebook}
+            </a>
+            <a
+              href="https://www.instagram.com/matcha.mind"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="matcha-btn matcha-btn-secondary text-base px-8 py-4"
+            >
+              {t.landing.followInstagram}
+            </a>
           </div>
         </div>
       </section>

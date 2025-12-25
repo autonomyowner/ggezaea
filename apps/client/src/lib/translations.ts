@@ -72,6 +72,11 @@ export const translations = {
       joinThousands: 'Start your journey and transform your way of thinking with Matcha.',
       startNow: 'Start now',
 
+      // Social Section
+      followUsTitle: 'Follow us on social media',
+      followFacebook: 'Follow us on Facebook',
+      followInstagram: 'Follow us on Instagram',
+
       // Footer
       footerTagline: 'The AI that understands your mind',
       allRightsReserved: 'All rights reserved.',
@@ -403,6 +408,11 @@ export const translations = {
       readyToUnderstand: 'Pret a comprendre votre esprit ?',
       joinThousands: 'Commencez votre voyage et transformez votre façon de penser avec Matcha.',
       startNow: 'Commencer maintenant',
+
+      // Social Section
+      followUsTitle: 'Suivez-nous sur les reseaux sociaux',
+      followFacebook: 'Suivez-nous sur Facebook',
+      followInstagram: 'Suivez-nous sur Instagram',
 
       // Footer
       footerTagline: "L'IA qui comprend votre esprit",
