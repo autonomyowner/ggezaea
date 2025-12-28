@@ -112,22 +112,23 @@ export class OpenRouterProvider implements AIProvider {
    * Determine which model tier to use based on conversation context
    */
   determineModelTier(context: ModelTierContext): ModelTier {
-    // Use deep model for:
-    // - Final session analysis (session end)
-    // - Explicit deep analysis request
-    // - Complex emotional content that needs careful handling
-    // - Every 5th message for periodic deeper analysis
+    // Use deep model only for:
+    // - Final session analysis (explicit session end)
+    // - Explicit deep analysis request from user
+    // - Complex emotional content with safety concerns (crisis-level)
 
     if (context.isSessionEnd || context.requiresDeepAnalysis) {
       return 'deep';
     }
 
+    // Only use deep model for crisis-level emotional content
     if (context.hasComplexEmotionalContent) {
       return 'deep';
     }
 
-    // Periodic deep analysis every 5 messages (starting from message 5)
-    if (context.messageCount > 0 && context.messageCount % 5 === 0) {
+    // Periodic deep analysis every 15 messages (after message 10)
+    // Reduced frequency to improve speed and cost
+    if (context.messageCount >= 10 && context.messageCount % 15 === 0) {
       return 'deep';
     }
 

@@ -1,88 +1,144 @@
-import { useState, useEffect } from 'react';
-import { View, Text, ScrollView, TouchableOpacity, Animated } from 'react-native';
+import { useState, useEffect, useCallback, memo, useRef } from 'react';
+import {
+  View,
+  Text,
+  ScrollView,
+  Platform,
+  RefreshControl,
+  StyleSheet,
+  Dimensions,
+  Pressable,
+  Animated as RNAnimated,
+} from 'react-native';
 import { useRouter } from 'expo-router';
-import { Ionicons } from '@expo/vector-icons';
+import Animated, {
+  FadeInDown,
+  FadeInUp,
+  Layout,
+  withSpring,
+  useSharedValue,
+  useAnimatedStyle,
+  withTiming,
+  withSequence,
+  Easing,
+} from 'react-native-reanimated';
 import { useUserStore, MoodLevel } from '../../stores/userStore';
 import { cancelTodayStreakWarning } from '../../lib/notifications';
+import { AnimatedPressable, useHaptics } from '../../components/ui';
+import { LinearGradient } from 'expo-linear-gradient';
 
-const MOOD_OPTIONS: { level: MoodLevel; label: string; color: string }[] = [
-  { level: 1, label: 'Struggling', color: '#e57373' },
-  { level: 2, label: 'Low', color: '#ffb74d' },
-  { level: 3, label: 'Okay', color: '#fff176' },
-  { level: 4, label: 'Good', color: '#aed581' },
-  { level: 5, label: 'Great', color: '#81c784' },
+const { width } = Dimensions.get('window');
+
+const MOOD_OPTIONS: { level: MoodLevel; label: string; color: string; emoji: string }[] = [
+  { level: 1, label: 'Struggling', color: '#e57373', emoji: '😔' },
+  { level: 2, label: 'Low', color: '#ffb74d', emoji: '😕' },
+  { level: 3, label: 'Okay', color: '#fff176', emoji: '😐' },
+  { level: 4, label: 'Good', color: '#aed581', emoji: '🙂' },
+  { level: 5, label: 'Great', color: '#81c784', emoji: '😊' },
 ];
+
+// Memoized Mood Button
+const MoodButton = memo(function MoodButton({
+  option,
+  isSelected,
+  onPress,
+}: {
+  option: (typeof MOOD_OPTIONS)[0];
+  isSelected: boolean;
+  onPress: () => void;
+}) {
+  const scale = useSharedValue(isSelected ? 1.1 : 1);
+
+  useEffect(() => {
+    scale.value = withSpring(isSelected ? 1.1 : 1, {
+      damping: 12,
+      stiffness: 400,
+    });
+  }, [isSelected, scale]);
+
+  const animatedStyle = useAnimatedStyle(() => ({
+    transform: [{ scale: scale.value }],
+  }));
+
+  return (
+    <Pressable
+      onPress={onPress}
+      style={[
+        styles.moodButton,
+        isSelected && { backgroundColor: `${option.color}20` },
+      ]}
+    >
+      <Animated.View
+        style={[
+          styles.moodCircle,
+          {
+            backgroundColor: option.color,
+            borderWidth: isSelected ? 2 : 0,
+            borderColor: '#2d3a2e',
+          },
+          animatedStyle,
+        ]}
+      >
+        <Text style={styles.moodEmoji}>{option.emoji}</Text>
+      </Animated.View>
+    </Pressable>
+  );
+});
 
 function MoodCheckIn() {
   const { todayMood, setTodayMood } = useUserStore();
   const [selectedMood, setSelectedMood] = useState<MoodLevel | null>(todayMood);
   const [showConfirmation, setShowConfirmation] = useState(false);
+  const haptics = useHaptics();
 
-  const handleMoodSelect = (mood: MoodLevel) => {
-    setSelectedMood(mood);
-    setTodayMood(mood);
-    setShowConfirmation(true);
-    setTimeout(() => setShowConfirmation(false), 2000);
+  const handleMoodSelect = useCallback(
+    (mood: MoodLevel) => {
+      setSelectedMood(mood);
+      setTodayMood(mood);
+      setShowConfirmation(true);
+      haptics.success();
+      cancelTodayStreakWarning();
+      setTimeout(() => setShowConfirmation(false), 2000);
+    },
+    [setTodayMood, haptics]
+  );
 
-    // Cancel today's streak warning notification
-    cancelTodayStreakWarning();
-  };
+  const selectedOption = selectedMood ? MOOD_OPTIONS[selectedMood - 1] : null;
 
   return (
-    <View style={{ backgroundColor: 'white', borderRadius: 16, padding: 16, marginBottom: 16, borderWidth: 1, borderColor: '#f5ebe0' }}>
-      <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 12 }}>
-        <Text style={{ fontWeight: '600', color: '#2d3a2e', fontSize: 18 }}>
-          How are you feeling?
-        </Text>
+    <Animated.View
+      entering={FadeInDown.delay(100).springify()}
+      layout={Layout.springify()}
+      style={styles.moodCard}
+    >
+      <View style={styles.moodHeader}>
+        <Text style={styles.moodTitle}>How are you feeling?</Text>
         {showConfirmation && (
-          <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-            <Ionicons name="checkmark-circle" size={16} color="#5a9470" />
-            <Text style={{ color: '#5a9470', marginLeft: 4, fontSize: 12 }}>Saved</Text>
-          </View>
+          <Animated.View entering={FadeInUp.springify()} style={styles.savedBadge}>
+            <Text style={styles.savedLabel}>Saved</Text>
+          </Animated.View>
         )}
       </View>
 
-      <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+      <View style={styles.moodRow}>
         {MOOD_OPTIONS.map((option) => (
-          <TouchableOpacity
+          <MoodButton
             key={option.level}
+            option={option}
+            isSelected={selectedMood === option.level}
             onPress={() => handleMoodSelect(option.level)}
-            style={{
-              alignItems: 'center',
-              padding: 8,
-              borderRadius: 12,
-              backgroundColor: selectedMood === option.level ? `${option.color}30` : 'transparent',
-            }}
-          >
-            <View
-              style={{
-                width: 40,
-                height: 40,
-                borderRadius: 20,
-                backgroundColor: option.color,
-                alignItems: 'center',
-                justifyContent: 'center',
-                borderWidth: selectedMood === option.level ? 3 : 0,
-                borderColor: '#2d3a2e',
-              }}
-            >
-              <Text style={{ fontSize: 18 }}>
-                {option.level === 1 ? '😔' : option.level === 2 ? '😕' : option.level === 3 ? '😐' : option.level === 4 ? '🙂' : '😊'}
-              </Text>
-            </View>
-            <Text style={{ color: '#5a5347', fontSize: 11, marginTop: 4 }}>{option.label}</Text>
-          </TouchableOpacity>
+          />
         ))}
       </View>
-    </View>
+    </Animated.View>
   );
 }
 
-function StreakCard() {
+function WeekMoodStreak() {
   const { currentStreak, longestStreak, getWeekMoods } = useUserStore();
   const weekMoods = getWeekMoods();
+  const days = ['M', 'T', 'W', 'T', 'F', 'S', 'S'];
 
-  // Get last 7 days
   const last7Days = Array.from({ length: 7 }, (_, i) => {
     const date = new Date();
     date.setDate(date.getDate() - (6 - i));
@@ -90,201 +146,464 @@ function StreakCard() {
   });
 
   return (
-    <View style={{ backgroundColor: 'white', borderRadius: 16, padding: 16, marginBottom: 16, borderWidth: 1, borderColor: '#f5ebe0' }}>
-      <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16 }}>
-        <View>
-          <Text style={{ fontWeight: '600', color: '#2d3a2e', fontSize: 18 }}>
-            Your Streak
-          </Text>
-          <Text style={{ color: '#a69889', fontSize: 13, marginTop: 2 }}>
-            {currentStreak > 0 ? `${currentStreak} day${currentStreak > 1 ? 's' : ''} and counting!` : 'Start your streak today'}
-          </Text>
-        </View>
-        <View style={{ alignItems: 'center' }}>
-          <Text style={{ fontSize: 28, fontWeight: '700', color: '#5a9470' }}>{currentStreak}</Text>
-          <Text style={{ color: '#a69889', fontSize: 11 }}>days</Text>
+    <Animated.View
+      entering={FadeInDown.delay(200).springify()}
+      layout={Layout.springify()}
+      style={styles.card}
+    >
+      <View style={styles.streakHeader}>
+        <Text style={styles.cardTitle}>This Week</Text>
+        <View style={styles.streakBadge}>
+          <Text style={styles.streakNumber}>{currentStreak}</Text>
+          <Text style={styles.streakLabel}>day streak</Text>
         </View>
       </View>
 
-      {/* Week visualization */}
-      <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+      <View style={styles.weekDays}>
         {last7Days.map((date, index) => {
-          const moodEntry = weekMoods.find(m => m.date === date);
-          const dayName = new Date(date).toLocaleDateString('en', { weekday: 'short' }).charAt(0);
+          const moodEntry = weekMoods.find((m) => m.date === date);
           const isToday = date === new Date().toISOString().split('T')[0];
+          const moodOption = moodEntry ? MOOD_OPTIONS[moodEntry.mood - 1] : null;
 
           return (
-            <View key={date} style={{ alignItems: 'center' }}>
-              <Text style={{ color: isToday ? '#5a9470' : '#a69889', fontSize: 11, fontWeight: isToday ? '600' : '400' }}>
-                {dayName}
-              </Text>
+            <View key={date} style={styles.dayColumn}>
               <View
-                style={{
-                  width: 32,
-                  height: 32,
-                  borderRadius: 16,
-                  marginTop: 6,
-                  backgroundColor: moodEntry
-                    ? MOOD_OPTIONS[moodEntry.mood - 1].color
-                    : '#f5ebe0',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  borderWidth: isToday ? 2 : 0,
-                  borderColor: '#5a9470',
-                }}
+                style={[
+                  styles.dayDot,
+                  moodOption && { backgroundColor: moodOption.color },
+                  isToday && styles.dayDotToday,
+                ]}
               >
-                {moodEntry && (
-                  <Text style={{ fontSize: 14 }}>
-                    {moodEntry.mood === 1 ? '😔' : moodEntry.mood === 2 ? '😕' : moodEntry.mood === 3 ? '😐' : moodEntry.mood === 4 ? '🙂' : '😊'}
-                  </Text>
+                {moodOption && (
+                  <Text style={styles.dayEmoji}>{moodOption.emoji}</Text>
                 )}
               </View>
+              <Text style={[styles.dayLabel, isToday && styles.dayLabelToday]}>
+                {days[index]}
+              </Text>
             </View>
           );
         })}
       </View>
 
       {longestStreak > 0 && (
-        <View style={{ flexDirection: 'row', alignItems: 'center', marginTop: 12, paddingTop: 12, borderTopWidth: 1, borderTopColor: '#f5ebe0' }}>
-          <Ionicons name="trophy-outline" size={16} color="#c97d52" />
-          <Text style={{ color: '#a69889', marginLeft: 6, fontSize: 13 }}>
-            Longest streak: <Text style={{ color: '#c97d52', fontWeight: '600' }}>{longestStreak} days</Text>
+        <View style={styles.bestStreak}>
+          <Text style={styles.bestStreakText}>
+            Best streak:{' '}
+            <Text style={styles.bestStreakValue}>{longestStreak} days</Text>
           </Text>
         </View>
       )}
-    </View>
+    </Animated.View>
   );
 }
 
 function QuickActions() {
   const router = useRouter();
+  const haptics = useHaptics();
+
+  const handleNavigation = useCallback(
+    (route: string) => {
+      haptics.light();
+      router.push(route as any);
+    },
+    [router, haptics]
+  );
+
+  const actions = [
+    {
+      id: 'breathe',
+      title: 'Breathe',
+      subtitle: 'Calm your mind',
+      route: '/breathing',
+      bgColor: '#5a9470',
+      textColor: '#fff',
+      isPrimary: true,
+    },
+    {
+      id: 'voice',
+      title: 'Voice Chat',
+      subtitle: 'Talk with Matcha',
+      route: '/voice-session',
+      bgColor: '#dcedde',
+      textColor: '#3d654c',
+      isPrimary: true,
+    },
+    {
+      id: 'focus',
+      title: 'Focus',
+      subtitle: 'Guided exercise',
+      route: '/flash-session',
+      bgColor: '#fff',
+      textColor: '#4a7c5d',
+      borderColor: '#dcedde',
+    },
+    {
+      id: 'support',
+      title: 'Support',
+      subtitle: 'Get help',
+      route: '/crisis',
+      bgColor: '#fff',
+      textColor: '#c97d52',
+      borderColor: '#f5ebe0',
+    },
+  ];
 
   return (
-    <View style={{ marginBottom: 16 }}>
-      <View style={{ flexDirection: 'row', gap: 12, marginBottom: 12 }}>
-        <TouchableOpacity
-          style={{ flex: 1, backgroundColor: '#5a9470', borderRadius: 12, paddingVertical: 16 }}
-          onPress={() => router.push('/chat/new')}
-        >
-          <Text style={{ color: 'white', fontWeight: '600', textAlign: 'center' }}>
-            Start Chat
-          </Text>
-        </TouchableOpacity>
-        <TouchableOpacity
-          style={{ flex: 1, backgroundColor: '#dcedde', borderRadius: 12, paddingVertical: 16 }}
-          onPress={() => router.push('/voice-session')}
-        >
-          <Text style={{ color: '#3d654c', fontWeight: '600', textAlign: 'center' }}>
-            Voice Session
-          </Text>
-        </TouchableOpacity>
+    <Animated.View
+      entering={FadeInDown.delay(300).springify()}
+      layout={Layout.springify()}
+      style={styles.actionsContainer}
+    >
+      <Text style={styles.sectionTitle}>Quick Start</Text>
+      <View style={styles.actionsGrid}>
+        {actions.map((action, index) => (
+          <AnimatedPressable
+            key={action.id}
+            style={[
+              styles.actionCard,
+              {
+                backgroundColor: action.bgColor,
+                borderWidth: action.borderColor ? 1 : 0,
+                borderColor: action.borderColor,
+              },
+              action.isPrimary && styles.actionCardPrimary,
+            ]}
+            onPress={() => handleNavigation(action.route)}
+            hapticFeedback="medium"
+          >
+            <Text style={[styles.actionTitle, { color: action.textColor }]}>
+              {action.title}
+            </Text>
+            <Text
+              style={[
+                styles.actionSubtitle,
+                { color: action.textColor, opacity: 0.7 },
+              ]}
+            >
+              {action.subtitle}
+            </Text>
+          </AnimatedPressable>
+        ))}
       </View>
-      <View style={{ flexDirection: 'row', gap: 12, marginBottom: 12 }}>
-        <TouchableOpacity
-          style={{ flex: 1, backgroundColor: '#f0f7f1', borderRadius: 12, paddingVertical: 16, borderWidth: 1, borderColor: '#dcedde' }}
-          onPress={() => router.push('/flash-session')}
-        >
-          <Text style={{ color: '#4a7c5d', fontWeight: '600', textAlign: 'center' }}>
-            Flash Session
-          </Text>
-        </TouchableOpacity>
-        <TouchableOpacity
-          style={{ flex: 1, backgroundColor: '#fff8f0', borderRadius: 12, paddingVertical: 16, borderWidth: 1, borderColor: '#f5ebe0' }}
-          onPress={() => router.push('/breathing')}
-        >
-          <Text style={{ color: '#c97d52', fontWeight: '600', textAlign: 'center' }}>
-            Breathe
-          </Text>
-        </TouchableOpacity>
-      </View>
-      <View style={{ flexDirection: 'row', gap: 12 }}>
-        <TouchableOpacity
-          style={{ flex: 1, backgroundColor: '#fff8f0', borderRadius: 12, paddingVertical: 16, borderWidth: 1, borderColor: '#f5ebe0' }}
-          onPress={() => router.push('/crisis')}
-        >
-          <Text style={{ color: '#c97d52', fontWeight: '600', textAlign: 'center' }}>
-            Get Help
-          </Text>
-        </TouchableOpacity>
-      </View>
-    </View>
+    </Animated.View>
   );
 }
 
-function InsightsCard() {
-  const { totalSessions, totalMessages, breathingSessionsCompleted } = useUserStore();
+function JourneyStats() {
+  const { totalSessions, totalMessages, breathingSessionsCompleted } =
+    useUserStore();
+
+  const stats = [
+    { value: totalSessions, label: 'sessions' },
+    { value: totalMessages, label: 'messages' },
+    { value: breathingSessionsCompleted, label: 'breaths' },
+  ];
 
   return (
-    <View style={{ backgroundColor: 'white', borderRadius: 16, padding: 16, marginBottom: 16, borderWidth: 1, borderColor: '#f5ebe0' }}>
-      <Text style={{ fontWeight: '600', color: '#2d3a2e', fontSize: 18, marginBottom: 12 }}>
-        Your Journey
-      </Text>
-      <View style={{ flexDirection: 'row', justifyContent: 'space-around' }}>
-        <View style={{ alignItems: 'center' }}>
-          <Text style={{ fontSize: 24, fontWeight: '700', color: '#5a9470' }}>{totalSessions}</Text>
-          <Text style={{ color: '#a69889', fontSize: 12 }}>Sessions</Text>
-        </View>
-        <View style={{ width: 1, backgroundColor: '#f5ebe0' }} />
-        <View style={{ alignItems: 'center' }}>
-          <Text style={{ fontSize: 24, fontWeight: '700', color: '#5a9470' }}>{totalMessages}</Text>
-          <Text style={{ color: '#a69889', fontSize: 12 }}>Messages</Text>
-        </View>
-        <View style={{ width: 1, backgroundColor: '#f5ebe0' }} />
-        <View style={{ alignItems: 'center' }}>
-          <Text style={{ fontSize: 24, fontWeight: '700', color: '#5a9470' }}>{breathingSessionsCompleted}</Text>
-          <Text style={{ color: '#a69889', fontSize: 12 }}>Breaths</Text>
-        </View>
+    <Animated.View
+      entering={FadeInDown.delay(400).springify()}
+      layout={Layout.springify()}
+      style={styles.card}
+    >
+      <Text style={styles.cardTitle}>Your Journey</Text>
+      <View style={styles.statsRow}>
+        {stats.map((stat, index) => (
+          <View key={stat.label} style={styles.statItem}>
+            <Text style={styles.statNumber}>{stat.value}</Text>
+            <Text style={styles.statLabel}>{stat.label}</Text>
+            {index < stats.length - 1 && <View style={styles.statDivider} />}
+          </View>
+        ))}
       </View>
-    </View>
+    </Animated.View>
   );
 }
 
 export default function DashboardScreen() {
   const { updateStreak } = useUserStore();
+  const [refreshing, setRefreshing] = useState(false);
 
   useEffect(() => {
-    // Update streak when dashboard loads
     updateStreak();
-  }, []);
+  }, [updateStreak]);
+
+  const onRefresh = useCallback(() => {
+    setRefreshing(true);
+    updateStreak();
+    setTimeout(() => setRefreshing(false), 500);
+  }, [updateStreak]);
 
   return (
-    <View style={{ flex: 1, backgroundColor: '#fefdfb' }}>
-      <ScrollView style={{ flex: 1 }} contentContainerStyle={{ padding: 16 }}>
-        {/* Header */}
-        <View style={{ marginBottom: 20 }}>
-          <Text style={{ fontFamily: 'DMSerifDisplay_400Regular', fontSize: 28, color: '#2d3a2e' }}>
-            Welcome to Matcha
-          </Text>
-          <Text style={{ color: '#a69889', marginTop: 4 }}>
-            Your companion for self-reflection
-          </Text>
-        </View>
-
-        {/* Mood Check-in */}
+    <View style={styles.container}>
+      <ScrollView
+        style={styles.scrollView}
+        contentContainerStyle={styles.scrollContent}
+        showsVerticalScrollIndicator={false}
+        refreshControl={
+          <RefreshControl
+            refreshing={refreshing}
+            onRefresh={onRefresh}
+            tintColor="#5a9470"
+            colors={['#5a9470']}
+          />
+        }
+      >
         <MoodCheckIn />
-
-        {/* Streak Card */}
-        <StreakCard />
-
-        {/* Quick Actions */}
+        <WeekMoodStreak />
         <QuickActions />
-
-        {/* Journey Stats */}
-        <InsightsCard />
+        <JourneyStats />
 
         {/* Disclaimer */}
-        <Text style={{
-          color: '#c4b8ac',
-          fontSize: 11,
-          textAlign: 'center',
-          marginTop: 8,
-          marginBottom: 24,
-          paddingHorizontal: 16,
-          lineHeight: 16,
-        }}>
-          Matcha is for self-reflection and entertainment only. Not a substitute for professional care.
-        </Text>
+        <Animated.Text
+          entering={FadeInDown.delay(500).springify()}
+          style={styles.disclaimer}
+        >
+          Matcha is for self-reflection and entertainment only. Not a
+          substitute for professional care.
+        </Animated.Text>
       </ScrollView>
     </View>
   );
 }
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: '#fefdfb',
+  },
+  scrollView: {
+    flex: 1,
+  },
+  scrollContent: {
+    padding: 20,
+    paddingBottom: Platform.OS === 'ios' ? 32 : 24,
+  },
+
+  // Cards
+  card: {
+    backgroundColor: '#fff',
+    borderRadius: 16,
+    padding: 20,
+    marginBottom: 16,
+    shadowColor: '#2d3a2e',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.04,
+    shadowRadius: 8,
+    elevation: 2,
+  },
+  cardHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 16,
+  },
+  cardTitle: {
+    fontFamily: 'DMSerifDisplay_400Regular',
+    fontSize: 18,
+    color: '#2d3a2e',
+  },
+
+  // Mood Check-in (compact)
+  moodCard: {
+    backgroundColor: '#fff',
+    borderRadius: 14,
+    padding: 14,
+    marginBottom: 12,
+    shadowColor: '#2d3a2e',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.04,
+    shadowRadius: 6,
+    elevation: 2,
+  },
+  moodHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 12,
+  },
+  moodTitle: {
+    fontFamily: 'DMSans_600SemiBold',
+    fontSize: 15,
+    color: '#2d3a2e',
+  },
+  savedBadge: {
+    backgroundColor: '#dcedde',
+    paddingHorizontal: 10,
+    paddingVertical: 4,
+    borderRadius: 10,
+  },
+  savedLabel: {
+    fontFamily: 'DMSans_600SemiBold',
+    fontSize: 11,
+    color: '#5a9470',
+  },
+  moodRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+  },
+  moodButton: {
+    alignItems: 'center',
+    padding: 6,
+    borderRadius: 10,
+  },
+  moodCircle: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  moodEmoji: {
+    fontSize: 20,
+  },
+
+  // Week Streak
+  streakHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 20,
+  },
+  streakBadge: {
+    flexDirection: 'row',
+    alignItems: 'baseline',
+  },
+  streakNumber: {
+    fontFamily: 'DMSerifDisplay_400Regular',
+    fontSize: 28,
+    color: '#5a9470',
+    marginRight: 6,
+  },
+  streakLabel: {
+    fontFamily: 'DMSans_400Regular',
+    fontSize: 13,
+    color: '#a69889',
+  },
+  weekDays: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+  },
+  dayColumn: {
+    alignItems: 'center',
+  },
+  dayDot: {
+    width: 36,
+    height: 36,
+    borderRadius: 18,
+    backgroundColor: '#f5ebe0',
+    marginBottom: 8,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  dayDotToday: {
+    borderWidth: 2,
+    borderColor: '#5a9470',
+  },
+  dayEmoji: {
+    fontSize: 16,
+  },
+  dayLabel: {
+    fontFamily: 'DMSans_500Medium',
+    fontSize: 12,
+    color: '#c4b8ab',
+  },
+  dayLabelToday: {
+    color: '#5a9470',
+  },
+  bestStreak: {
+    marginTop: 16,
+    paddingTop: 16,
+    borderTopWidth: 1,
+    borderTopColor: '#f0ebe4',
+  },
+  bestStreakText: {
+    fontFamily: 'DMSans_400Regular',
+    fontSize: 13,
+    color: '#a69889',
+  },
+  bestStreakValue: {
+    fontFamily: 'DMSans_600SemiBold',
+    color: '#c97d52',
+  },
+
+  // Quick Actions
+  actionsContainer: {
+    marginBottom: 16,
+  },
+  sectionTitle: {
+    fontFamily: 'DMSerifDisplay_400Regular',
+    fontSize: 18,
+    color: '#2d3a2e',
+    marginBottom: 16,
+  },
+  actionsGrid: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: 12,
+  },
+  actionCard: {
+    width: (width - 52) / 2,
+    borderRadius: 14,
+    padding: 18,
+    shadowColor: '#2d3a2e',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.04,
+    shadowRadius: 8,
+    elevation: 2,
+  },
+  actionCardPrimary: {
+    shadowOpacity: 0.08,
+  },
+  actionTitle: {
+    fontFamily: 'DMSans_600SemiBold',
+    fontSize: 16,
+    marginBottom: 4,
+  },
+  actionSubtitle: {
+    fontFamily: 'DMSans_400Regular',
+    fontSize: 13,
+  },
+
+  // Stats
+  statsRow: {
+    flexDirection: 'row',
+    marginTop: 12,
+  },
+  statItem: {
+    flex: 1,
+    alignItems: 'center',
+    position: 'relative',
+  },
+  statNumber: {
+    fontFamily: 'DMSerifDisplay_400Regular',
+    fontSize: 28,
+    color: '#5a9470',
+  },
+  statLabel: {
+    fontFamily: 'DMSans_400Regular',
+    fontSize: 12,
+    color: '#a69889',
+    marginTop: 4,
+  },
+  statDivider: {
+    position: 'absolute',
+    right: 0,
+    top: 4,
+    bottom: 4,
+    width: 1,
+    backgroundColor: '#f0ebe4',
+  },
+
+  // Disclaimer
+  disclaimer: {
+    fontFamily: 'DMSans_400Regular',
+    color: '#c4b8ab',
+    fontSize: 11,
+    textAlign: 'center',
+    marginTop: 8,
+    marginBottom: 24,
+    paddingHorizontal: 16,
+    lineHeight: 16,
+  },
+});

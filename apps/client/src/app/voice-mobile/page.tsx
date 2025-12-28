@@ -1,6 +1,6 @@
 'use client';
 
-import { Suspense, useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import { useSearchParams } from 'next/navigation';
 import Vapi from '@vapi-ai/web';
 
@@ -23,7 +23,7 @@ const systemPrompts: Record<SessionType, string> = {
   'crisis-support': "You are Matcha, providing crisis support. Your primary goal is safety and de-escalation. Be immediately warm and present. Listen without judgment. Validate their feelings. Help ground them in the present. If they express imminent danger, encourage calling 988 or 911."
 };
 
-function VoiceMobileContent() {
+export default function VoiceMobilePage() {
   const searchParams = useSearchParams();
   const sessionType = (searchParams.get('type') as SessionType) || 'general-therapy';
 
@@ -374,40 +374,5 @@ function VoiceMobileContent() {
         }
       `}</style>
     </div>
-  );
-}
-
-function LoadingFallback() {
-  return (
-    <div style={{
-      minHeight: '100vh',
-      background: '#0a0a0a',
-      color: 'white',
-      display: 'flex',
-      alignItems: 'center',
-      justifyContent: 'center',
-    }}>
-      <div style={{
-        width: '40px',
-        height: '40px',
-        border: '3px solid rgba(255,255,255,0.2)',
-        borderTopColor: '#5a9470',
-        borderRadius: '50%',
-        animation: 'spin 1s linear infinite',
-      }} />
-      <style jsx global>{`
-        @keyframes spin {
-          to { transform: rotate(360deg); }
-        }
-      `}</style>
-    </div>
-  );
-}
-
-export default function VoiceMobilePage() {
-  return (
-    <Suspense fallback={<LoadingFallback />}>
-      <VoiceMobileContent />
-    </Suspense>
   );
 }

@@ -11,11 +11,10 @@ import {
   Alert,
 } from 'react-native';
 import { useLocalSearchParams, useNavigation, useRouter } from 'expo-router';
-import { useAuth } from '@clerk/clerk-expo';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 import BottomSheet, { BottomSheetScrollView } from '@gorhom/bottom-sheet';
-import { createApiClient, Message, Analysis, Conversation } from '../../lib/api';
+import { createApiClient, sendMessageStream, Message, Analysis, Conversation, SendMessageResponse } from '../../lib/api';
 import { useAppStore } from '../../stores/appStore';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 
@@ -166,7 +165,6 @@ export default function ChatDetailScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
   const navigation = useNavigation();
   const router = useRouter();
-  const { getToken } = useAuth();
   const { currentAnalysis, setCurrentAnalysis } = useAppStore();
   const bottomSheetRef = useRef<BottomSheet>(null);
   const flatListRef = useRef<FlatList>(null);
@@ -176,6 +174,7 @@ export default function ChatDetailScreen() {
   const [inputText, setInputText] = useState('');
   const [isLoading, setIsLoading] = useState(true);
   const [isSending, setIsSending] = useState(false);
+  const [streamingContent, setStreamingContent] = useState('');
   const [showAnalysis, setShowAnalysis] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const scrollTimeoutRef = useRef<NodeJS.Timeout | null>(null);
@@ -198,7 +197,7 @@ export default function ChatDetailScreen() {
     }
 
     try {
-      const api = createApiClient(getToken);
+      const api = createApiClient();
       const response = await api.getConversation(id);
       setConversation(response.data);
       setMessages(response.data.messages || []);
@@ -221,7 +220,7 @@ export default function ChatDetailScreen() {
         // Don't show error for network issues - allow offline chatting
       }
     }
-  }, [id, getToken, setCurrentAnalysis]);
+  }, [id, setCurrentAnalysis]);
 
   useEffect(() => {
     fetchConversation().finally(() => setIsLoading(false));
@@ -239,6 +238,7 @@ export default function ChatDetailScreen() {
     const messageText = inputText.trim();
     setInputText('');
     setIsSending(true);
+    setStreamingContent('');
 
     // Optimistically add user message
     const tempUserMessage: Message = {
@@ -249,43 +249,76 @@ export default function ChatDetailScreen() {
     };
     setMessages((prev) => [...prev, tempUserMessage]);
 
-    try {
-      const api = createApiClient(getToken);
-      const response = await api.sendMessage({
+    // Create placeholder for streaming response
+    const streamingMessageId = `streaming-${Date.now()}`;
+    const streamingMessage: Message = {
+      id: streamingMessageId,
+      role: 'ASSISTANT',
+      content: '',
+      createdAt: new Date().toISOString(),
+    };
+    setMessages((prev) => [...prev, streamingMessage]);
+
+    let accumulatedContent = '';
+
+    await sendMessageStream(
+      {
         message: messageText,
         conversationId: id === 'new' ? undefined : id,
-      });
+      },
+      // onChunk - update streaming message progressively
+      (chunk: string) => {
+        accumulatedContent += chunk;
+        setMessages((prev) =>
+          prev.map((m) =>
+            m.id === streamingMessageId
+              ? { ...m, content: accumulatedContent }
+              : m
+          )
+        );
+        scrollToBottom(false);
+      },
+      // onDone - finalize message with server data
+      (finalData: SendMessageResponse) => {
+        setMessages((prev) => {
+          const updated = prev.filter(
+            (m) => m.id !== tempUserMessage.id && m.id !== streamingMessageId
+          );
+          return [
+            ...updated,
+            { ...tempUserMessage, id: `user-${Date.now()}` },
+            finalData.message,
+          ];
+        });
 
-      // Update with real messages
-      setMessages((prev) => [
-        ...prev.filter((m) => m.id !== tempUserMessage.id),
-        { ...tempUserMessage, id: `user-${Date.now()}` },
-        response.data.message,
-      ]);
+        // If this was a new conversation, navigate to the real conversation ID
+        if (id === 'new' && finalData.conversationId) {
+          router.replace(`/chat/${finalData.conversationId}`);
+        }
 
-      // If this was a new conversation, navigate to the real conversation ID
-      if (id === 'new' && response.data.conversationId) {
-        router.replace(`/chat/${response.data.conversationId}`);
+        // Update analysis
+        if (finalData.analysis) {
+          setCurrentAnalysis(finalData.analysis);
+        }
+
+        setIsSending(false);
+        setStreamingContent('');
+      },
+      // onError - handle errors
+      (errorMsg: string) => {
+        console.error('Stream error:', errorMsg);
+        // Remove optimistic messages on error
+        setMessages((prev) =>
+          prev.filter((m) => m.id !== tempUserMessage.id && m.id !== streamingMessageId)
+        );
+        setInputText(messageText); // Restore input
+        setIsSending(false);
+        setStreamingContent('');
+
+        const displayError = 'Unable to connect to server. Please check your internet connection.';
+        Alert.alert('Message Failed', displayError);
       }
-
-      // Update analysis
-      if (response.data.analysis) {
-        setCurrentAnalysis(response.data.analysis);
-      }
-    } catch (err: any) {
-      console.error('Failed to send message:', err);
-      // Remove optimistic message on error
-      setMessages((prev) => prev.filter((m) => m.id !== tempUserMessage.id));
-      setInputText(messageText); // Restore input
-
-      // Show error alert
-      const errorMessage = err?.response?.status === 401
-        ? 'Please sign in to send messages'
-        : 'Unable to connect to server. Please check your internet connection.';
-      Alert.alert('Message Failed', errorMessage);
-    } finally {
-      setIsSending(false);
-    }
+    );
   };
 
   const toggleAnalysis = () => {
@@ -339,7 +372,11 @@ export default function ChatDetailScreen() {
             renderItem={({ item }) => <MessageBubble message={item} />}
             contentContainerStyle={{ paddingVertical: 16, flexGrow: 1 }}
             onContentSizeChange={() => scrollToBottom(true)}
-            ListFooterComponent={isSending ? <TypingIndicator /> : null}
+            ListFooterComponent={
+              isSending && messages.length > 0 && !messages[messages.length - 1]?.content
+                ? <TypingIndicator />
+                : null
+            }
             keyboardShouldPersistTaps="handled"
             keyboardDismissMode="interactive"
             removeClippedSubviews={false}

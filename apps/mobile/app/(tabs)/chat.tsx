@@ -1,263 +1,406 @@
-import { useState, useEffect, useCallback, useRef } from 'react';
-import { View, Text, FlatList, TouchableOpacity, ActivityIndicator, RefreshControl, AppState } from 'react-native';
-import { useRouter } from 'expo-router';
-import { Ionicons } from '@expo/vector-icons';
-import { useAuth } from '@clerk/clerk-expo';
-import { createApiClient, Conversation } from '../../lib/api';
+import { useState, useCallback } from 'react';
+import {
+  View,
+  Text,
+  ScrollView,
+  TouchableOpacity,
+  Modal,
+  Alert,
+  RefreshControl,
+  StyleSheet,
+  Platform,
+  Pressable,
+} from 'react-native';
+import Animated, { FadeInDown, FadeInUp } from 'react-native-reanimated';
+import {
+  useJournalStore,
+  getTodayPrompt,
+  getRandomGratitudePrompt,
+  JournalEntryType,
+} from '../../stores/journalStore';
+import { JournalEntryEditor, JournalCard } from '../../components/JournalEntry';
 
-// Global throttle to prevent multiple instances from fetching
-let globalLastFetch = 0;
+type EditorState = {
+  visible: boolean;
+  type: JournalEntryType;
+  prompt?: string;
+  editId?: string;
+};
 
-function formatTimeAgo(dateString: string): string {
-  const date = new Date(dateString);
-  const now = new Date();
-  const diffMs = now.getTime() - date.getTime();
-  const diffMins = Math.floor(diffMs / 60000);
-  const diffHours = Math.floor(diffMs / 3600000);
-  const diffDays = Math.floor(diffMs / 86400000);
+export default function JournalScreen() {
+  const { entries, getTodayEntries, getStreak, deleteEntry } = useJournalStore();
+  const [editor, setEditor] = useState<EditorState>({
+    visible: false,
+    type: 'freeform',
+  });
+  const [refreshing, setRefreshing] = useState(false);
 
-  if (diffMins < 60) return `${diffMins}m ago`;
-  if (diffHours < 24) return `${diffHours}h ago`;
-  if (diffDays === 1) return 'Yesterday';
-  if (diffDays < 7) return `${diffDays} days ago`;
-  return date.toLocaleDateString();
-}
+  const todayEntries = getTodayEntries();
+  const streak = getStreak();
+  const todayPrompt = getTodayPrompt();
 
-// Guest prompt component
-function GuestPrompt() {
-  const router = useRouter();
+  const onRefresh = useCallback(() => {
+    setRefreshing(true);
+    setTimeout(() => setRefreshing(false), 300);
+  }, []);
 
-  return (
-    <View style={{ flex: 1, backgroundColor: '#fefdfb', alignItems: 'center', justifyContent: 'center', padding: 32 }}>
-      <View style={{ width: 100, height: 100, borderRadius: 50, backgroundColor: '#dcedde', alignItems: 'center', justifyContent: 'center', marginBottom: 24 }}>
-        <Ionicons name="chatbubbles-outline" size={48} color="#5a9470" />
-      </View>
-
-      <Text style={{ fontFamily: 'DMSerifDisplay_400Regular', fontSize: 24, color: '#2d3a2e', textAlign: 'center', marginBottom: 8 }}>
-        AI-Powered Conversations
-      </Text>
-
-      <Text style={{ color: '#5a5347', textAlign: 'center', lineHeight: 22, marginBottom: 32 }}>
-        Chat with our AI companion to process your thoughts, understand emotions, and gain personalized insights.
-      </Text>
-
-      <View style={{ width: '100%', gap: 12 }}>
-        <TouchableOpacity
-          style={{ backgroundColor: '#5a9470', borderRadius: 12, paddingVertical: 16, alignItems: 'center' }}
-          onPress={() => router.push('/(auth)/signup')}
-        >
-          <Text style={{ color: 'white', fontWeight: '600', fontSize: 16 }}>Create Free Account</Text>
-        </TouchableOpacity>
-
-        <TouchableOpacity
-          style={{ backgroundColor: 'white', borderRadius: 12, paddingVertical: 16, alignItems: 'center', borderWidth: 1, borderColor: '#f5ebe0' }}
-          onPress={() => router.push('/(auth)/login')}
-        >
-          <Text style={{ color: '#5a9470', fontWeight: '600', fontSize: 16 }}>Sign In</Text>
-        </TouchableOpacity>
-      </View>
-
-      <View style={{ marginTop: 32, padding: 16, backgroundColor: '#fff8f0', borderRadius: 12, width: '100%' }}>
-        <Text style={{ color: '#c97d52', fontWeight: '600', marginBottom: 8 }}>Why sign up?</Text>
-        <View style={{ gap: 8 }}>
-          <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-            <Ionicons name="checkmark-circle" size={16} color="#5a9470" />
-            <Text style={{ color: '#5a5347', marginLeft: 8 }}>Save your conversations</Text>
-          </View>
-          <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-            <Ionicons name="checkmark-circle" size={16} color="#5a9470" />
-            <Text style={{ color: '#5a5347', marginLeft: 8 }}>Track emotional patterns over time</Text>
-          </View>
-          <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-            <Ionicons name="checkmark-circle" size={16} color="#5a9470" />
-            <Text style={{ color: '#5a5347', marginLeft: 8 }}>Get personalized AI analysis</Text>
-          </View>
-          <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-            <Ionicons name="checkmark-circle" size={16} color="#5a9470" />
-            <Text style={{ color: '#5a5347', marginLeft: 8 }}>Sync across devices</Text>
-          </View>
-        </View>
-      </View>
-    </View>
-  );
-}
-
-export default function ChatListScreen() {
-  const router = useRouter();
-  const { getToken, isSignedIn, isLoaded } = useAuth();
-  const [conversations, setConversations] = useState<Conversation[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
-  const [isRefreshing, setIsRefreshing] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-  const isFetching = useRef(false);
-
-  const fetchConversations = useCallback(async (force = false) => {
-    if (!isSignedIn) {
-      setIsLoading(false);
-      return;
-    }
-
-    // Prevent concurrent fetches
-    if (isFetching.current) return;
-
-    // Global throttle: 5 seconds between fetches (unless forced)
-    const now = Date.now();
-    if (!force && now - globalLastFetch < 5000) {
-      return;
-    }
-
-    try {
-      isFetching.current = true;
-      setError(null);
-      const token = await getToken();
-
-      if (!token) {
-        setError('Authentication failed - please sign in again');
-        return;
-      }
-
-      globalLastFetch = now;
-      const api = createApiClient(getToken);
-      const response = await api.getConversations();
-      setConversations(response.data.conversations || []);
-    } catch (err: any) {
-      if (err?.response?.status === 429) {
-        // Rate limited - silently ignore, use cached data
-        return;
-      }
-      console.error('Failed to fetch conversations:', err?.response?.status, err?.response?.data || err?.message);
-      if (err?.response?.status === 401) {
-        setError('Session expired - please sign in again');
-      } else if (err?.response?.status === 404) {
-        setConversations([]);
-      } else if (conversations.length === 0) {
-        // Only show error if we have no cached data
-        setError('Unable to load conversations');
-      }
-    } finally {
-      isFetching.current = false;
-    }
-  }, [getToken, isSignedIn, conversations.length]);
-
-  // Initial fetch only
-  useEffect(() => {
-    if (isLoaded) {
-      if (isSignedIn) {
-        fetchConversations(true).finally(() => setIsLoading(false));
-      } else {
-        setIsLoading(false);
-      }
-    }
-  }, [isSignedIn, isLoaded]);
-
-  // Refetch when app comes to foreground
-  useEffect(() => {
-    const subscription = AppState.addEventListener('change', (nextAppState) => {
-      if (nextAppState === 'active' && isSignedIn && !isLoading) {
-        fetchConversations();
-      }
-    });
-    return () => subscription.remove();
-  }, [isSignedIn, isLoading]);
-
-  const onRefresh = async () => {
-    setIsRefreshing(true);
-    await fetchConversations(true);
-    setIsRefreshing(false);
+  const openEditor = (type: JournalEntryType, prompt?: string) => {
+    setEditor({ visible: true, type, prompt });
   };
 
-  const handleNewChat = async () => {
-    if (!isSignedIn) {
-      router.push('/(auth)/login');
-      return;
-    }
-
-    try {
-      const api = createApiClient(getToken);
-      const response = await api.createConversation();
-      router.push(`/chat/${response.data.id}`);
-    } catch (err) {
-      console.error('Failed to create conversation:', err);
-      // Navigate to new chat anyway - it will create on first message
-      router.push('/chat/new');
-    }
-  };
-
-  // Show loading while auth is being determined
-  if (!isLoaded || isLoading) {
-    return (
-      <View style={{ flex: 1, backgroundColor: '#fefdfb', alignItems: 'center', justifyContent: 'center' }}>
-        <ActivityIndicator size="large" color="#5a9470" />
-      </View>
+  const handleDeleteEntry = (id: string) => {
+    Alert.alert(
+      'Delete Entry',
+      'Are you sure you want to delete this entry? This cannot be undone.',
+      [
+        { text: 'Cancel', style: 'cancel' },
+        {
+          text: 'Delete',
+          style: 'destructive',
+          onPress: () => deleteEntry(id),
+        },
+      ]
     );
-  }
+  };
 
-  // Show guest prompt if not signed in
-  if (!isSignedIn) {
-    return <GuestPrompt />;
-  }
+  const handleEditEntry = (id: string) => {
+    const entry = entries.find((e) => e.id === id);
+    if (entry) {
+      setEditor({
+        visible: true,
+        type: entry.type,
+        prompt: entry.prompt,
+        editId: id,
+      });
+    }
+  };
 
   return (
-    <View style={{ flex: 1, backgroundColor: '#fefdfb' }}>
-      {/* Header */}
-      <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', padding: 16, borderBottomWidth: 1, borderBottomColor: '#f5ebe0' }}>
-        <Text style={{ color: '#a69889' }}>{conversations.length} conversations</Text>
-        <TouchableOpacity
-          style={{ flexDirection: 'row', alignItems: 'center', backgroundColor: '#5a9470', paddingHorizontal: 16, paddingVertical: 8, borderRadius: 20 }}
-          onPress={handleNewChat}
-        >
-          <Ionicons name="add" size={18} color="white" />
-          <Text style={{ color: 'white', fontWeight: '500', marginLeft: 4 }}>New Chat</Text>
-        </TouchableOpacity>
-      </View>
-
-      <FlatList
-        data={conversations}
-        keyExtractor={(item) => item.id}
+    <View style={styles.container}>
+      <ScrollView
+        style={styles.scrollView}
+        contentContainerStyle={styles.scrollContent}
+        showsVerticalScrollIndicator={false}
         refreshControl={
-          <RefreshControl refreshing={isRefreshing} onRefresh={onRefresh} tintColor="#5a9470" />
+          <RefreshControl
+            refreshing={refreshing}
+            onRefresh={onRefresh}
+            tintColor="#5a9470"
+          />
         }
-        renderItem={({ item }) => (
-          <TouchableOpacity
-            style={{ padding: 16, borderBottomWidth: 1, borderBottomColor: '#f5ebe0', backgroundColor: 'white' }}
-            onPress={() => router.push(`/chat/${item.id}`)}
-          >
-            <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginBottom: 4 }}>
-              <Text style={{ fontWeight: '600', color: '#2d3a2e', flex: 1 }} numberOfLines={1}>
-                {item.title || 'New conversation'}
-              </Text>
-              <Text style={{ color: '#d9d0c5', fontSize: 12 }}>{formatTimeAgo(item.updatedAt)}</Text>
+      >
+        {/* Stats Card */}
+        <Animated.View
+          entering={FadeInDown.delay(100).springify()}
+          style={styles.statsCard}
+        >
+          <View style={styles.statsRow}>
+            <View style={styles.statItem}>
+              <Text style={styles.statNumber}>{streak}</Text>
+              <Text style={styles.statLabel}>day streak</Text>
             </View>
-            {item.emotionalState?.primary && (
-              <Text style={{ color: '#a69889' }} numberOfLines={1}>
-                Feeling: {item.emotionalState.primary}
-              </Text>
-            )}
-          </TouchableOpacity>
-        )}
-        ListEmptyComponent={
-          <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center', padding: 32, marginTop: 60 }}>
-            <Ionicons name={error ? "alert-circle-outline" : "chatbubbles-outline"} size={64} color={error ? "#e57373" : "#d9d0c5"} />
-            <Text style={{ fontWeight: '600', color: '#2d3a2e', fontSize: 18, marginTop: 16 }}>
-              {error || 'No conversations yet'}
-            </Text>
-            <Text style={{ color: '#a69889', textAlign: 'center', marginTop: 8 }}>
-              {error ? 'Pull down to retry or tap the button below.' : 'Start a new chat to begin exploring your thoughts.'}
-            </Text>
-            {error && (
-              <TouchableOpacity
-                style={{ marginTop: 16, backgroundColor: '#5a9470', paddingHorizontal: 24, paddingVertical: 12, borderRadius: 20 }}
-                onPress={() => {
-                  setIsLoading(true);
-                  fetchConversations(true).finally(() => setIsLoading(false));
-                }}
-              >
-                <Text style={{ color: 'white', fontWeight: '500' }}>Retry</Text>
-              </TouchableOpacity>
+            <View style={styles.statDivider} />
+            <View style={styles.statItem}>
+              <Text style={styles.statNumber}>{entries.length}</Text>
+              <Text style={styles.statLabel}>entries</Text>
+            </View>
+            <View style={styles.statDivider} />
+            <View style={styles.statItem}>
+              <Text style={styles.statNumber}>{todayEntries.length}</Text>
+              <Text style={styles.statLabel}>today</Text>
+            </View>
+          </View>
+        </Animated.View>
+
+        {/* Today's Prompt */}
+        <Animated.View entering={FadeInDown.delay(200).springify()}>
+          <Pressable
+            onPress={() => openEditor('reflection', todayPrompt)}
+            style={styles.promptCard}
+          >
+            <Text style={styles.promptLabel}>Today's Reflection</Text>
+            <Text style={styles.promptText}>"{todayPrompt}"</Text>
+            <Text style={styles.promptHint}>Tap to write</Text>
+          </Pressable>
+        </Animated.View>
+
+        {/* Quick Actions */}
+        <Animated.View
+          entering={FadeInDown.delay(300).springify()}
+          style={styles.quickActions}
+        >
+          <Pressable
+            onPress={() => openEditor('gratitude', getRandomGratitudePrompt())}
+            style={styles.actionButton}
+          >
+            <Text style={styles.actionTitle}>Gratitude</Text>
+            <Text style={styles.actionSubtitle}>What are you thankful for?</Text>
+          </Pressable>
+          <Pressable
+            onPress={() => openEditor('freeform')}
+            style={[styles.actionButton, styles.actionButtonAlt]}
+          >
+            <Text style={[styles.actionTitle, styles.actionTitleAlt]}>Free Write</Text>
+            <Text style={[styles.actionSubtitle, styles.actionSubtitleAlt]}>Write anything on your mind</Text>
+          </Pressable>
+        </Animated.View>
+
+        {/* Recent Entries */}
+        <Animated.View entering={FadeInDown.delay(400).springify()}>
+          <View style={styles.sectionHeader}>
+            <Text style={styles.sectionTitle}>Recent Entries</Text>
+            {entries.length > 0 && (
+              <Text style={styles.sectionCount}>{entries.length}</Text>
             )}
           </View>
-        }
-      />
+
+          {entries.length === 0 ? (
+            <View style={styles.emptyState}>
+              <Text style={styles.emptyTitle}>Start Your Journal</Text>
+              <Text style={styles.emptyText}>
+                Tap on today's reflection above to write your first entry.
+                Everything is saved locally on your device.
+              </Text>
+            </View>
+          ) : (
+            entries.slice(0, 10).map((entry, index) => (
+              <Animated.View
+                key={entry.id}
+                entering={FadeInUp.delay(index * 50)}
+              >
+                <JournalCard
+                  entry={entry}
+                  onPress={() => handleEditEntry(entry.id)}
+                  onDelete={() => handleDeleteEntry(entry.id)}
+                />
+              </Animated.View>
+            ))
+          )}
+
+          {entries.length > 10 && (
+            <Pressable style={styles.viewAllButton}>
+              <Text style={styles.viewAllText}>
+                View All Entries ({entries.length})
+              </Text>
+            </Pressable>
+          )}
+        </Animated.View>
+
+        {/* Privacy Note */}
+        <Animated.View
+          entering={FadeInDown.delay(500).springify()}
+          style={styles.privacyNote}
+        >
+          <Text style={styles.privacyTitle}>Private & Offline</Text>
+          <Text style={styles.privacyText}>
+            Your journal entries are stored only on this device. They are never
+            uploaded or shared.
+          </Text>
+        </Animated.View>
+      </ScrollView>
+
+      {/* Editor Modal */}
+      <Modal
+        visible={editor.visible}
+        animationType="slide"
+        presentationStyle="pageSheet"
+      >
+        <JournalEntryEditor
+          type={editor.type}
+          prompt={editor.prompt}
+          editId={editor.editId}
+          onSave={() => setEditor({ visible: false, type: 'freeform' })}
+          onCancel={() => setEditor({ visible: false, type: 'freeform' })}
+        />
+      </Modal>
     </View>
   );
 }
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: '#fefdfb',
+  },
+  scrollView: {
+    flex: 1,
+  },
+  scrollContent: {
+    padding: 20,
+    paddingBottom: Platform.OS === 'ios' ? 32 : 24,
+  },
+
+  // Stats Card
+  statsCard: {
+    backgroundColor: '#fff',
+    borderRadius: 14,
+    padding: 16,
+    marginBottom: 16,
+    shadowColor: '#2d3a2e',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.04,
+    shadowRadius: 6,
+    elevation: 2,
+  },
+  statsRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  statItem: {
+    flex: 1,
+    alignItems: 'center',
+  },
+  statNumber: {
+    fontFamily: 'DMSerifDisplay_400Regular',
+    fontSize: 28,
+    color: '#5a9470',
+  },
+  statLabel: {
+    fontFamily: 'DMSans_400Regular',
+    fontSize: 12,
+    color: '#a69889',
+    marginTop: 2,
+  },
+  statDivider: {
+    width: 1,
+    height: 32,
+    backgroundColor: '#f0ebe4',
+  },
+
+  // Prompt Card
+  promptCard: {
+    backgroundColor: '#5a9470',
+    borderRadius: 16,
+    padding: 20,
+    marginBottom: 16,
+  },
+  promptLabel: {
+    fontFamily: 'DMSans_600SemiBold',
+    fontSize: 13,
+    color: 'rgba(255,255,255,0.8)',
+    marginBottom: 8,
+  },
+  promptText: {
+    fontFamily: 'DMSerifDisplay_400Regular',
+    fontSize: 18,
+    color: '#fff',
+    lineHeight: 26,
+  },
+  promptHint: {
+    fontFamily: 'DMSans_500Medium',
+    fontSize: 13,
+    color: 'rgba(255,255,255,0.7)',
+    marginTop: 14,
+  },
+
+  // Quick Actions
+  quickActions: {
+    flexDirection: 'row',
+    gap: 12,
+    marginBottom: 24,
+  },
+  actionButton: {
+    flex: 1,
+    backgroundColor: '#fff8f0',
+    borderRadius: 12,
+    padding: 16,
+    borderWidth: 1,
+    borderColor: '#f5ebe0',
+  },
+  actionButtonAlt: {
+    backgroundColor: '#f0f7f1',
+    borderColor: '#dcedde',
+  },
+  actionTitle: {
+    fontFamily: 'DMSans_600SemiBold',
+    fontSize: 15,
+    color: '#c97d52',
+    marginBottom: 4,
+  },
+  actionTitleAlt: {
+    color: '#5a9470',
+  },
+  actionSubtitle: {
+    fontFamily: 'DMSans_400Regular',
+    fontSize: 12,
+    color: '#c97d52',
+    opacity: 0.7,
+  },
+  actionSubtitleAlt: {
+    color: '#5a9470',
+  },
+
+  // Section Header
+  sectionHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 16,
+  },
+  sectionTitle: {
+    fontFamily: 'DMSerifDisplay_400Regular',
+    fontSize: 18,
+    color: '#2d3a2e',
+  },
+  sectionCount: {
+    fontFamily: 'DMSans_600SemiBold',
+    fontSize: 13,
+    color: '#5a9470',
+    backgroundColor: '#dcedde',
+    paddingHorizontal: 10,
+    paddingVertical: 4,
+    borderRadius: 10,
+  },
+
+  // Empty State
+  emptyState: {
+    alignItems: 'center',
+    padding: 32,
+    backgroundColor: '#faf7f2',
+    borderRadius: 14,
+  },
+  emptyTitle: {
+    fontFamily: 'DMSans_600SemiBold',
+    fontSize: 16,
+    color: '#2d3a2e',
+    marginBottom: 8,
+  },
+  emptyText: {
+    fontFamily: 'DMSans_400Regular',
+    fontSize: 14,
+    color: '#a69889',
+    textAlign: 'center',
+    lineHeight: 20,
+  },
+
+  // View All Button
+  viewAllButton: {
+    padding: 16,
+    alignItems: 'center',
+  },
+  viewAllText: {
+    fontFamily: 'DMSans_600SemiBold',
+    fontSize: 14,
+    color: '#5a9470',
+  },
+
+  // Privacy Note
+  privacyNote: {
+    marginTop: 16,
+    padding: 14,
+    backgroundColor: '#f5f5f5',
+    borderRadius: 12,
+  },
+  privacyTitle: {
+    fontFamily: 'DMSans_600SemiBold',
+    fontSize: 13,
+    color: '#757575',
+    marginBottom: 4,
+  },
+  privacyText: {
+    fontFamily: 'DMSans_400Regular',
+    fontSize: 12,
+    color: '#9e9e9e',
+    lineHeight: 18,
+  },
+});

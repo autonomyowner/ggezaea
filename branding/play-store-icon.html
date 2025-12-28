@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Matcha App Icon - 512x512</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      background: #333;
+      font-family: system-ui, -apple-system, sans-serif;
+    }
+    .icon {
+      width: 512px;
+      height: 512px;
+      background: linear-gradient(145deg, #5a9470 0%, #4a7c5d 100%);
+      border-radius: 108px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      position: relative;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+    }
+    .leaf {
+      font-size: 180px;
+      color: white;
+      opacity: 0.95;
+      text-shadow: 0 8px 24px rgba(0,0,0,0.2);
+    }
+    .text {
+      font-size: 72px;
+      font-weight: 600;
+      color: white;
+      letter-spacing: 4px;
+      margin-top: 10px;
+      text-shadow: 0 4px 12px rgba(0,0,0,0.2);
+    }
+    .instructions {
+      position: fixed;
+      bottom: 20px;
+      left: 20px;
+      color: #fff;
+      background: rgba(0,0,0,0.7);
+      padding: 15px 20px;
+      border-radius: 8px;
+      font-size: 14px;
+    }
+  </style>
+</head>
+<body>
+  <div class="icon">
+    <div class="leaf">🍃</div>
+    <div class="text">matcha</div>
+  </div>
+  <div class="instructions">
+    <strong>Instructions:</strong><br>
+    1. Press F12 → Console → type: document.querySelector('.instructions').remove()<br>
+    2. Right-click the icon → Inspect<br>
+    3. Right-click the .icon element → Capture node screenshot<br>
+    Or use a screenshot tool to capture exactly 512x512px
+  </div>
+</body>
+</html>

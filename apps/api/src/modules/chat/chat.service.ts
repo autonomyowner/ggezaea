@@ -308,6 +308,138 @@ export class ChatService {
   }
 
   /**
+   * Stream message - faster response with progressive rendering
+   */
+  async sendMessageStream(
+    userId: string,
+    userTier: 'FREE' | 'PRO',
+    data: SendMessageDto,
+    onChunk: (chunk: string) => void,
+    onComplete: (finalData: any) => void,
+  ) {
+    // Check usage limits for FREE tier
+    if (userTier === 'FREE') {
+      const canSend = await this.checkAndUpdateUsage(userId);
+      if (!canSend) {
+        throw new ForbiddenException({
+          message: 'Monthly message limit reached',
+          code: 'USAGE_LIMIT_EXCEEDED',
+        });
+      }
+    }
+
+    let conversationId = data.conversationId;
+
+    // Create a new conversation if none provided
+    if (!conversationId) {
+      const conversation = await this.createConversation(userId, {
+        title: data.message.slice(0, 50) + (data.message.length > 50 ? '...' : ''),
+      });
+      conversationId = conversation.id;
+    } else {
+      const existing = await this.prisma.conversation.findFirst({
+        where: { id: conversationId, userId },
+      });
+      if (!existing) {
+        throw new NotFoundException('Conversation not found');
+      }
+    }
+
+    // Save user message
+    await this.prisma.message.create({
+      data: {
+        conversationId,
+        role: MessageRole.USER,
+        content: data.message,
+      },
+    });
+
+    // Get conversation history for context (limited for speed)
+    const messages = await this.prisma.message.findMany({
+      where: { conversationId },
+      orderBy: { createdAt: 'asc' },
+      take: 10, // Reduced for faster processing
+    });
+
+    // Quick safety check - skip deep analysis for streaming
+    const inputSafety = await this.safetyGuard.checkUserInput(data.message, {
+      userId,
+      previousMessages: messages.slice(-3).map(m => ({
+        role: m.role.toLowerCase(),
+        content: m.content,
+      })),
+    });
+
+    // Crisis handling - immediate response
+    if (inputSafety.riskLevel === RiskLevel.CRISIS) {
+      const crisisMessage = this.safetyGuard.getCrisisInterventionMessage(inputSafety.flags);
+
+      await this.prisma.message.create({
+        data: {
+          conversationId,
+          role: MessageRole.ASSISTANT,
+          content: crisisMessage,
+        },
+      });
+
+      onChunk(crisisMessage);
+      onComplete({
+        conversationId,
+        crisisDetected: true,
+      });
+      return;
+    }
+
+    // Build messages - use fast model for streaming
+    const systemPrompt = getSystemPromptWithAnalysis({
+      messageCount: messages.length,
+      isDeepAnalysis: false,
+      previousEmotions: [],
+    });
+
+    const chatMessages: ChatMessage[] = [
+      { role: 'system', content: systemPrompt },
+      ...messages.map((m) => ({
+        role: m.role.toLowerCase() as 'user' | 'assistant',
+        content: m.content,
+      })),
+    ];
+
+    // Stream the response using fast model
+    let fullMessage = '';
+    try {
+      const response = await this.openRouter.streamChat(chatMessages, (chunk) => {
+        fullMessage += chunk;
+        onChunk(chunk);
+      });
+
+      // Save assistant message after streaming completes
+      const assistantMessage = await this.prisma.message.create({
+        data: {
+          conversationId,
+          role: MessageRole.ASSISTANT,
+          content: fullMessage,
+        },
+      });
+
+      // Update conversation timestamp
+      await this.prisma.conversation.update({
+        where: { id: conversationId },
+        data: { updatedAt: new Date() },
+      });
+
+      onComplete({
+        conversationId,
+        messageId: assistantMessage.id,
+        usage: response.usage,
+      });
+    } catch (error) {
+      this.logger.error('Streaming error:', error);
+      throw error;
+    }
+  }
+
+  /**
    * Merge new biases with existing ones, keeping unique entries
    */
   private async mergeAnalysisArray(
@@ -503,28 +635,21 @@ export class ChatService {
   }
 
   /**
-   * Detect if message contains complex emotional content that needs deeper analysis
-   * This triggers the deep model tier for more careful handling
+   * Detect if message contains crisis-level content that needs deeper analysis
+   * This triggers the deep model tier only for safety-critical situations
+   *
+   * Note: Keep patterns minimal to avoid unnecessary slow responses.
+   * General emotional content is handled fine by the fast model.
    */
   private detectComplexEmotionalContent(message: string): boolean {
-    const indicators = [
-      // Crisis/safety indicators
-      /\b(suicide|suicidal|kill myself|end my life|self.?harm|hurt myself|give up on life)\b/i,
-      // High distress indicators
-      /\b(panic|panicking|terrified|devastated|hopeless|worthless|can't go on)\b/i,
-      // Trauma-related content
-      /\b(trauma|traumatic|abuse|abused|assault|attacked|ptsd)\b/i,
-      // Mental health treatment mentions (may need careful handling)
-      /\b(diagnosed|medication|psychiatrist|hospitalized|crisis)\b/i,
-      // Intense emotional distress
-      /\b(can't stop crying|breaking down|falling apart|losing my mind)\b/i,
-      // Relationship crises
-      /\b(divorce|cheated on|betrayed|abandoned)\b/i,
-      // Loss and grief
-      /\b(died|death|passed away|lost my|funeral)\b/i,
+    const crisisIndicators = [
+      // Direct self-harm/suicide indicators only
+      /\b(suicide|suicidal|kill myself|end my life|self.?harm|hurt myself|want to die|don't want to live)\b/i,
+      // Active crisis phrases
+      /\b(can't go on|no reason to live|everyone better off without me|planning to end)\b/i,
     ];
 
-    return indicators.some((pattern) => pattern.test(message));
+    return crisisIndicators.some((pattern) => pattern.test(message));
   }
 
   /**

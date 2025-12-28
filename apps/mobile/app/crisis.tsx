@@ -179,11 +179,11 @@ export default function CrisisScreen() {
           <Ionicons name="arrow-back" size={24} color="#2d3a2e" />
         </TouchableOpacity>
         <Text style={{ flex: 1, fontFamily: 'DMSerifDisplay_400Regular', fontSize: 24, color: '#2d3a2e', marginLeft: 8 }}>
-          Get Help
+          Support Resources
         </Text>
       </View>
 
-      <ScrollView style={{ flex: 1 }} contentContainerStyle={{ padding: 16 }}>
+      <ScrollView style={{ flex: 1 }} contentContainerStyle={{ padding: 20 }}>
         {/* Emergency Banner */}
         <View style={{
           backgroundColor: '#ffebee',
@@ -239,12 +239,12 @@ export default function CrisisScreen() {
           </View>
         </View>
 
-        {/* Crisis Resources */}
+        {/* Helpful Resources */}
         <Text style={{ fontWeight: '600', color: '#2d3a2e', fontSize: 18, marginBottom: 12 }}>
-          Crisis Resources
+          Helpful Resources
         </Text>
         <Text style={{ color: '#a69889', marginBottom: 16 }}>
-          Free, confidential support is available 24/7
+          Free, confidential support from trained professionals
         </Text>
 
         {CRISIS_RESOURCES.map((resource) => (
@@ -260,7 +260,7 @@ export default function CrisisScreen() {
           marginBottom: 32,
         }}>
           <Text style={{ color: '#757575', fontSize: 12, lineHeight: 18 }}>
-            Matcha is not a replacement for professional mental health care. If you're experiencing a mental health emergency, please contact a crisis service or emergency services immediately.
+            Matcha is a wellness companion for self-reflection, not a substitute for professional care. The resources listed above are provided by independent organizations. Please reach out to them directly if you need support.
           </Text>
         </View>
       </ScrollView>

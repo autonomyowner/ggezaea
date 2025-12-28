@@ -1,6 +1,31 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
+import { Platform, PermissionsAndroid, Alert } from 'react-native';
 import Vapi from '@vapi-ai/react-native';
 import { SessionType, sessionConfigs, voiceConfig, modelConfig } from '../lib/voice-config';
+
+// Request microphone permission on Android
+async function requestMicrophonePermission(): Promise<boolean> {
+  if (Platform.OS !== 'android') {
+    return true; // iOS handles permissions differently
+  }
+
+  try {
+    const granted = await PermissionsAndroid.request(
+      PermissionsAndroid.PERMISSIONS.RECORD_AUDIO,
+      {
+        title: 'Microphone Permission',
+        message: 'Matcha needs access to your microphone for voice conversations.',
+        buttonNeutral: 'Ask Me Later',
+        buttonNegative: 'Cancel',
+        buttonPositive: 'OK',
+      }
+    );
+    return granted === PermissionsAndroid.RESULTS.GRANTED;
+  } catch (err) {
+    console.error('Permission request failed:', err);
+    return false;
+  }
+}
 
 export type VapiStatus = 'idle' | 'connecting' | 'active' | 'speaking' | 'ended' | 'error';
 
@@ -126,6 +151,15 @@ export function useVapi({ sessionType, onSessionEnd, onError }: UseVapiOptions):
     if (!vapiRef.current) {
       setError('Voice not initialized');
       setStatus('error');
+      return;
+    }
+
+    // Request microphone permission first
+    const hasPermission = await requestMicrophonePermission();
+    if (!hasPermission) {
+      setError('Microphone permission is required for voice sessions');
+      setStatus('error');
+      onError?.('Microphone permission denied');
       return;
     }
 

@@ -51,33 +51,45 @@
 }
 
 @keyframes ambientFloat {
-  0%, 100% { transform: translate(0, 0) scale(1); }
-  50% { transform: translate(20px, -20px) scale(1.1); }
+
+  0%,
+  100% {
+    transform: translate(0, 0) scale(1);
+  }
+
+  50% {
+    transform: translate(20px, -20px) scale(1.1);
+  }
 }
 
 /* Device Frame */
 .demo-device {
   position: relative;
   z-index: 10;
-  background: #1a1a1f;
+  background: #0f1c15;
+  /* Deep forest green/black */
   border-radius: 20px;
   overflow: hidden;
   box-shadow:
-    0 0 0 1px rgba(255, 255, 255, 0.08),
-    0 25px 80px -20px rgba(0, 0, 0, 0.5),
-    0 0 100px -30px rgba(125, 184, 143, 0.3);
-  transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+    0 0 0 1px rgba(255, 255, 255, 0.1),
+    0 25px 80px -20px rgba(10, 20, 15, 0.7),
+    0 0 100px -30px rgba(74, 124, 93, 0.4);
+  transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.6s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .demo-device:hover {
-  transform: translateY(-4px);
+  transform: translateY(-8px) scale(1.005);
+  box-shadow:
+    0 0 0 1px rgba(125, 184, 143, 0.4),
+    0 40px 120px -30px rgba(0, 0, 0, 0.8),
+    0 0 140px -20px rgba(104, 166, 125, 0.2);
 }
 
 .demo-device.playing {
   box-shadow:
-    0 0 0 1px rgba(125, 184, 143, 0.3),
-    0 30px 100px -20px rgba(0, 0, 0, 0.6),
-    0 0 120px -20px rgba(125, 184, 143, 0.4);
+    0 0 0 1px rgba(74, 222, 128, 0.3),
+    0 30px 100px -20px rgba(0, 0, 0, 0.8),
+    0 0 120px -20px rgba(74, 222, 128, 0.15);
 }
 
 /* Browser Chrome */
@@ -101,9 +113,17 @@
   border-radius: 50%;
 }
 
-.dot.red { background: #ff5f57; }
-.dot.yellow { background: #febc2e; }
-.dot.green { background: #28c840; }
+.dot.red {
+  background: #ff5f57;
+}
+
+.dot.yellow {
+  background: #febc2e;
+}
+
+.dot.green {
+  background: #28c840;
+}
 
 .chrome-url {
   flex: 1;
@@ -112,7 +132,8 @@
   border-radius: 6px;
   font-family: 'Quicksand', sans-serif;
   font-size: 12px;
-  color: rgba(245, 240, 232, 0.5);
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.4);
 }
 
 /* Screen */
@@ -156,8 +177,15 @@
 }
 
 @keyframes orbFloat {
-  0%, 100% { transform: translate(0, 0); }
-  50% { transform: translate(20px, 20px); }
+
+  0%,
+  100% {
+    transform: translate(0, 0);
+  }
+
+  50% {
+    transform: translate(20px, 20px);
+  }
 }
 
 /* =============================================
@@ -223,6 +251,7 @@
     opacity: 0;
     transform: translateY(20px);
   }
+
   to {
     opacity: 1;
     transform: translateY(0);
@@ -258,6 +287,7 @@
     transform: scale(1);
     opacity: 1;
   }
+
   100% {
     transform: scale(2);
     opacity: 0;
@@ -286,6 +316,7 @@
     opacity: 0;
     transform: translateY(-10px);
   }
+
   to {
     opacity: 1;
     transform: translateY(0);
@@ -328,6 +359,7 @@
     opacity: 0;
     transform: translateX(-10px);
   }
+
   to {
     opacity: 1;
     transform: translateX(0);
@@ -358,6 +390,7 @@
   from {
     transform: scaleX(0);
   }
+
   to {
     transform: scaleX(1);
   }
@@ -412,7 +445,9 @@
 }
 
 @keyframes blink {
-  50% { opacity: 0; }
+  50% {
+    opacity: 0;
+  }
 }
 
 /* Phase: Stimulation */
@@ -449,12 +484,16 @@
 }
 
 @keyframes biPulse {
-  0%, 40%, 100% {
+
+  0%,
+  40%,
+  100% {
     background: #252529;
     border-color: rgba(125, 184, 143, 0.3);
     transform: scale(1);
     box-shadow: none;
   }
+
   20% {
     background: #7db88f;
     border-color: #7db88f;
@@ -488,9 +527,23 @@
 }
 
 @keyframes flashPulse {
-  0%, 30%, 100% { opacity: 0; background: transparent; }
-  35% { opacity: 1; background: rgba(125, 184, 143, 0.15); }
-  45% { opacity: 0; background: transparent; }
+
+  0%,
+  30%,
+  100% {
+    opacity: 0;
+    background: transparent;
+  }
+
+  35% {
+    opacity: 1;
+    background: rgba(125, 184, 143, 0.15);
+  }
+
+  45% {
+    opacity: 0;
+    background: transparent;
+  }
 }
 
 /* Phase: Safe Effective Gentle */
@@ -547,9 +600,11 @@
     transform: scale(0);
     opacity: 0;
   }
+
   50% {
     transform: scale(1.2);
   }
+
   100% {
     transform: scale(1);
     opacity: 1;
@@ -577,31 +632,39 @@
 }
 
 @keyframes overlayFadeIn {
-  from { opacity: 0; }
-  to { opacity: 1; }
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
 }
 
 .play-btn {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 12px;
-  padding: 24px 48px;
-  background: transparent;
-  border: 2px solid rgba(125, 184, 143, 0.5);
-  border-radius: 16px;
-  color: #f5f0e8;
+  gap: 16px;
+  padding: 32px 64px;
+  background: rgba(255, 255, 255, 0.03);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 24px;
+  color: #f0fdf4;
   cursor: pointer;
-  transition: all 0.3s ease;
+  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
   font-family: 'Quicksand', sans-serif;
-  font-size: 0.95rem;
+  font-size: 1.1rem;
   font-weight: 500;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
 }
 
 .play-btn:hover {
-  background: rgba(125, 184, 143, 0.1);
-  border-color: #7db88f;
-  transform: scale(1.05);
+  background: rgba(255, 255, 255, 0.08);
+  border-color: rgba(125, 184, 143, 0.5);
+  transform: scale(1.05) translateY(-2px);
+  box-shadow: 0 16px 48px rgba(0, 0, 0, 0.3), 0 0 20px rgba(125, 184, 143, 0.2);
 }
 
 .play-btn svg {

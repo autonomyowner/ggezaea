@@ -1,7 +1,7 @@
-# Branding — NeuroCanvas
+# Branding — Matcha
 
-- Name: NeuroCanvas
-- Tagline: Think freely. Map infinitely.
+- Name: Matcha
+- Tagline: Understand deeply. Profile intelligently.
 
 ## Palette (dark-first)
 - Primary (Ink): #0B0B0E
@@ -25,11 +25,11 @@ Accessibility: Maintain 4.5:1 for body text on surfaces; use Gold sparingly for 
 - Clear space: 1× logo mark.
 
 ## UI Motifs
-- Node-based canvas, subtle grid, gentle motion.
-- Sentiment halo colors around nodes; priority badges.
+- Clean conversational interface, subtle gradients, smooth transitions.
+- Psychological insights cards, profile visualization, analytical dashboards.
 
 ## Voice & Tone
 - Clear, coaching, curious — avoid jargon. Emphasize clarity and momentum.
 
 ## Usage
-- Keep canvases minimal; defer color to meaning (sentiment, priority, type).
+- Keep interfaces minimal; defer color to meaning (sentiment, confidence, insight type).

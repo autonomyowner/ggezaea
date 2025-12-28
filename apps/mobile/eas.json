@@ -18,11 +18,21 @@
       "distribution": "internal",
       "android": {
         "buildType": "apk"
+      },
+      "env": {
+        "EXPO_PUBLIC_API_URL": "https://matcha-api-akyb.onrender.com/api",
+        "EXPO_PUBLIC_CLERK_PUBLISHABLE_KEY": "pk_test_c3VpdGFibGUtYmVkYnVnLTI3LmNsZXJrLmFjY291bnRzLmRldiQ",
+        "EXPO_PUBLIC_VAPI_PUBLIC_KEY": "24909e59-44ee-420d-baeb-3ea2c01656e2"
       }
     },
     "production": {
       "android": {
         "buildType": "app-bundle"
+      },
+      "env": {
+        "EXPO_PUBLIC_API_URL": "https://matcha-api-akyb.onrender.com/api",
+        "EXPO_PUBLIC_CLERK_PUBLISHABLE_KEY": "pk_test_c3VpdGFibGUtYmVkYnVnLTI3LmNsZXJrLmFjY291bnRzLmRldiQ",
+        "EXPO_PUBLIC_VAPI_PUBLIC_KEY": "24909e59-44ee-420d-baeb-3ea2c01656e2"
       }
     }
   },

@@ -1,16 +1,22 @@
 import * as Notifications from 'expo-notifications';
 import * as Device from 'expo-device';
+import Constants from 'expo-constants';
 import { Platform } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-// Configure notification behavior
-Notifications.setNotificationHandler({
-  handleNotification: async () => ({
-    shouldShowAlert: true,
-    shouldPlaySound: true,
-    shouldSetBadge: true,
-  }),
-});
+// Check if running in Expo Go (push notifications not supported in SDK 53+)
+const isExpoGo = Constants.appOwnership === 'expo';
+
+// Configure notification behavior (only if not Expo Go)
+if (!isExpoGo) {
+  Notifications.setNotificationHandler({
+    handleNotification: async () => ({
+      shouldShowAlert: true,
+      shouldPlaySound: true,
+      shouldSetBadge: true,
+    }),
+  });
+}
 
 // Notification IDs for cancellation
 const NOTIFICATION_IDS = {
@@ -29,16 +35,16 @@ const STORAGE_KEYS = {
   MOTIVATIONAL_ENABLED: 'matcha-motivational',
 };
 
-// Motivational messages
+// Wellness reminders
 const MOTIVATIONAL_MESSAGES = [
-  { title: 'You matter', body: 'Taking time for yourself is not selfish, it\'s necessary.' },
+  { title: 'You matter', body: 'Taking time for yourself is a great habit.' },
   { title: 'Small steps count', body: 'Every moment of self-reflection is progress.' },
-  { title: 'Be kind to yourself', body: 'You\'re doing better than you think.' },
-  { title: 'Breathe', body: 'A moment of calm can change your whole day.' },
-  { title: 'You\'re not alone', body: 'Matcha is here whenever you need support.' },
+  { title: 'Be kind to yourself', body: 'You\'re doing great!' },
+  { title: 'Breathe', body: 'A moment of calm can brighten your day.' },
+  { title: 'Check in with yourself', body: 'Matcha is here when you want to chat.' },
   { title: 'Celebrate yourself', body: 'You showed up today. That matters.' },
-  { title: 'Growth takes time', body: 'Be patient with yourself on this journey.' },
-  { title: 'Your feelings are valid', body: 'It\'s okay to feel what you\'re feeling.' },
+  { title: 'Keep going', body: 'Be patient with yourself on your journey.' },
+  { title: 'How are you feeling?', body: 'Take a moment to notice how you\'re doing.' },
 ];
 
 export interface NotificationSettings {
@@ -59,48 +65,59 @@ const DEFAULT_SETTINGS: NotificationSettings = {
  * Request notification permissions
  */
 export async function requestNotificationPermissions(): Promise<boolean> {
+  // Expo Go doesn't support push notifications in SDK 53+
+  if (isExpoGo) {
+    console.log('Push notifications not supported in Expo Go');
+    return false;
+  }
+
   if (!Device.isDevice) {
     console.log('Notifications only work on physical devices');
     return false;
   }
 
-  const { status: existingStatus } = await Notifications.getPermissionsAsync();
-  let finalStatus = existingStatus;
+  try {
+    const { status: existingStatus } = await Notifications.getPermissionsAsync();
+    let finalStatus = existingStatus;
 
-  if (existingStatus !== 'granted') {
-    const { status } = await Notifications.requestPermissionsAsync();
-    finalStatus = status;
-  }
+    if (existingStatus !== 'granted') {
+      const { status } = await Notifications.requestPermissionsAsync();
+      finalStatus = status;
+    }
 
-  if (finalStatus !== 'granted') {
-    console.log('Notification permissions not granted');
+    if (finalStatus !== 'granted') {
+      console.log('Notification permissions not granted');
+      return false;
+    }
+
+    // Set up Android channel
+    if (Platform.OS === 'android') {
+      await Notifications.setNotificationChannelAsync('default', {
+        name: 'Default',
+        importance: Notifications.AndroidImportance.HIGH,
+        vibrationPattern: [0, 250, 250, 250],
+        lightColor: '#5a9470',
+      });
+
+      await Notifications.setNotificationChannelAsync('reminders', {
+        name: 'Daily Reminders',
+        importance: Notifications.AndroidImportance.HIGH,
+        vibrationPattern: [0, 250, 250, 250],
+        lightColor: '#5a9470',
+      });
+
+      await Notifications.setNotificationChannelAsync('streaks', {
+        name: 'Streak Alerts',
+        importance: Notifications.AndroidImportance.DEFAULT,
+        lightColor: '#c97d52',
+      });
+    }
+
+    return true;
+  } catch (error) {
+    console.error('Error requesting notification permissions:', error);
     return false;
   }
-
-  // Set up Android channel
-  if (Platform.OS === 'android') {
-    await Notifications.setNotificationChannelAsync('default', {
-      name: 'Default',
-      importance: Notifications.AndroidImportance.HIGH,
-      vibrationPattern: [0, 250, 250, 250],
-      lightColor: '#5a9470',
-    });
-
-    await Notifications.setNotificationChannelAsync('reminders', {
-      name: 'Daily Reminders',
-      importance: Notifications.AndroidImportance.HIGH,
-      vibrationPattern: [0, 250, 250, 250],
-      lightColor: '#5a9470',
-    });
-
-    await Notifications.setNotificationChannelAsync('streaks', {
-      name: 'Streak Alerts',
-      importance: Notifications.AndroidImportance.DEFAULT,
-      lightColor: '#c97d52',
-    });
-  }
-
-  return true;
 }
 
 /**
@@ -277,6 +294,9 @@ export async function scheduleMotivationalNotification(): Promise<void> {
  * Schedule all notifications based on settings
  */
 export async function scheduleAllNotifications(): Promise<void> {
+  // Skip in Expo Go
+  if (isExpoGo) return;
+
   const settings = await getNotificationSettings();
 
   if (!settings.enabled) {

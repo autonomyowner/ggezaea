@@ -9,7 +9,10 @@ import {
   Query,
   UseGuards,
   BadRequestException,
+  Res,
+  HttpStatus,
 } from '@nestjs/common';
+import { Response } from 'express';
 import { Throttle } from '@nestjs/throttler';
 import { ChatService } from './chat.service';
 import { EmdrService } from './emdr.service';
@@ -105,6 +108,44 @@ export class ChatController {
       throw new BadRequestException(result.error.format());
     }
     return this.chatService.sendMessage(user.id, user.tier, result.data);
+  }
+
+  @Post('send/stream')
+  @Throttle({ default: { limit: 20, ttl: 60000 } }) // 20 messages per minute max
+  async sendMessageStream(
+    @CurrentUser() user: AuthenticatedUser,
+    @Body() body: unknown,
+    @Res() res: Response,
+  ) {
+    const result = sendMessageSchema.safeParse(body);
+    if (!result.success) {
+      throw new BadRequestException(result.error.format());
+    }
+
+    // Set up SSE headers
+    res.setHeader('Content-Type', 'text/event-stream');
+    res.setHeader('Cache-Control', 'no-cache');
+    res.setHeader('Connection', 'keep-alive');
+    res.setHeader('X-Accel-Buffering', 'no');
+    res.status(HttpStatus.OK);
+
+    try {
+      await this.chatService.sendMessageStream(
+        user.id,
+        user.tier,
+        result.data,
+        (chunk: string) => {
+          res.write(`data: ${JSON.stringify({ type: 'chunk', content: chunk })}\n\n`);
+        },
+        (finalData: any) => {
+          res.write(`data: ${JSON.stringify({ type: 'done', ...finalData })}\n\n`);
+          res.end();
+        },
+      );
+    } catch (error) {
+      res.write(`data: ${JSON.stringify({ type: 'error', message: error.message })}\n\n`);
+      res.end();
+    }
   }
 
   // ==================== EMDR Flash Technique Endpoints ====================

@@ -4,6 +4,7 @@
     "slug": "matcha",
     "version": "1.0.0",
     "orientation": "portrait",
+    "icon": "./assets/icon.png",
     "scheme": "matcha",
     "userInterfaceStyle": "light",
     "splash": {
@@ -18,7 +19,7 @@
       "supportsTablet": true,
       "bundleIdentifier": "com.matcha.app",
       "infoPlist": {
-        "NSMicrophoneUsageDescription": "Matcha needs microphone access to enable voice therapy sessions where you can talk with your AI companion.",
+        "NSMicrophoneUsageDescription": "Matcha needs microphone access for voice conversations with your wellness companion.",
         "UIBackgroundModes": [
           "audio",
           "voip"
@@ -28,11 +29,13 @@
     "android": {
       "package": "com.matcha.app",
       "softwareKeyboardLayoutMode": "pan",
-      "useNextNotificationsApi": true,
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/icon.png",
+        "backgroundColor": "#5a9470"
+      },
       "permissions": [
         "android.permission.RECORD_AUDIO"
-      ],
-      "privacyPolicyUrl": "https://www.vematcha.xyz/privacy"
+      ]
     },
     "web": {
       "bundler": "metro",
@@ -42,6 +45,12 @@
       "expo-router",
       "expo-secure-store",
       "expo-font",
+      [
+        "expo-av",
+        {
+          "microphonePermission": "Matcha needs microphone access for voice conversations."
+        }
+      ],
       [
         "expo-notifications",
         {

@@ -6,31 +6,31 @@ import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context'
 
 // Import tab screens
 import DashboardScreen from './index';
-import ChatListScreen from './chat';
-import ProfileScreen from './profile';
+import JournalScreen from './chat';
+import FocusScreen from './profile';
 
 const initialLayout = { width: Dimensions.get('window').width };
 
 // Define routes
 const routes = [
-  { key: 'index', title: 'Dashboard', icon: 'home-outline' as const },
-  { key: 'chat', title: 'Chat', icon: 'chatbubbles-outline' as const },
-  { key: 'profile', title: 'Profile', icon: 'person-outline' as const },
+  { key: 'index', title: 'Home', icon: 'home-outline' as const },
+  { key: 'chat', title: 'Journal', icon: 'book-outline' as const },
+  { key: 'profile', title: 'Focus', icon: 'checkbox-outline' as const },
 ];
 
 // Memoize screen components to prevent re-renders
 const MemoizedDashboard = memo(DashboardScreen);
-const MemoizedChatList = memo(ChatListScreen);
-const MemoizedProfile = memo(ProfileScreen);
+const MemoizedJournal = memo(JournalScreen);
+const MemoizedFocus = memo(FocusScreen);
 
 // Use SceneMap for proper memoization
 const renderScene = SceneMap({
   index: MemoizedDashboard,
-  chat: MemoizedChatList,
-  profile: MemoizedProfile,
+  chat: MemoizedJournal,
+  profile: MemoizedFocus,
 });
 
-// Custom Bottom Tab Bar
+// Custom Bottom Tab Bar with small icons
 function CustomTabBar({ navigationState, jumpTo }: { navigationState: any; jumpTo: (key: string) => void }) {
   const insets = useSafeAreaInsets();
 
@@ -47,13 +47,13 @@ function CustomTabBar({ navigationState, jumpTo }: { navigationState: any; jumpT
           >
             <Ionicons
               name={route.icon}
-              size={24}
-              color={isActive ? '#5a9470' : '#a69889'}
+              size={20}
+              color={isActive ? '#5a9470' : '#c4b8ab'}
             />
             <Text
               style={[
                 styles.tabLabel,
-                { color: isActive ? '#5a9470' : '#a69889' },
+                isActive && styles.tabLabelActive,
               ]}
             >
               {route.title}
@@ -83,9 +83,9 @@ export default function TabsLayout() {
       case 0:
         return 'Matcha';
       case 1:
-        return 'Chat';
+        return 'Journal';
       case 2:
-        return 'Profile';
+        return 'Focus';
       default:
         return 'Matcha';
     }
@@ -137,17 +137,21 @@ const styles = StyleSheet.create({
     backgroundColor: '#fefdfb',
     borderTopWidth: 1,
     borderTopColor: 'rgba(104, 166, 125, 0.15)',
-    paddingTop: 8,
+    paddingTop: 10,
   },
   tabItem: {
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
-    paddingVertical: 4,
+    paddingVertical: 6,
   },
   tabLabel: {
     fontFamily: 'DMSans_500Medium',
-    fontSize: 12,
-    marginTop: 2,
+    fontSize: 11,
+    color: '#c4b8ab',
+    marginTop: 4,
+  },
+  tabLabelActive: {
+    color: '#5a9470',
   },
 });

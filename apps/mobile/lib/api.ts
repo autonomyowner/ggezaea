@@ -2,6 +2,70 @@ import axios, { AxiosInstance } from 'axios';
 
 const API_URL = process.env.EXPO_PUBLIC_API_URL || 'https://matcha-api-akyb.onrender.com/api';
 
+// Helper for parsing SSE data
+function parseSSELine(line: string): { type: string; content?: string; [key: string]: any } | null {
+  if (!line.startsWith('data: ')) return null;
+  try {
+    return JSON.parse(line.slice(6));
+  } catch {
+    return null;
+  }
+}
+
+// Streaming message sender
+export async function sendMessageStream(
+  data: { message: string; conversationId?: string },
+  onChunk: (chunk: string) => void,
+  onDone: (finalData: SendMessageResponse) => void,
+  onError: (error: string) => void
+): Promise<void> {
+  try {
+    const response = await fetch(`${API_URL}/chat/send/stream`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(data),
+    });
+
+    if (!response.ok) {
+      throw new Error(`HTTP ${response.status}`);
+    }
+
+    const reader = response.body?.getReader();
+    if (!reader) {
+      throw new Error('No response body');
+    }
+
+    const decoder = new TextDecoder();
+    let buffer = '';
+
+    while (true) {
+      const { done, value } = await reader.read();
+      if (done) break;
+
+      buffer += decoder.decode(value, { stream: true });
+      const lines = buffer.split('\n');
+      buffer = lines.pop() || '';
+
+      for (const line of lines) {
+        const parsed = parseSSELine(line.trim());
+        if (!parsed) continue;
+
+        if (parsed.type === 'chunk' && parsed.content) {
+          onChunk(parsed.content);
+        } else if (parsed.type === 'done') {
+          onDone(parsed as unknown as SendMessageResponse);
+        } else if (parsed.type === 'error') {
+          onError(parsed.message || 'Stream error');
+        }
+      }
+    }
+  } catch (err: any) {
+    onError(err.message || 'Stream failed');
+  }
+}
+
 export interface DashboardData {
   profile: {
     id: string;
@@ -96,9 +160,28 @@ export interface EmdrGuidance {
   groundingNeeded: boolean;
 }
 
-export const createApiClient = (
-  getToken: (options?: { forceRefresh?: boolean }) => Promise<string | null>
-) => {
+export interface VoiceSession {
+  id: string;
+  userId: string;
+  conversationId: string | null;
+  vapiCallId: string;
+  sessionType: 'general-therapy' | 'flash-technique' | 'crisis-support';
+  status: 'active' | 'completed' | 'failed' | 'cancelled';
+  transcript: string | null;
+  duration: number | null;
+  vapiCosts: any;
+  createdAt: string;
+  startedAt: string | null;
+  endedAt: string | null;
+}
+
+export interface StartVoiceSessionResponse {
+  session: VoiceSession;
+  webCallUrl: string;
+  conversationId: string;
+}
+
+export const createApiClient = () => {
   const client: AxiosInstance = axios.create({
     baseURL: API_URL,
     timeout: 30000,
@@ -106,37 +189,6 @@ export const createApiClient = (
       'Content-Type': 'application/json',
     },
   });
-
-  client.interceptors.request.use(async (config) => {
-    const token = await getToken();
-    if (token) {
-      config.headers.Authorization = `Bearer ${token}`;
-    }
-    return config;
-  });
-
-  client.interceptors.response.use(
-    (response) => response,
-    async (error) => {
-      const originalRequest = error.config;
-
-      if (error.response?.status === 401 && !originalRequest._retry) {
-        originalRequest._retry = true;
-
-        try {
-          const newToken = await getToken({ forceRefresh: true });
-          if (newToken) {
-            originalRequest.headers.Authorization = `Bearer ${newToken}`;
-            return client(originalRequest);
-          }
-        } catch {
-          // Token refresh failed - user needs to re-authenticate
-        }
-      }
-
-      return Promise.reject(error);
-    }
-  );
 
   return {
     // Dashboard
@@ -215,6 +267,27 @@ export const createApiClient = (
       successUrl: string;
       cancelUrl: string;
     }) => client.post<{ url: string | null; message?: string }>('/stripe/create-checkout', data),
+
+    // Voice Therapy
+    startVoiceSession: (data: {
+      sessionType: 'general-therapy' | 'flash-technique' | 'crisis-support';
+      createNewConversation?: boolean;
+      conversationId?: string;
+    }) => client.post<StartVoiceSessionResponse>('/voice/start', data),
+
+    getVoiceSession: (sessionId: string) =>
+      client.get<{ session: VoiceSession }>(`/voice/sessions/${sessionId}`),
+
+    endVoiceSession: (sessionId: string) =>
+      client.patch<{ session: VoiceSession; transcript: Array<{ role: string; content: string }> }>(
+        `/voice/sessions/${sessionId}/end`
+      ),
+
+    getVoiceSessionHistory: (page = 1, limit = 10) =>
+      client.get<{
+        sessions: VoiceSession[];
+        pagination: { page: number; limit: number; total: number; totalPages: number };
+      }>(`/voice/sessions?page=${page}&limit=${limit}`),
   };
 };
 

@@ -9,7 +9,6 @@ import {
   Vibration,
 } from 'react-native';
 import { useRouter } from 'expo-router';
-import { useAuth } from '@clerk/clerk-expo';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 import Animated, {
@@ -28,8 +27,8 @@ const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get('window');
 
 type SessionState = 'INTRO' | 'SET_ACTIVE' | 'SET_PAUSE' | 'CLOSING' | 'SUMMARY';
 
-// Distress Slider Component
-function DistressSlider({
+// Stress Level Slider Component
+function StressSlider({
   value,
   onChange,
 }: {
@@ -39,8 +38,8 @@ function DistressSlider({
   return (
     <View className="w-full">
       <View className="flex-row justify-between mb-2">
-        <Text className="text-matcha-600 text-sm">0 - Calm</Text>
-        <Text className="text-terra-500 text-sm">10 - Extreme</Text>
+        <Text className="text-matcha-600 text-sm">0 - Relaxed</Text>
+        <Text className="text-terra-500 text-sm">10 - Very Stressed</Text>
       </View>
       <View className="h-4 bg-warm-200 rounded-full overflow-hidden">
         <View
@@ -170,7 +169,7 @@ function BlinkOverlay({
         className="w-40 h-40 rounded-full bg-matcha-400/30"
       />
       <View className="absolute items-center">
-        <Text className="text-white font-serif text-4xl mb-2">FLASH</Text>
+        <Text className="text-white font-serif text-4xl mb-2">REFOCUS</Text>
         <Text className="text-matcha-200 text-xl">{blinkCount}</Text>
       </View>
     </Animated.View>
@@ -236,13 +235,12 @@ function SpeakingIndicator({ isActive }: { isActive: boolean }) {
 
 export default function FlashSessionScreen() {
   const router = useRouter();
-  const { getToken } = useAuth();
 
   const [state, setState] = useState<SessionState>('INTRO');
   const [topic, setTopic] = useState('');
   const [positiveMemory, setPositiveMemory] = useState('');
-  const [distressStart, setDistressStart] = useState(5);
-  const [distressEnd, setDistressEnd] = useState(5);
+  const [stressStart, setStressStart] = useState(5);
+  const [stressEnd, setStressEnd] = useState(5);
   const [activeSide, setActiveSide] = useState<'left' | 'right'>('left');
   const [showBlink, setShowBlink] = useState(false);
   const [blinkCount, setBlinkCount] = useState(0);
@@ -268,14 +266,14 @@ export default function FlashSessionScreen() {
 
   const startSession = async () => {
     try {
-      const api = createApiClient(getToken);
+      const api = createApiClient();
       const response = await api.startEmdrSession();
       setConversationId(response.data.conversationId);
 
       // Send initial context
       await api.sendEmdrMessage(
         response.data.conversationId,
-        `Topic: ${topic}. Positive memory: ${positiveMemory}. Starting distress level: ${distressStart}/10`
+        `Focus: ${topic}. Positive thought: ${positiveMemory}. Starting stress level: ${stressStart}/10`
       );
 
       setState('SET_ACTIVE');
@@ -341,8 +339,8 @@ export default function FlashSessionScreen() {
   const completeSession = async () => {
     if (conversationId) {
       try {
-        const api = createApiClient(getToken);
-        await api.completeEmdrSession(conversationId, distressEnd);
+        const api = createApiClient();
+        await api.completeEmdrSession(conversationId, stressEnd);
       } catch (err) {
         console.error('Failed to complete session:', err);
       }
@@ -366,18 +364,18 @@ export default function FlashSessionScreen() {
             <TouchableOpacity onPress={() => router.back()}>
               <Ionicons name="close" size={28} color="#5a5347" />
             </TouchableOpacity>
-            <Text className="font-serif text-2xl text-warm-900">Flash Session</Text>
+            <Text className="font-serif text-2xl text-warm-900">Focus Exercise</Text>
             <View style={{ width: 28 }} />
           </View>
 
           {/* Topic Input */}
           <View className="mb-6">
             <Text className="text-warm-900 font-sans-semibold mb-2">
-              What would you like to work on?
+              What would you like to focus on?
             </Text>
             <TextInput
               className="bg-white border border-warm-200 rounded-xl px-4 py-3 text-warm-900"
-              placeholder="Describe the memory or feeling..."
+              placeholder="A thought or feeling you want to process..."
               placeholderTextColor="#a69889"
               value={topic}
               onChangeText={setTopic}
@@ -387,22 +385,22 @@ export default function FlashSessionScreen() {
             />
           </View>
 
-          {/* Distress Slider */}
+          {/* Stress Slider */}
           <View className="mb-6">
             <Text className="text-warm-900 font-sans-semibold mb-4">
-              Current distress level (0-10)
+              Current stress level (0-10)
             </Text>
-            <DistressSlider value={distressStart} onChange={setDistressStart} />
+            <StressSlider value={stressStart} onChange={setStressStart} />
           </View>
 
           {/* Positive Memory */}
           <View className="mb-6">
             <Text className="text-warm-900 font-sans-semibold mb-2">
-              Think of a positive, calming memory
+              Think of a calming, happy thought
             </Text>
             <TextInput
               className="bg-white border border-warm-200 rounded-xl px-4 py-3 text-warm-900"
-              placeholder="A safe place, happy moment..."
+              placeholder="A peaceful place, happy moment..."
               placeholderTextColor="#a69889"
               value={positiveMemory}
               onChangeText={setPositiveMemory}
@@ -419,13 +417,13 @@ export default function FlashSessionScreen() {
               1. Focus on the alternating circles
             </Text>
             <Text className="text-matcha-700 mb-1">
-              2. When you see "FLASH", blink rapidly
+              2. When prompted, blink and refocus
             </Text>
             <Text className="text-matcha-700 mb-1">
-              3. Hold your positive memory in mind
+              3. Hold your positive thought in mind
             </Text>
             <Text className="text-matcha-700">
-              4. Take breaks when prompted
+              4. Take breaks when needed
             </Text>
           </View>
 
@@ -553,7 +551,7 @@ export default function FlashSessionScreen() {
       <SafeAreaView className="flex-1 bg-cream-50 px-8">
         <ScrollView contentContainerStyle={{ flexGrow: 1, justifyContent: 'center' }}>
           <Text className="font-serif text-2xl text-warm-900 text-center mb-2">
-            Final Check-in
+            How do you feel?
           </Text>
           <Text className="text-warm-600 text-center mb-8">
             "{topic}"
@@ -561,23 +559,23 @@ export default function FlashSessionScreen() {
 
           <View className="bg-white rounded-xl p-4 mb-6">
             <Text className="text-warm-900 font-sans-semibold mb-4 text-center">
-              How do you feel now? (0-10)
+              Current stress level (0-10)
             </Text>
-            <DistressSlider value={distressEnd} onChange={setDistressEnd} />
+            <StressSlider value={stressEnd} onChange={setStressEnd} />
           </View>
 
           <View className="flex-row justify-center gap-6 mb-8">
             <View className="items-center">
               <Text className="text-warm-500 text-sm">Before</Text>
               <Text className="text-2xl font-sans-bold text-terra-500">
-                {distressStart}
+                {stressStart}
               </Text>
             </View>
             <Ionicons name="arrow-forward" size={24} color="#d9d0c5" />
             <View className="items-center">
               <Text className="text-warm-500 text-sm">After</Text>
               <Text className="text-2xl font-sans-bold text-matcha-600">
-                {distressEnd}
+                {stressEnd}
               </Text>
             </View>
           </View>
@@ -597,7 +595,7 @@ export default function FlashSessionScreen() {
 
   // SUMMARY Screen
   if (state === 'SUMMARY') {
-    const distressChange = distressStart - distressEnd;
+    const stressChange = stressStart - stressEnd;
 
     return (
       <SafeAreaView className="flex-1 bg-cream-50 px-8">
@@ -607,21 +605,21 @@ export default function FlashSessionScreen() {
               <Ionicons name="checkmark" size={40} color="#5a9470" />
             </View>
             <Text className="font-serif text-3xl text-warm-900">
-              Session Complete
+              Exercise Complete
             </Text>
           </View>
 
           {/* Stats */}
           <View className="flex-row gap-3 mb-6">
             <View className="flex-1 bg-white rounded-xl p-4 items-center">
-              <Text className="text-warm-500 text-sm">Distress</Text>
+              <Text className="text-warm-500 text-sm">Stress</Text>
               <Text
                 className={`text-2xl font-sans-bold ${
-                  distressChange > 0 ? 'text-matcha-600' : 'text-terra-500'
+                  stressChange > 0 ? 'text-matcha-600' : 'text-terra-500'
                 }`}
               >
-                {distressChange > 0 ? '-' : '+'}
-                {Math.abs(distressChange)}
+                {stressChange > 0 ? '-' : '+'}
+                {Math.abs(stressChange)}
               </Text>
             </View>
             <View className="flex-1 bg-white rounded-xl p-4 items-center">
@@ -640,7 +638,7 @@ export default function FlashSessionScreen() {
 
           <View className="bg-matcha-50 rounded-xl p-4 mb-8">
             <Text className="text-matcha-700 text-center">
-              Remember: healing takes time. Each session builds on the last.
+              Great job taking time for yourself. Regular practice can help you feel more relaxed.
             </Text>
           </View>
 

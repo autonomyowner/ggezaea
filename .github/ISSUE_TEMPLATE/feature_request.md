@@ -1,6 +1,6 @@
 ---
 name: Feature request
-about: Suggest an idea for NeuroCanvas
+about: Suggest an idea for Matcha
 labels: enhancement
 ---
 

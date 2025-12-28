@@ -13,12 +13,8 @@ import {
 import { DMSerifDisplay_400Regular } from '@expo-google-fonts/dm-serif-display';
 import * as SplashScreen from 'expo-splash-screen';
 import { View, ActivityIndicator } from 'react-native';
-import { ClerkProvider, ClerkLoaded } from '@clerk/clerk-expo';
-import { tokenCache } from '../lib/auth';
 import { useNotifications } from '../hooks/useNotifications';
 import '../global.css';
-
-const publishableKey = process.env.EXPO_PUBLIC_CLERK_PUBLISHABLE_KEY;
 
 SplashScreen.preventAutoHideAsync();
 
@@ -32,7 +28,6 @@ function AppContent() {
       <Stack screenOptions={{ headerShown: false }}>
         <Stack.Screen name="index" options={{ headerShown: false }} />
         <Stack.Screen name="onboarding" options={{ headerShown: false, gestureEnabled: false }} />
-        <Stack.Screen name="(auth)" options={{ headerShown: false }} />
         <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
         <Stack.Screen
           name="breathing"
@@ -84,15 +79,5 @@ export default function RootLayout() {
     );
   }
 
-  if (!publishableKey) {
-    throw new Error('Missing EXPO_PUBLIC_CLERK_PUBLISHABLE_KEY');
-  }
-
-  return (
-    <ClerkProvider tokenCache={tokenCache} publishableKey={publishableKey}>
-      <ClerkLoaded>
-        <AppContent />
-      </ClerkLoaded>
-    </ClerkProvider>
-  );
+  return <AppContent />;
 }

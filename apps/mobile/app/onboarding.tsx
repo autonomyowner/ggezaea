@@ -35,8 +35,8 @@ const SLIDES: OnboardingSlide[] = [
   },
   {
     id: '4',
-    title: 'Not a Replacement for Care',
-    description: 'Matcha is for self-reflection and entertainment only. It does not provide medical advice, diagnosis, or treatment. Always consult a healthcare professional for mental health concerns.',
+    title: 'Important Note',
+    description: 'Matcha is a wellness companion for self-reflection and entertainment only. It is not a medical device and does not provide professional advice, diagnosis, or treatment. For health concerns, please consult a qualified professional.',
     color: '#a69889',
   },
 ];
@@ -48,7 +48,7 @@ interface Goal {
 }
 
 const GOALS: Goal[] = [
-  { id: 'anxiety', label: 'Explore Worries', description: 'Reflect on anxious thoughts' },
+  { id: 'thoughts', label: 'Explore Thoughts', description: 'Reflect on what\'s on your mind' },
   { id: 'mood', label: 'Mood Journaling', description: 'Track and understand feelings' },
   { id: 'stress', label: 'Stress Relief', description: 'Relaxation and breathing' },
   { id: 'sleep', label: 'Wind Down', description: 'Evening relaxation routines' },
