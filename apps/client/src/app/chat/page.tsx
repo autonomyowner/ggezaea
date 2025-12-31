@@ -15,6 +15,33 @@ const formatTime = (dateString: string) => {
   return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
 };
 
+// Extract reply from message content (handles both plain text and JSON responses)
+const extractMessageContent = (content: string): string => {
+  if (!content) return '';
+
+  // If it looks like JSON with a reply field, extract the reply
+  if (content.trim().startsWith('{') && content.includes('"reply"')) {
+    try {
+      const parsed = JSON.parse(content);
+      if (parsed.reply && typeof parsed.reply === 'string') {
+        return parsed.reply;
+      }
+      // Handle case variations
+      if (parsed.Reply && typeof parsed.Reply === 'string') {
+        return parsed.Reply;
+      }
+    } catch {
+      // If JSON parsing fails, try regex extraction
+      const match = content.match(/"reply"\s*:\s*"((?:[^"\\]|\\.)*)"/);
+      if (match) {
+        return match[1].replace(/\\"/g, '"').replace(/\\n/g, '\n').replace(/\\\\/g, '\\');
+      }
+    }
+  }
+
+  return content;
+};
+
 const SUGGESTIONS = [
   { 
     label: "Vent about my day", 
@@ -532,7 +559,7 @@ export default function ChatPage() {
                         boxShadow: 'var(--shadow-sm)',
                       }}
                     >
-                      <p className="whitespace-pre-wrap text-sm sm:text-base leading-relaxed">{message.content}</p>
+                      <p className="whitespace-pre-wrap text-sm sm:text-base leading-relaxed">{extractMessageContent(message.content)}</p>
                     </div>
                     {message.createdAt && (
                       <span 

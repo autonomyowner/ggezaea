@@ -290,15 +290,36 @@ export class OpenRouterProvider implements AIProvider {
     const content = data.choices[0]?.message?.content || '{}';
 
     let parsed: { reply?: string; analysis?: AnalysisData | null } = {};
+    let extractedReply: string = content;
+
     try {
       parsed = JSON.parse(content);
+
+      // Handle case variations for reply field
+      const replyKeys = ['reply', 'Reply', 'REPLY', 'response', 'Response', 'message', 'Message'];
+      for (const key of replyKeys) {
+        if (parsed[key as keyof typeof parsed] && typeof parsed[key as keyof typeof parsed] === 'string') {
+          extractedReply = parsed[key as keyof typeof parsed] as string;
+          break;
+        }
+      }
+
+      // If no reply field found but content is a JSON object, use parsed.reply
+      if (extractedReply === content && parsed.reply) {
+        extractedReply = parsed.reply;
+      }
     } catch (e) {
       this.logger.warn('Failed to parse JSON response, using raw content');
-      parsed = { reply: content, analysis: null };
+      // If it looks like JSON that wasn't parsed correctly, try to extract the reply
+      const replyMatch = content.match(/"reply"\s*:\s*"((?:[^"\\]|\\.)*)"/);
+      if (replyMatch) {
+        extractedReply = replyMatch[1].replace(/\\"/g, '"').replace(/\\n/g, '\n').replace(/\\\\/g, '\\');
+      }
+      parsed = { reply: extractedReply, analysis: null };
     }
 
     return {
-      message: parsed.reply || content,
+      message: extractedReply,
       model: data.model,
       usage: {
         promptTokens: data.usage?.prompt_tokens || 0,
@@ -448,15 +469,40 @@ Be thorough but concise. Return ONLY valid JSON.`;
     const content = data.choices[0]?.message?.content || '{}';
 
     let parsed: { reply?: string; analysis?: AnalysisData | null } = {};
+    let extractedReply: string = content;
+
     try {
       parsed = JSON.parse(content);
+
+      // Handle case variations for reply field
+      const replyKeys = ['reply', 'Reply', 'REPLY', 'response', 'Response', 'message', 'Message'];
+      for (const key of replyKeys) {
+        if (parsed[key as keyof typeof parsed] && typeof parsed[key as keyof typeof parsed] === 'string') {
+          extractedReply = parsed[key as keyof typeof parsed] as string;
+          break;
+        }
+      }
+
+      // If no reply field found but content is a JSON object, check if content is the raw JSON
+      if (extractedReply === content && typeof parsed === 'object') {
+        // If parsed has a reply field, use it
+        if (parsed.reply) {
+          extractedReply = parsed.reply;
+        }
+      }
     } catch (e) {
       this.logger.warn('Failed to parse JSON response, using raw content');
-      parsed = { reply: content, analysis: null };
+      // If it looks like JSON that wasn't parsed correctly, try to extract the reply
+      const replyMatch = content.match(/"reply"\s*:\s*"((?:[^"\\]|\\.)*)"/);
+      if (replyMatch) {
+        // Unescape the JSON string
+        extractedReply = replyMatch[1].replace(/\\"/g, '"').replace(/\\n/g, '\n').replace(/\\\\/g, '\\');
+      }
+      parsed = { reply: extractedReply, analysis: null };
     }
 
     return {
-      message: parsed.reply || content,
+      message: extractedReply,
       model: data.model,
       usage: {
         promptTokens: data.usage?.prompt_tokens || 0,
