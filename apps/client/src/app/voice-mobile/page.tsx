@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState, useRef } from 'react';
+import { useEffect, useState, useRef, Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
 import Vapi from '@vapi-ai/web';
 
@@ -23,7 +23,27 @@ const systemPrompts: Record<SessionType, string> = {
   'crisis-support': "You are Matcha, providing crisis support. Your primary goal is safety and de-escalation. Be immediately warm and present. Listen without judgment. Validate their feelings. Help ground them in the present. If they express imminent danger, encourage calling 988 or 911."
 };
 
+// Wrap the main component to handle useSearchParams with Suspense
 export default function VoiceMobilePage() {
+  return (
+    <Suspense fallback={
+      <div style={{
+        minHeight: '100vh',
+        background: '#0a0a0a',
+        color: 'white',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+      }}>
+        <div>Loading...</div>
+      </div>
+    }>
+      <VoiceMobileContent />
+    </Suspense>
+  );
+}
+
+function VoiceMobileContent() {
   const searchParams = useSearchParams();
   const sessionType = (searchParams.get('type') as SessionType) || 'general-therapy';
 
