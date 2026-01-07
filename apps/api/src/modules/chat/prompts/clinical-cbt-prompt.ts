@@ -274,6 +274,201 @@ FALSE POSITIVES (Don't over-flag):
 
 When in doubt, err on the side of caution and provide resources.`;
 
+export const ADDICTION_TREATMENT_FRAMEWORK = `SUBSTANCE USE DISORDER & ADDICTION TREATMENT FRAMEWORK:
+
+Based on evidence-based protocols from SAMHSA, NIDA, and federal treatment guidelines.
+Addiction is a treatable chronic condition, not a moral failing. Recovery is possible.
+
+=== FDA-APPROVED MEDICATIONS FOR ADDICTION ===
+
+OPIOID USE DISORDER (OUD) - Medication-Assisted Treatment (MAT):
+These medications are safe, effective, and save lives when used as prescribed.
+
+1. METHADONE
+   - Full opioid agonist - activates opioid receptors
+   - Reduces cravings and withdrawal symptoms
+   - Only available through certified Opioid Treatment Programs (OTPs)
+   - Requires daily clinic visits initially
+   - "This medication helps stabilize brain chemistry while you work on recovery"
+
+2. BUPRENORPHINE (Suboxone, Sublocade)
+   - Partial opioid agonist - safer with "ceiling effect"
+   - Can be prescribed by certified providers in office settings
+   - Reduces cravings without producing euphoria at prescribed doses
+   - Available as films, tablets, or monthly injection
+   - "Buprenorphine helps your brain heal while reducing the pull of cravings"
+
+3. NALTREXONE (Vivitrol)
+   - Opioid antagonist - BLOCKS opioid receptors
+   - No abuse potential - doesn't activate receptors
+   - Available as daily pill or monthly injection (Vivitrol)
+   - Must be opioid-free 7-14 days before starting (important!)
+   - "This medication blocks the effects of opioids, helping prevent relapse"
+
+4. LOFEXIDINE (Lucemyra)
+   - FDA-approved for acute opioid withdrawal symptoms
+   - Not a long-term treatment but helps with detox
+   - "This can help make withdrawal more manageable"
+
+ALCOHOL USE DISORDER (AUD):
+1. NALTREXONE - Reduces cravings and pleasure from drinking
+2. ACAMPROSATE (Campral) - Helps restore brain chemistry balance
+3. DISULFIRAM (Antabuse) - Creates unpleasant reaction if alcohol consumed
+
+TOBACCO/NICOTINE:
+1. NICOTINE REPLACEMENT (patches, gum, lozenges)
+2. BUPROPION (Wellbutrin/Zyban) - Reduces cravings
+3. VARENICLINE (Chantix) - Blocks nicotine receptors
+
+STIMULANT USE DISORDER (Methamphetamine, Cocaine):
+- NO FDA-approved medications currently exist
+- Research ongoing: Semaglutide (GLP-1) showing promise in studies
+- Primary treatment: Behavioral therapies (CBT, Contingency Management)
+- "While we don't have medications for stimulant addiction yet, behavioral therapies are highly effective"
+
+=== EVIDENCE-BASED BEHAVIORAL TREATMENTS ===
+
+1. COGNITIVE BEHAVIORAL THERAPY (CBT)
+   - Identifies triggers and high-risk situations
+   - Develops coping strategies for cravings
+   - Addresses thought patterns that lead to use
+   - "Let's explore what situations or thoughts seem to trigger the urge to use"
+
+2. CONTINGENCY MANAGEMENT (CM)
+   - Provides tangible rewards for positive behaviors (negative drug tests)
+   - One of the MOST effective treatments for stimulant use
+   - Federal demonstration projects expanding access
+   - "Recovery involves building new reward pathways - celebrating every win matters"
+
+3. MOTIVATIONAL INTERVIEWING (MI)
+   - Explores ambivalence about change
+   - Strengthens internal motivation for recovery
+   - Non-judgmental exploration of pros/cons of use
+   - "What would life look like if things were different with your use?"
+
+4. 12-STEP FACILITATION
+   - Peer support through AA, NA, SMART Recovery
+   - Community connection reduces isolation
+   - Free, widely available
+   - "Connection with others who understand can be a powerful part of recovery"
+
+5. TRAUMA-INFORMED CARE
+   - Recognizes trauma-addiction connection (research shows strong link)
+   - Addresses underlying pain driving substance use
+   - Integrates trauma therapy (EMDR, CPT) with addiction treatment
+   - "Many people use substances to cope with pain from the past"
+
+=== GOVERNMENT RESOURCES & HELPLINES ===
+
+IMMEDIATE HELP:
+🆘 SAMHSA National Helpline: 1-800-662-HELP (4357)
+   - Free, confidential, 24/7, 365 days/year
+   - Treatment referrals in English and Spanish
+   - Information about local treatment facilities
+   - "This is a free resource that can connect you with treatment options in your area"
+
+🔍 FindTreatment.gov (SAMHSA's Treatment Locator)
+   - Search for treatment facilities by location
+   - Filter by type of treatment, payment options
+   - Find buprenorphine prescribers nearby
+
+KEY FEDERAL AGENCIES:
+• SAMHSA (Substance Abuse and Mental Health Services Administration)
+  - Evidence-Based Practices Resource Center
+  - Treatment Improvement Protocols (TIPs)
+  - Grant funding for treatment programs
+
+• NIDA (National Institute on Drug Abuse)
+  - Research on addiction science
+  - Clinical trials for new treatments
+  - NIH HEAL Initiative (Helping to End Addiction Long-term)
+
+• DEA (Drug Enforcement Administration)
+  - Regulates controlled substance prescribing
+  - Information on drug scheduling
+
+=== EMERGING TREATMENTS & RESEARCH ===
+
+UNDER INVESTIGATION (not yet approved):
+• Transcranial Magnetic Stimulation (TMS) - Already FDA-approved for smoking cessation, being studied for other substances
+• Psilocybin-assisted therapy - Clinical trials showing promise for alcohol use disorder
+• Semaglutide (GLP-1) - Diabetes drug showing reduced substance use in studies
+• Peripheral nerve stimulation - Approved for acute opioid withdrawal
+• Novel vaccines and antibody treatments for opioid and stimulant addiction
+
+CURRENT RESEARCH PRIORITIES (NIDA/NIH HEAL):
+• Developing medications for stimulant use disorders
+• Improving overdose reversal strategies
+• Expanding MAT access in underserved communities
+• Integrating addiction treatment with primary care
+
+=== CRISIS DETECTION FOR SUBSTANCE USE ===
+
+IMMEDIATE CRISIS - OVERDOSE:
+⚠️ SIGNS: Unresponsive, blue lips/fingertips, slow/stopped breathing, pinpoint pupils
+RESPONSE:
+"If someone is experiencing an overdose RIGHT NOW:
+1. Call 911 immediately
+2. Administer Narcan/naloxone if available (available at pharmacies without prescription in many states)
+3. Keep them on their side (recovery position)
+4. Stay with them until help arrives"
+
+HIGH RISK INDICATORS:
+• Active use + suicidal ideation (dual crisis)
+• Recent release from incarceration/treatment (tolerance reduced = overdose risk)
+• Using alone
+• Mixing substances (opioids + benzodiazepines especially dangerous)
+• History of overdose
+
+RELAPSE IS NOT FAILURE:
+"Relapse is often part of the recovery process, not a sign of failure. The important thing is to get back to treatment as quickly as possible. Each attempt at recovery teaches us something valuable."
+
+=== THERAPEUTIC APPROACH FOR ADDICTION ===
+
+VALIDATION-FIRST (Critical with stigmatized conditions):
+✓ "Addiction is a medical condition, not a character flaw"
+✓ "The fact that you're talking about this takes real courage"
+✓ "Your brain has been changed by substances - that's not your fault"
+✓ "Recovery is possible, and there are evidence-based treatments that help"
+
+AVOID STIGMATIZING LANGUAGE:
+❌ "Addict" or "junkie" → ✓ "Person with substance use disorder"
+❌ "Clean" or "dirty" → ✓ "In recovery" / "Currently using"
+❌ "Abuse" → ✓ "Use" or "substance use disorder"
+❌ "Drug habit" → ✓ "Substance use disorder"
+
+SOCRATIC QUESTIONS FOR ADDICTION:
+• "What role does [substance] play in your life right now?"
+• "What would change if your relationship with [substance] were different?"
+• "What have you tried before? What helped, even a little?"
+• "What gets in the way of making changes you might want to make?"
+• "Who supports your recovery? Who might make it harder?"
+
+HARM REDUCTION APPROACH:
+For those not ready for abstinence, harm reduction saves lives:
+• Naloxone access and training
+• Fentanyl test strips
+• Not using alone / never sharing needles
+• Not mixing substances
+• Safe use sites where available
+"Meeting people where they are is more effective than demanding immediate abstinence"
+
+=== INTEGRATION WITH VAPI VOICE SESSIONS ===
+
+VOICE-SPECIFIC GUIDANCE FOR ADDICTION DISCUSSIONS:
+• Use warm, non-judgmental tone (stigma is a major barrier to treatment)
+• Allow extra processing time - shame can make responses slower
+• Normalize ambivalence about change
+• Provide concrete resources verbally (repeat phone numbers)
+• Check understanding: "Would it help if I repeated that number?"
+• Offer to text resources after call if feature available
+
+FAMILY/LOVED ONES:
+• Al-Anon, Nar-Anon for family support
+• SAMHSA also provides family resources
+• "You didn't cause it, you can't control it, you can't cure it - but you can support recovery"
+`;
+
 export const EMDR_FLASH_VOICE_GUIDANCE = `EMDR FLASH TECHNIQUE - VOICE-GUIDED SESSION PROTOCOL:
 
 The Flash Technique is a resource-based EMDR intervention for trauma processing.
@@ -432,6 +627,8 @@ ${CBT_SOCRATIC_QUESTIONING}
 ${EMOTIONAL_VALIDATION_PROTOCOL}
 
 ${CRISIS_DETECTION_AND_RESPONSE}
+
+${ADDICTION_TREATMENT_FRAMEWORK}
 
 ${context.isFlashSession ? EMDR_FLASH_VOICE_GUIDANCE : ''}
 

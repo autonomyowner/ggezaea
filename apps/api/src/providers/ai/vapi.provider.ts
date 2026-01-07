@@ -165,7 +165,7 @@ export class VapiProvider {
    * @param conversationId - Existing conversation ID (for context continuity)
    */
   async createTherapyAssistant(
-    sessionType: 'general-therapy' | 'flash-technique' | 'crisis-support',
+    sessionType: 'general-therapy' | 'flash-technique' | 'crisis-support' | 'addiction-support',
     userId: string,
     conversationId?: string,
   ): Promise<string> {
@@ -215,7 +215,7 @@ export class VapiProvider {
    * (Useful for one-off sessions without pre-creating assistant)
    */
   async createAndStartCall(
-    sessionType: 'general-therapy' | 'flash-technique' | 'crisis-support',
+    sessionType: 'general-therapy' | 'flash-technique' | 'crisis-support' | 'addiction-support',
     userId: string,
     conversationId?: string,
   ): Promise<VapiWebCallResponse> {
@@ -279,7 +279,7 @@ export class VapiProvider {
    * Build system prompt based on session type and context
    */
   private buildSystemPrompt(
-    sessionType: 'general-therapy' | 'flash-technique' | 'crisis-support',
+    sessionType: 'general-therapy' | 'flash-technique' | 'crisis-support' | 'addiction-support',
     conversationId?: string,
   ): string {
     // TODO: Fetch conversation history and themes if conversationId provided
@@ -302,6 +302,12 @@ export class VapiProvider {
         messageCount: 0,
         riskLevel: 'high',
       },
+      'addiction-support': {
+        sessionType: 'voice-session',
+        messageCount: 0,
+        riskLevel: 'moderate',
+        conversationThemes: ['substance-use', 'addiction-recovery'],
+      },
     };
 
     return getClinicalSystemPrompt(contextMap[sessionType]);
@@ -311,7 +317,7 @@ export class VapiProvider {
    * Build Vapi assistant configuration
    */
   private buildAssistantConfig(
-    sessionType: 'general-therapy' | 'flash-technique' | 'crisis-support',
+    sessionType: 'general-therapy' | 'flash-technique' | 'crisis-support' | 'addiction-support',
     systemPrompt: string,
   ): VapiAssistantConfig {
     // Choose model based on session type
@@ -335,6 +341,7 @@ export class VapiProvider {
       'general-therapy': "Hi, I'm Matcha. I'm here to listen and support you. What's on your mind today?",
       'flash-technique': "Hi, I'm ready to guide you through a Flash Technique session. This will take about 10-15 minutes. Before we start, I want to make sure you're in a safe, comfortable place where you won't be interrupted. Are you ready?",
       'crisis-support': "I'm here with you. You've reached out, and that takes courage. I want you to know you're not alone right now. Can you tell me what's happening?",
+      'addiction-support': "Hey, reaching out about substance use takes real courage, and I'm here to support you without judgment. Whether you're looking for information about treatment, struggling with cravings, or just need someone to talk to, I'm here. What's bringing you here today?",
     };
 
     return {
