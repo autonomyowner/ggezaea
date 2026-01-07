@@ -51,6 +51,45 @@ export function VocodeChatArabic({ onTranscript, onSessionEnd, isVisible = true 
     }
   }, [transcript, onTranscript]);
 
+  // Play audio using ElevenLabs TTS
+  const playElevenLabsAudio = useCallback(async (text: string) => {
+    try {
+      setAssistantSpeaking(true);
+
+      const response = await fetch(`${VOCODE_API_URL}/tts`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          text,
+          language: language === 'ar' ? 'ar' : 'en'
+        })
+      });
+
+      if (!response.ok) {
+        throw new Error('TTS failed');
+      }
+
+      const audioBlob = await response.blob();
+      const audioUrl = URL.createObjectURL(audioBlob);
+      const audio = new Audio(audioUrl);
+
+      audio.onended = () => {
+        setAssistantSpeaking(false);
+        URL.revokeObjectURL(audioUrl);
+      };
+
+      audio.onerror = () => {
+        setAssistantSpeaking(false);
+        URL.revokeObjectURL(audioUrl);
+      };
+
+      await audio.play();
+    } catch (err) {
+      console.error('TTS error:', err);
+      setAssistantSpeaking(false);
+    }
+  }, [language]);
+
   // Text-based chat (fallback / simple mode)
   const sendTextMessage = useCallback(async (message: string) => {
     if (!message.trim()) return;
@@ -78,14 +117,9 @@ export function VocodeChatArabic({ onTranscript, onSessionEnd, isVisible = true 
         { role: 'ASSISTANT', content: data.response, timestamp: new Date() }
       ]);
 
-      // Text-to-speech for the response (optional - uses browser TTS)
-      if ('speechSynthesis' in window) {
-        const utterance = new SpeechSynthesisUtterance(data.response);
-        utterance.lang = language === 'ar' ? 'ar-SA' : 'en-US';
-        utterance.onstart = () => setAssistantSpeaking(true);
-        utterance.onend = () => setAssistantSpeaking(false);
-        speechSynthesis.speak(utterance);
-      }
+      // Use ElevenLabs for natural human-like voice
+      await playElevenLabsAudio(data.response);
+
     } catch (err) {
       console.error('Chat error:', err);
       setError(language === 'ar' ? 'حدث خطأ في الاتصال' : 'Connection error');
@@ -93,7 +127,7 @@ export function VocodeChatArabic({ onTranscript, onSessionEnd, isVisible = true 
       setIsProcessing(false);
       setTextInput('');
     }
-  }, [language]);
+  }, [language, playElevenLabsAudio]);
 
   // Voice recording
   const startRecording = useCallback(async () => {
@@ -181,23 +215,18 @@ export function VocodeChatArabic({ onTranscript, onSessionEnd, isVisible = true 
         timestamp: new Date()
       }]);
 
-      // Speak the greeting
-      if ('speechSynthesis' in window) {
-        const utterance = new SpeechSynthesisUtterance(greeting);
-        utterance.lang = language === 'ar' ? 'ar-SA' : 'en-US';
-        utterance.onstart = () => setAssistantSpeaking(true);
-        utterance.onend = () => setAssistantSpeaking(false);
-        speechSynthesis.speak(utterance);
-      }
-
       setIsActive(true);
+
+      // Use ElevenLabs for natural greeting
+      await playElevenLabsAudio(greeting);
+
     } catch (err) {
       console.error('Session start error:', err);
       setError(language === 'ar' ? 'فشل في بدء الجلسة' : 'Failed to start session');
     } finally {
       setIsConnecting(false);
     }
-  }, [language]);
+  }, [language, playElevenLabsAudio]);
 
   const endSession = useCallback(() => {
     if (wsRef.current) {

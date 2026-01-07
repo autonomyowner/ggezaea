@@ -211,6 +211,68 @@ async def chat(request: Request):
         raise HTTPException(status_code=500, detail=str(e))
 
 
+# ElevenLabs TTS endpoint
+@app.post("/tts")
+async def text_to_speech(request: Request):
+    """Generate speech using ElevenLabs"""
+    import aiohttp
+
+    try:
+        data = await request.json()
+        text = data.get("text", "")
+        language = data.get("language", "ar")
+
+        if not text:
+            raise HTTPException(status_code=400, detail="No text provided")
+
+        # Male Arabic voice: "Adam" or use Arabic-specific voice
+        # For Arabic: use multilingual model with Arabic male voice
+        voice_id = "pNInz6obpgDQGcFmaJgB" if language == "ar" else "TxGEqnHWrfWFTfGW9XjX"  # Adam for Arabic, Josh for English
+
+        url = f"https://api.elevenlabs.io/v1/text-to-speech/{voice_id}"
+
+        headers = {
+            "Accept": "audio/mpeg",
+            "Content-Type": "application/json",
+            "xi-api-key": config.ELEVENLABS_API_KEY
+        }
+
+        payload = {
+            "text": text,
+            "model_id": "eleven_multilingual_v2",  # Best for Arabic
+            "voice_settings": {
+                "stability": 0.5,
+                "similarity_boost": 0.75,
+                "style": 0.5,
+                "use_speaker_boost": True
+            }
+        }
+
+        async with aiohttp.ClientSession() as session:
+            async with session.post(url, json=payload, headers=headers) as resp:
+                if resp.status != 200:
+                    error_text = await resp.text()
+                    logger.error(f"ElevenLabs error: {error_text}")
+                    raise HTTPException(status_code=resp.status, detail="TTS generation failed")
+
+                audio_data = await resp.read()
+
+                from fastapi.responses import Response
+                return Response(
+                    content=audio_data,
+                    media_type="audio/mpeg",
+                    headers={
+                        "Content-Disposition": "inline; filename=speech.mp3"
+                    }
+                )
+
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"TTS error: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+
 if __name__ == "__main__":
     uvicorn.run(
         "main:app",
