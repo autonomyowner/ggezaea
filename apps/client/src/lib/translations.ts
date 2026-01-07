@@ -1,4 +1,4 @@
-export type Language = 'en' | 'fr';
+export type Language = 'en' | 'fr' | 'ar';
 
 export const translations = {
   en: {
@@ -19,7 +19,7 @@ export const translations = {
       eyebrow: 'AI at the service of your mind',
       headline: 'Understand your mind.',
       headlineHighlight: 'Transform your life.',
-      subheadline: 'Matcha analyzes your thought patterns, identifies your cognitive biases, and reveals the deep roots of your blockers. A revolutionary approach to personal development.',
+      subheadline: 'WA3i analyzes your thought patterns, identifies your cognitive biases, and reveals the deep roots of your blockers. A revolutionary approach to personal development.',
       ctaStart: 'Start for free',
       ctaHow: 'Discover how it works',
       socialProof: 'Already adopted by thousands of people',
@@ -38,7 +38,7 @@ export const translations = {
       step3Desc: 'Receive a detailed report with concrete recommendations to transform your thought patterns and achieve your goals.',
 
       // Features
-      whatReveals: 'What Matcha reveals',
+      whatReveals: 'What WA3i reveals',
       whatRevealsDesc: 'A deep psychological analysis to understand what\'s holding you back.',
       cognitiveBiases: 'Cognitive biases',
       cognitiveBiasesDesc: 'Identify unconscious biases distorting your judgment: confirmation bias, halo effect, loss aversion, and many others.',
@@ -51,7 +51,7 @@ export const translations = {
 
       // Testimonials
       testimonials: 'They transformed their lives',
-      testimonial1: 'Matcha helped me understand why I was procrastinating on important projects. The insights were incredibly accurate.',
+      testimonial1: 'WA3i helped me understand why I was procrastinating on important projects. The insights were incredibly accurate.',
       testimonial1Name: 'Marie L.',
       testimonial1Role: 'Entrepreneur, Paris',
       testimonial2: 'I finally understood my thought patterns that were blocking my career. A true revelation.',
@@ -69,7 +69,7 @@ export const translations = {
 
       // Final CTA
       readyToUnderstand: 'Ready to understand your mind?',
-      joinThousands: 'Start your journey and transform your way of thinking with Matcha.',
+      joinThousands: 'Start your journey and transform your way of thinking with WA3i.',
       startNow: 'Start now',
 
       // Social Section
@@ -81,18 +81,18 @@ export const translations = {
       footerTagline: 'The AI that understands your mind',
       allRightsReserved: 'All rights reserved.',
       investorCta: 'Become a Co-Founder',
-      investorMsg: 'Looking for a $20K investment for 20% equity to scale Matcha worldwide.',
+      investorMsg: 'Looking for a $20K investment for 20% equity to scale WA3i worldwide.',
       investorContact: 'Get in touch',
     },
 
     // Interactive Demo
     demo: {
       badge: 'Interactive demo',
-      title: 'See Matcha in action',
+      title: 'See WA3i in action',
       description: 'Discover how our AI analyzes your thoughts and reveals deep insights in just a few exchanges.',
       replay: 'Replay',
       sessionTitle: 'Analysis session',
-      aiName: 'Matcha AI',
+      aiName: 'WA3i AI',
       aiGreeting: 'Hello! I\'m here to help you better understand your thought patterns. What\'s on your mind right now?',
       userMsg1: 'I procrastinate a lot on an important project at work. I can\'t get started.',
       aiMsg1: 'I understand. Can you describe what you feel when you think about this project?',
@@ -128,7 +128,7 @@ export const translations = {
       free: 'Free',
       discovery: 'Discovery',
       perMonth: '/month',
-      freeDesc: 'Perfect for discovering Matcha and understanding your first thought patterns.',
+      freeDesc: 'Perfect for discovering WA3i and understanding your first thought patterns.',
       freeFeature1: '3 analyses per month',
       freeFeature2: 'Basic psychological profile',
       freeFeature3: 'Main biases identification',
@@ -174,7 +174,7 @@ export const translations = {
 
       // Guarantee
       guaranteeTitle: '30-day money-back guarantee',
-      guaranteeDesc: 'If Matcha doesn\'t help you better understand your thought patterns, we\'ll give you a full refund. No questions, no conditions.',
+      guaranteeDesc: 'If WA3i doesn\'t help you better understand your thought patterns, we\'ll give you a full refund. No questions, no conditions.',
       cancelAnytime: 'Cancel in 1 click',
       noCommitment: 'No commitment',
       immediateRefund: 'Immediate refund',
@@ -194,7 +194,7 @@ export const translations = {
 
       // Final CTA
       readyToTransform: 'Ready to transform your way of thinking?',
-      joinThousands: 'Start your journey with Matcha today.',
+      joinThousands: 'Start your journey with WA3i today.',
     },
 
     // Login Page
@@ -217,7 +217,7 @@ export const translations = {
     // Signup Page
     signup: {
       title: 'Begin your inner journey',
-      subtitle: 'Create your Matcha account in seconds',
+      subtitle: 'Create your WA3i account in seconds',
       choosePlan: 'Choose your plan',
       free: 'Free',
       freeDesc: '3 analyses/month',
@@ -336,7 +336,7 @@ export const translations = {
 
     // Chat
     chat: {
-      title: 'Chat with Matcha AI',
+      title: 'Chat with WA3i AI',
       newChat: 'New Chat',
       noConversations: 'No conversations yet',
       welcomeTitle: 'Start a conversation',
@@ -351,6 +351,48 @@ export const translations = {
       pricing: 'Pricing',
       login: 'Login',
       signup: 'Sign up',
+    },
+
+    // Breathing Page
+    breathing: {
+      title: 'Breathing',
+      choosePattern: 'Choose a pattern:',
+      breatheIn: 'Breathe In',
+      hold: 'Hold',
+      breatheOut: 'Breathe Out',
+      wellDone: 'Well Done',
+      ready: 'Ready?',
+      cycle: 'Cycle',
+      of: 'of',
+      cycles: 'cycles',
+      sessionComplete: 'Session Complete',
+      greatJob: 'Great job taking time for yourself',
+      begin: 'Begin',
+      stop: 'Stop',
+      startAnother: 'Start Another Session',
+      secondsIn: 's in',
+      secondsHold: 's hold',
+      secondsOut: 's out',
+      // Patterns
+      patternCalm: 'Calm',
+      patternCalmDesc: 'Simple relaxation breathing',
+      patternBox: 'Box',
+      patternBoxDesc: 'Military stress relief technique',
+      pattern478: '4-7-8',
+      pattern478Desc: 'Deep sleep and anxiety relief',
+    },
+
+    // Blog Page
+    blog: {
+      title: 'Research & Insights',
+      subtitle: 'Evidence-based articles on mental health, trauma treatment, and the science of healing.',
+      ctaTitle: 'Experience Evidence-Based Healing',
+      ctaSubtitle: 'Matcha combines proven techniques like EMDR and Flash to support your mental wellness journey.',
+      getStarted: 'Get Started Free',
+      chatNow: 'Chat Now',
+      footerTagline: 'Your companion for mental wellness',
+      readMore: 'Read more',
+      minRead: 'min',
     },
   },
 
@@ -372,7 +414,7 @@ export const translations = {
       eyebrow: 'Intelligence artificielle au service de votre esprit',
       headline: 'Comprenez votre esprit.',
       headlineHighlight: 'Transformez votre vie.',
-      subheadline: 'Matcha analyse vos schemas de pensee, identifie vos biais cognitifs, et vous revele les racines profondes de vos blocages. Une approche revolutionnaire du developpement personnel.',
+      subheadline: 'WA3i analyse vos schemas de pensee, identifie vos biais cognitifs, et vous revele les racines profondes de vos blocages. Une approche revolutionnaire du developpement personnel.',
       ctaStart: 'Commencer gratuitement',
       ctaHow: 'Decouvrir comment ca marche',
       socialProof: 'Deja adopte par des milliers de personnes en France',
@@ -391,7 +433,7 @@ export const translations = {
       step3Desc: "Recevez un rapport detaille avec des recommandations concretes pour transformer vos schemas de pensee et atteindre vos objectifs.",
 
       // Features
-      whatReveals: 'Ce que Matcha revele',
+      whatReveals: 'Ce que WA3i revele',
       whatRevealsDesc: "Une analyse psychologique profonde pour comprendre ce qui vous empeche d'avancer.",
       cognitiveBiases: 'Biais cognitifs',
       cognitiveBiasesDesc: "Identifiez les biais inconscients qui faussent votre jugement : biais de confirmation, effet de halo, aversion a la perte, et bien d'autres.",
@@ -404,7 +446,7 @@ export const translations = {
 
       // Testimonials
       testimonials: 'Ils ont transforme leur vie',
-      testimonial1: "Matcha m'a permis de comprendre pourquoi je procrastinais sur mes projets importants. Les insights etaient incroyablement precis.",
+      testimonial1: "WA3i m'a permis de comprendre pourquoi je procrastinais sur mes projets importants. Les insights etaient incroyablement precis.",
       testimonial1Name: 'Marie L.',
       testimonial1Role: 'Entrepreneure, Paris',
       testimonial2: "J'ai enfin compris mes schemas de pensee qui me bloquaient dans ma carriere. Une vraie revelation.",
@@ -422,7 +464,7 @@ export const translations = {
 
       // Final CTA
       readyToUnderstand: 'Pret a comprendre votre esprit ?',
-      joinThousands: 'Commencez votre voyage et transformez votre façon de penser avec Matcha.',
+      joinThousands: 'Commencez votre voyage et transformez votre façon de penser avec WA3i.',
       startNow: 'Commencer maintenant',
 
       // Social Section
@@ -434,18 +476,18 @@ export const translations = {
       footerTagline: "L'IA qui comprend votre esprit",
       allRightsReserved: 'Tous droits reserves.',
       investorCta: 'Devenez Co-Fondateur',
-      investorMsg: 'Recherche investissement de 20K$ pour 20% des parts afin de deployer Matcha mondialement.',
+      investorMsg: 'Recherche investissement de 20K$ pour 20% des parts afin de deployer WA3i mondialement.',
       investorContact: 'Nous contacter',
     },
 
     // Interactive Demo
     demo: {
       badge: 'Demo interactive',
-      title: 'Voyez Matcha en action',
+      title: 'Voyez WA3i en action',
       description: 'Decouvrez comment notre IA analyse vos pensees et revele des insights profonds en quelques echanges.',
       replay: 'Rejouer',
       sessionTitle: "Session d'analyse",
-      aiName: 'Matcha AI',
+      aiName: 'WA3i AI',
       aiGreeting: "Bonjour ! Je suis la pour vous aider a mieux comprendre vos schemas de pensee. Qu'est-ce qui vous preoccupe en ce moment ?",
       userMsg1: "Je procrastine beaucoup sur un projet important au travail. Je n'arrive pas a m'y mettre.",
       aiMsg1: 'Je comprends. Pouvez-vous me decrire ce que vous ressentez quand vous pensez a ce projet ?',
@@ -481,7 +523,7 @@ export const translations = {
       free: 'Gratuit',
       discovery: 'Decouverte',
       perMonth: '/mois',
-      freeDesc: 'Parfait pour decouvrir Matcha et comprendre vos premiers schemas de pensee.',
+      freeDesc: 'Parfait pour decouvrir WA3i et comprendre vos premiers schemas de pensee.',
       freeFeature1: '3 analyses par mois',
       freeFeature2: 'Profil psychologique de base',
       freeFeature3: 'Identification des biais principaux',
@@ -527,7 +569,7 @@ export const translations = {
 
       // Guarantee
       guaranteeTitle: 'Garantie satisfait ou rembourse 30 jours',
-      guaranteeDesc: 'Si Matcha ne vous aide pas a mieux comprendre vos schemas de pensee, nous vous remboursons integralement. Sans questions, sans conditions.',
+      guaranteeDesc: 'Si WA3i ne vous aide pas a mieux comprendre vos schemas de pensee, nous vous remboursons integralement. Sans questions, sans conditions.',
       cancelAnytime: 'Annulation en 1 clic',
       noCommitment: 'Aucun engagement',
       immediateRefund: 'Remboursement immediat',
@@ -547,7 +589,7 @@ export const translations = {
 
       // Final CTA
       readyToTransform: 'Pret a transformer votre facon de penser ?',
-      joinThousands: 'Commencez votre voyage avec Matcha dès aujourd\'hui.',
+      joinThousands: 'Commencez votre voyage avec WA3i dès aujourd\'hui.',
     },
 
     // Login Page
@@ -570,7 +612,7 @@ export const translations = {
     // Signup Page
     signup: {
       title: 'Commencez votre voyage interieur',
-      subtitle: 'Creez votre compte Matcha en quelques secondes',
+      subtitle: 'Creez votre compte WA3i en quelques secondes',
       choosePlan: 'Choisissez votre plan',
       free: 'Gratuit',
       freeDesc: '3 analyses/mois',
@@ -689,7 +731,7 @@ export const translations = {
 
     // Chat
     chat: {
-      title: 'Discutez avec Matcha AI',
+      title: 'Discutez avec WA3i AI',
       newChat: 'Nouvelle discussion',
       noConversations: 'Aucune conversation',
       welcomeTitle: 'Commencez une conversation',
@@ -705,7 +747,442 @@ export const translations = {
       login: 'Connexion',
       signup: 'Inscription',
     },
+
+    // Breathing Page
+    breathing: {
+      title: 'Respiration',
+      choosePattern: 'Choisissez un modele :',
+      breatheIn: 'Inspirez',
+      hold: 'Retenez',
+      breatheOut: 'Expirez',
+      wellDone: 'Bien joue',
+      ready: 'Pret ?',
+      cycle: 'Cycle',
+      of: 'sur',
+      cycles: 'cycles',
+      sessionComplete: 'Session terminee',
+      greatJob: 'Bravo de prendre du temps pour vous',
+      begin: 'Commencer',
+      stop: 'Arreter',
+      startAnother: 'Nouvelle session',
+      secondsIn: 's inspiration',
+      secondsHold: 's retention',
+      secondsOut: 's expiration',
+      // Patterns
+      patternCalm: 'Calme',
+      patternCalmDesc: 'Respiration de relaxation simple',
+      patternBox: 'Carre',
+      patternBoxDesc: 'Technique militaire anti-stress',
+      pattern478: '4-7-8',
+      pattern478Desc: 'Sommeil profond et soulagement de l\'anxiete',
+    },
+
+    // Blog Page
+    blog: {
+      title: 'Recherche et perspectives',
+      subtitle: 'Articles bases sur des preuves concernant la sante mentale, le traitement des traumatismes et la science de la guerison.',
+      ctaTitle: 'Decouvrez une guerison basee sur des preuves',
+      ctaSubtitle: 'Matcha combine des techniques eprouvees comme l\'EMDR et Flash pour soutenir votre parcours de bien-etre mental.',
+      getStarted: 'Commencer gratuitement',
+      chatNow: 'Discuter maintenant',
+      footerTagline: 'Votre compagnon pour le bien-etre mental',
+      readMore: 'Lire la suite',
+      minRead: 'min',
+    },
+  },
+
+  ar: {
+    // Header
+    header: {
+      home: 'الرئيسية',
+      pricing: 'الأسعار',
+      dashboard: 'لوحة التحكم',
+      chat: 'المحادثة',
+      hello: 'مرحباً',
+      logout: 'تسجيل الخروج',
+      login: 'تسجيل الدخول',
+      getStarted: 'ابدأ الآن',
+    },
+
+    // Landing Page
+    landing: {
+      eyebrow: 'الذكاء الاصطناعي في خدمة عقلك',
+      headline: 'افهم عقلك.',
+      headlineHighlight: 'غيّر حياتك.',
+      subheadline: 'يحلل WA3i أنماط تفكيرك، ويحدد تحيزاتك المعرفية، ويكشف الجذور العميقة لعوائقك. نهج ثوري للتنمية الشخصية.',
+      ctaStart: 'ابدأ مجاناً',
+      ctaHow: 'اكتشف كيف يعمل',
+      socialProof: 'تم تبنيه بالفعل من قبل آلاف الأشخاص',
+      satisfaction: 'رضا',
+      analyses: 'تحليلات',
+      recommend: 'يوصون',
+
+      // How it works
+      howItWorks: 'كيف يعمل',
+      howItWorksDesc: 'عملية بسيطة من ثلاث خطوات لفهم وتحويل طريقة تفكيرك.',
+      step1Title: 'شارك أفكارك',
+      step1Desc: 'صف موقفاً أو تحدياً أو قراراً تريد تحليله. يطرح الذكاء الاصطناعي أسئلة مستهدفة لفهم سياقك.',
+      step2Title: 'تحليل عميق',
+      step2Desc: 'يحدد ذكاؤنا الاصطناعي أنماط تفكيرك المتكررة، ويكتشف التحيزات المعرفية التي تؤثر على قراراتك، ويكشف الأسباب الجذرية لعوائقك.',
+      step3Title: 'رؤى مخصصة',
+      step3Desc: 'احصل على تقرير مفصل مع توصيات عملية لتحويل أنماط تفكيرك وتحقيق أهدافك.',
+
+      // Features
+      whatReveals: 'ما يكشفه WA3i',
+      whatRevealsDesc: 'تحليل نفسي عميق لفهم ما يعيقك.',
+      cognitiveBiases: 'التحيزات المعرفية',
+      cognitiveBiasesDesc: 'حدد التحيزات اللاواعية التي تشوه حكمك: تحيز التأكيد، تأثير الهالة، النفور من الخسارة، وغيرها الكثير.',
+      thoughtPatterns: 'أنماط التفكير',
+      thoughtPatternsDesc: 'اكتشف أنماط تفكيرك المتكررة وافهم كيف تؤثر على قراراتك اليومية.',
+      emotionalBlockers: 'العوائق العاطفية',
+      emotionalBlockersDesc: 'سلط الضوء على الحواجز العاطفية التي تمنعك من اتخاذ الإجراءات وتحقيق أهدافك.',
+      psychProfile: 'الملف النفسي',
+      psychProfileDesc: 'احصل على نظرة شاملة على أدائك العقلي مع رؤى قابلة للتنفيذ لتطويرك الشخصي.',
+
+      // Testimonials
+      testimonials: 'غيّروا حياتهم',
+      testimonial1: 'ساعدني WA3i على فهم سبب تسويفي في المشاريع المهمة. كانت الرؤى دقيقة بشكل لا يصدق.',
+      testimonial1Name: 'أحمد م.',
+      testimonial1Role: 'رائد أعمال، الرياض',
+      testimonial2: 'أخيراً فهمت أنماط تفكيري التي كانت تعيق مسيرتي المهنية. اكتشاف حقيقي.',
+      testimonial2Name: 'سارة ك.',
+      testimonial2Role: 'مديرة، دبي',
+      testimonial3: 'غيّر تحليل تحيزاتي المعرفية طريقة اتخاذي للقرارات. أوصي به 100%.',
+      testimonial3Name: 'محمد ع.',
+      testimonial3Role: 'استشاري، جدة',
+
+      // Pricing Preview
+      startFree: 'ابدأ مجاناً',
+      startFreeDesc: '3 تحليلات مجانية كل شهر. قم بالترقية إلى Pro للحصول على تحليلات غير محدودة ومتابعة مخصصة.',
+      createFreeAccount: 'إنشاء حسابي المجاني',
+      seePricing: 'عرض الأسعار',
+
+      // Final CTA
+      readyToUnderstand: 'هل أنت مستعد لفهم عقلك؟',
+      joinThousands: 'ابدأ رحلتك وغيّر طريقة تفكيرك مع WA3i.',
+      startNow: 'ابدأ الآن',
+
+      // Social Section
+      followUsTitle: 'تابعنا على وسائل التواصل الاجتماعي',
+      followFacebook: 'تابعنا على فيسبوك',
+      followInstagram: 'تابعنا على انستغرام',
+
+      // Footer
+      footerTagline: 'الذكاء الاصطناعي الذي يفهم عقلك',
+      allRightsReserved: 'جميع الحقوق محفوظة.',
+      investorCta: 'كن شريكاً مؤسساً',
+      investorMsg: 'نبحث عن استثمار بقيمة 20 ألف دولار مقابل 20% من الأسهم لتوسيع WA3i عالمياً.',
+      investorContact: 'تواصل معنا',
+    },
+
+    // Interactive Demo
+    demo: {
+      badge: 'عرض تفاعلي',
+      title: 'شاهد WA3i في العمل',
+      description: 'اكتشف كيف يحلل ذكاؤنا الاصطناعي أفكارك ويكشف رؤى عميقة في بضع تبادلات فقط.',
+      replay: 'إعادة التشغيل',
+      sessionTitle: 'جلسة التحليل',
+      aiName: 'WA3i AI',
+      aiGreeting: 'مرحباً! أنا هنا لمساعدتك على فهم أنماط تفكيرك بشكل أفضل. ما الذي يشغل بالك الآن؟',
+      userMsg1: 'أسوّف كثيراً في مشروع مهم في العمل. لا أستطيع البدء.',
+      aiMsg1: 'أفهم. هل يمكنك وصف ما تشعر به عندما تفكر في هذا المشروع؟',
+      userMsg2: 'أشعر بنوع من القلق... أخاف ألا أكون على قدر المسؤولية.',
+      aiMsg2: 'شكراً على صدقك. هل مررت بموقف مماثل نجحت فيه رغم شكوكك؟',
+      userMsg3: 'نعم، عدة مرات في الواقع. لكن في كل مرة أنسى تلك النجاحات.',
+      placeholder: 'اكتب رسالتك...',
+      analysisTitle: 'التحليل الفوري',
+      analysisComplete: 'اكتمل التحليل',
+      analyzing: 'الذكاء الاصطناعي يحلل المحادثة...',
+      insightsAppear: 'ستظهر الرؤى هنا',
+      emotionalState: 'الحالة العاطفية السائدة',
+      performanceAnxiety: 'قلق الأداء',
+      thinkingPattern: 'نمط التفكير المكتشف',
+      paralyzingPerfectionism: 'الكمالية المشلّة',
+      biasesIdentified: 'التحيزات المعرفية المحددة',
+      catastrophizing: 'التهويل',
+      procrastination: 'التسويف',
+      allOrNothingThinking: 'التفكير الكل أو لا شيء',
+      keyInsight: 'الرؤية الرئيسية',
+      insightText: 'ميل نحو دوامات "ماذا لو" وأنماط التجنب.',
+      readyDiscover: 'هل أنت مستعد لاكتشاف أنماط تفكيرك الخاصة؟',
+      startFreeAnalysis: 'ابدأ تحليلي المجاني',
+    },
+
+    // Pricing Page
+    pricing: {
+      title: 'أسعار بسيطة وشفافة',
+      subtitle: 'ابدأ مجاناً، وقم بالترقية إلى Pro عندما تكون جاهزاً. بدون التزام، إلغاء في أي وقت.',
+      monthly: 'شهري',
+      yearly: 'سنوي',
+      free: 'مجاني',
+      discovery: 'اكتشاف',
+      perMonth: '/شهر',
+      freeDesc: 'مثالي لاكتشاف WA3i وفهم أنماط تفكيرك الأولى.',
+      freeFeature1: '3 تحليلات شهرياً',
+      freeFeature2: 'ملف نفسي أساسي',
+      freeFeature3: 'تحديد التحيزات الرئيسية',
+      freeFeature4: 'الوصول إلى المجتمع',
+      freeFeature5: 'تصدير التقارير (PDF)',
+      startFree: 'ابدأ مجاناً',
+      pro: 'Pro',
+      transformation: 'التحول',
+      mostPopular: 'الأكثر شعبية',
+      billedYearly: 'يُفوتر {amount}/سنة (وفر {savings})',
+      proDesc: 'لمن يريدون حقاً تحويل طريقة تفكيرهم.',
+      proFeature1: 'تحليلات غير محدودة',
+      proFeature2: 'ملف نفسي كامل',
+      proFeature3: 'جميع التحيزات المعرفية مكتشفة',
+      proFeature4: 'متابعة التقدم الشهرية',
+      proFeature5: 'تقارير أسبوعية مخصصة',
+      proFeature6: 'محادثة AI للتعمق',
+      proFeature7: 'دعم ذو أولوية',
+      proFeature8: 'وصول مبكر للميزات الجديدة',
+      tryPro: 'جرب Pro مجاناً لمدة 14 يوم',
+
+      // Comparison
+      compareTitle: 'قارن الميزات',
+      feature: 'الميزة',
+      analysesPerMonth: 'التحليلات شهرياً',
+      psychProfile: 'الملف النفسي',
+      biasesDetected: 'التحيزات المكتشفة',
+      progressTracking: 'متابعة التقدم',
+      personalizedReports: 'تقارير مخصصة',
+      deepAIChat: 'محادثة AI متعمقة',
+      pdfExport: 'تصدير PDF',
+      support: 'الدعم',
+      unlimited: 'غير محدود',
+      basic: 'أساسي',
+      complete: 'كامل',
+      mainOnly: '5 رئيسية',
+      all20Plus: 'الكل (20+)',
+      no: 'لا',
+      yes: 'نعم',
+      weekly: 'أسبوعية',
+      community: 'المجتمع',
+      priority: 'أولوية',
+
+      // Guarantee
+      guaranteeTitle: 'ضمان استرداد الأموال خلال 30 يوم',
+      guaranteeDesc: 'إذا لم يساعدك WA3i على فهم أنماط تفكيرك بشكل أفضل، سنعيد لك أموالك بالكامل. بدون أسئلة، بدون شروط.',
+      cancelAnytime: 'إلغاء بنقرة واحدة',
+      noCommitment: 'بدون التزام',
+      immediateRefund: 'استرداد فوري',
+
+      // FAQ
+      faqTitle: 'الأسئلة الشائعة',
+      faq1Q: 'كيف تعمل النسخة التجريبية المجانية من Pro؟',
+      faq1A: 'تحصل على وصول لجميع ميزات Pro لمدة 14 يوم. لا حاجة لبطاقة ائتمان للبدء. في نهاية الفترة التجريبية، يمكنك اختيار الاستمرار مع Pro أو العودة للخطة المجانية.',
+      faq2Q: 'هل يمكنني تغيير الخطة في أي وقت؟',
+      faq2A: 'نعم، يمكنك الترقية من المجاني إلى Pro أو إلغاء اشتراك Pro في أي وقت. التغييرات تسري فوراً.',
+      faq3Q: 'هل بياناتي آمنة؟',
+      faq3A: 'بالتأكيد. بياناتك مشفرة ومخزنة بشكل آمن. لا نشارك معلوماتك مع أطراف ثالثة أبداً. يمكنك طلب حذف البيانات في أي وقت.',
+      faq4Q: 'ما هو التحليل؟',
+      faq4A: 'التحليل هو جلسة تشارك فيها موقفاً أو تحدياً أو قراراً مع الذكاء الاصطناعي. يحدد تحيزاتك المعرفية وأنماط تفكيرك وينشئ تقريراً مخصصاً.',
+      faq5Q: 'هل الدفع آمن؟',
+      faq5A: 'نعم، جميع المدفوعات تتم معالجتها بواسطة Stripe، الرائد العالمي في المدفوعات عبر الإنترنت. لا نخزن معلوماتك البنكية أبداً.',
+
+      // Final CTA
+      readyToTransform: 'هل أنت مستعد لتحويل طريقة تفكيرك؟',
+      joinThousands: 'ابدأ رحلتك مع WA3i اليوم.',
+    },
+
+    // Login Page
+    login: {
+      welcomeBack: 'مرحباً بعودتك',
+      loginSubtitle: 'سجل الدخول للوصول إلى مساحتك',
+      email: 'البريد الإلكتروني',
+      emailPlaceholder: 'you@example.com',
+      password: 'كلمة المرور',
+      passwordPlaceholder: 'كلمة المرور الخاصة بك',
+      signIn: 'تسجيل الدخول',
+      noAccount: 'ليس لديك حساب؟',
+      createAccount: 'إنشاء حساب',
+      loading: 'جاري التحميل...',
+      demoMode: 'الوضع التجريبي:',
+      demoHint: 'أنشئ حساباً بأي بريد إلكتروني لاختبار التطبيق.',
+      error: 'حدث خطأ',
+    },
+
+    // Signup Page
+    signup: {
+      title: 'ابدأ رحلتك الداخلية',
+      subtitle: 'أنشئ حساب WA3i الخاص بك في ثوانٍ',
+      choosePlan: 'اختر خطتك',
+      free: 'مجاني',
+      freeDesc: '3 تحليلات/شهر',
+      proPrice: 'Pro - 19$/شهر',
+      proDesc: 'تحليلات غير محدودة',
+      freeTrial: '14 يوم مجاناً',
+      firstName: 'الاسم الأول',
+      firstNamePlaceholder: 'اسمك الأول',
+      email: 'البريد الإلكتروني',
+      emailPlaceholder: 'you@example.com',
+      password: 'كلمة المرور',
+      passwordPlaceholder: '6 أحرف كحد أدنى',
+      passwordHint: '6 أحرف على الأقل',
+      createAccount: 'إنشاء حسابي',
+      alreadyRegistered: 'مسجل بالفعل؟',
+      signIn: 'تسجيل الدخول',
+      terms: 'بإنشاء حساب، فإنك توافق على شروط الاستخدام وسياسة الخصوصية الخاصة بنا.',
+      loading: 'جاري التحميل...',
+      error: 'حدث خطأ',
+    },
+
+    // Dashboard
+    dashboard: {
+      hello: 'مرحباً',
+      subtitle: 'هذه لوحة التحكم النفسية الخاصة بك',
+      analysesRemaining: 'تحليل متبقي',
+      analysesRemainingPlural: 'تحليلات متبقية',
+      yourProfile: 'ملفك الشخصي',
+      profileCompletion: 'اكتمال الملف',
+      analysesCompleted: 'التحليلات المكتملة',
+      memberSince: 'عضو منذ',
+      lastAnalysis: 'آخر تحليل',
+      daysAgo: 'أيام',
+      startNewAnalysis: 'ابدأ تحليلاً جديداً',
+      cognitiveBiases: 'التحيزات المعرفية المكتشفة',
+      allOrNothingThinking: 'التفكير الكل أو لا شيء',
+      allOrNothingThinkingDesc: 'رؤية المواقف في فئتين فقط بدلاً من سلسلة متصلة.',
+      catastrophizing: 'التهويل',
+      catastrophizingDesc: 'توقع الأسوأ؛ دوامات "ماذا لو" التي تتصاعد إلى توقعات الكارثة.',
+      mindReading: 'قراءة الأفكار',
+      mindReadingDesc: 'افتراض معرفة ما يفكر به الآخرون بدون دليل.',
+      shouldStatements: 'عبارات الواجب',
+      shouldStatementsDesc: 'توقعات صارمة باستخدام "يجب" و"لا بد" التي تخلق ضغطاً.',
+      emotionalReasoning: 'التفكير العاطفي',
+      emotionalReasoningDesc: 'معاملة المشاعر كدليل على الواقع.',
+      overgeneralization: 'التعميم المفرط',
+      overgeneralizationDesc: 'استخلاص استنتاجات واسعة من أحداث فردية.',
+      personalization: 'الشخصنة',
+      personalizationDesc: 'تحمل مسؤولية مفرطة عن أشياء خارجة عن سيطرتك.',
+      filtering: 'التصفية',
+      filteringDesc: 'التركيز فقط على السلبيات مع تجاهل الإيجابيات.',
+      fortuneTelling: 'التنبؤ بالمستقبل',
+      fortuneTellingDesc: 'التنبؤ بنتائج سلبية بيقين زائف.',
+      labeling: 'التوصيف',
+      labelingDesc: 'تعريف النفس أو الآخرين بتصنيفات سلبية شاملة.',
+      procrastination: 'التسويف',
+      procrastinationDesc: 'تجنب المهام بسبب عدم التنظيم العاطفي أو الكمالية أو الخوف من الفشل.',
+      thinkingPatterns: 'أنماط التفكير',
+      analytical: 'تحليلي',
+      creative: 'إبداعي',
+      pragmatic: 'عملي',
+      emotional: 'عاطفي',
+      personalizedInsights: 'رؤى مخصصة',
+      insight1: 'تميل إلى البحث عن التأكيد لقراراتك بدلاً من وجهات النظر المخالفة.',
+      insight2: 'يساعدك تفكيرك العملي على اتخاذ الإجراءات، لكنه قد يحد أحياناً من الاستكشاف الإبداعي.',
+      insight3: 'النفور من الخسارة يؤثر على خياراتك المهنية - فكر في الفرص الضائعة.',
+      progressTitle: 'التطور خلال 30 يوم',
+      unlockProgress: 'افتح متابعة التقدم',
+      upgradeDesc: 'قم بالترقية إلى Pro لرؤية تطورك عبر الزمن',
+      upgradeToPro: 'الترقية إلى Pro',
+    },
+
+    // Checkout
+    checkout: {
+      backToPricing: 'العودة للأسعار',
+      orderSummary: 'ملخص الطلب',
+      planTransformation: 'خطة التحول',
+      billedYearly: 'فوترة سنوية',
+      billedMonthly: 'فوترة شهرية',
+      save: 'وفر',
+      includedInSub: 'متضمن في اشتراكك:',
+      subtotal: 'المجموع الفرعي',
+      vat: 'ضريبة القيمة المضافة (20%)',
+      total: 'الإجمالي',
+      guarantee: 'ضمان استرداد الأموال خلال 30 يوم',
+      finalizeSubscription: 'إتمام اشتراكك',
+      securePayment: 'دفع آمن بواسطة Stripe',
+      emailAddress: 'البريد الإلكتروني',
+      cardInfo: 'معلومات البطاقة',
+      cardPlaceholder: '1234 1234 1234 1234',
+      nameOnCard: 'الاسم على البطاقة',
+      namePlaceholder: 'الاسم الكامل',
+      country: 'البلد',
+      france: 'فرنسا',
+      belgium: 'بلجيكا',
+      switzerland: 'سويسرا',
+      canada: 'كندا',
+      luxembourg: 'لوكسمبورغ',
+      pay: 'ادفع',
+      processing: 'جاري المعالجة...',
+      secureSSL: 'دفع آمن SSL 256-bit',
+      termsAccept: 'بالنقر على "ادفع"، فإنك توافق على',
+      termsOfUse: 'شروط الاستخدام',
+      and: 'و',
+      privacyPolicy: 'سياسة الخصوصية',
+      poweredBy: 'مدعوم من',
+    },
+
+    // 404
+    notFound: {
+      title: 'الصفحة غير موجودة',
+      description: 'عذراً، الصفحة التي تبحث عنها غير موجودة أو تم نقلها.',
+      backHome: 'العودة للرئيسية',
+    },
+
+    // Chat
+    chat: {
+      title: 'تحدث مع WA3i AI',
+      newChat: 'محادثة جديدة',
+      noConversations: 'لا توجد محادثات بعد',
+      welcomeTitle: 'ابدأ محادثة',
+      welcomeSubtitle: 'اسألني أي شيء وسأساعدك',
+      inputPlaceholder: 'اكتب رسالتك...',
+      disclaimer: 'ردود الذكاء الاصطناعي قد لا تكون دقيقة دائماً. يرجى التحقق من المعلومات المهمة.',
+    },
+
+    // Common
+    common: {
+      home: 'الرئيسية',
+      pricing: 'الأسعار',
+      login: 'تسجيل الدخول',
+      signup: 'إنشاء حساب',
+    },
+
+    // Breathing Page
+    breathing: {
+      title: 'التنفس',
+      choosePattern: 'اختر نمطاً:',
+      breatheIn: 'استنشق',
+      hold: 'احبس',
+      breatheOut: 'ازفر',
+      wellDone: 'أحسنت',
+      ready: 'مستعد؟',
+      cycle: 'الدورة',
+      of: 'من',
+      cycles: 'دورات',
+      sessionComplete: 'اكتملت الجلسة',
+      greatJob: 'عمل رائع في تخصيص وقت لنفسك',
+      begin: 'ابدأ',
+      stop: 'توقف',
+      startAnother: 'ابدأ جلسة أخرى',
+      secondsIn: 'ث شهيق',
+      secondsHold: 'ث حبس',
+      secondsOut: 'ث زفير',
+      // Patterns
+      patternCalm: 'هادئ',
+      patternCalmDesc: 'تنفس بسيط للاسترخاء',
+      patternBox: 'مربع',
+      patternBoxDesc: 'تقنية عسكرية لتخفيف التوتر',
+      pattern478: '4-7-8',
+      pattern478Desc: 'النوم العميق وتخفيف القلق',
+    },
+
+    // Blog Page
+    blog: {
+      title: 'البحث والرؤى',
+      subtitle: 'مقالات قائمة على الأدلة حول الصحة النفسية وعلاج الصدمات وعلم الشفاء.',
+      ctaTitle: 'جرب الشفاء القائم على الأدلة',
+      ctaSubtitle: 'يجمع Matcha بين التقنيات المثبتة مثل EMDR و Flash لدعم رحلة عافيتك النفسية.',
+      getStarted: 'ابدأ مجاناً',
+      chatNow: 'تحدث الآن',
+      footerTagline: 'رفيقك للعافية النفسية',
+      readMore: 'اقرأ المزيد',
+      minRead: 'دقيقة',
+    },
   },
 } as const;
 
-export type Translations = (typeof translations)['en'] | (typeof translations)['fr'];
+export type Translations = (typeof translations)['en'] | (typeof translations)['fr'] | (typeof translations)['ar'];

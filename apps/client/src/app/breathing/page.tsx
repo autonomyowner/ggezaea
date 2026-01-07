@@ -2,11 +2,11 @@
 
 import { useState, useRef, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
+import { useLanguage } from '../../components/LanguageProvider';
 import './breathing.css';
 
 type BreathingPattern = {
-  name: string;
-  description: string;
+  id: string;
   inhale: number;
   hold1: number;
   exhale: number;
@@ -16,8 +16,7 @@ type BreathingPattern = {
 
 const PATTERNS: BreathingPattern[] = [
   {
-    name: 'Calm',
-    description: 'Simple relaxation breathing',
+    id: 'calm',
     inhale: 4,
     hold1: 0,
     exhale: 6,
@@ -25,8 +24,7 @@ const PATTERNS: BreathingPattern[] = [
     cycles: 5,
   },
   {
-    name: 'Box',
-    description: 'Military stress relief technique',
+    id: 'box',
     inhale: 4,
     hold1: 4,
     exhale: 4,
@@ -34,8 +32,7 @@ const PATTERNS: BreathingPattern[] = [
     cycles: 4,
   },
   {
-    name: '4-7-8',
-    description: 'Deep sleep and anxiety relief',
+    id: '478',
     inhale: 4,
     hold1: 7,
     exhale: 8,
@@ -48,6 +45,7 @@ type Phase = 'idle' | 'inhale' | 'hold1' | 'exhale' | 'hold2' | 'complete';
 
 export default function BreathingPage() {
   const router = useRouter();
+  const { t } = useLanguage();
   const [selectedPattern, setSelectedPattern] = useState<BreathingPattern>(PATTERNS[0]);
   const [phase, setPhase] = useState<Phase>('idle');
   const [currentCycle, setCurrentCycle] = useState(0);
@@ -55,14 +53,32 @@ export default function BreathingPage() {
   const [isActive, setIsActive] = useState(false);
   const abortRef = useRef(false);
 
+  const getPatternName = (id: string) => {
+    switch (id) {
+      case 'calm': return t.breathing.patternCalm;
+      case 'box': return t.breathing.patternBox;
+      case '478': return t.breathing.pattern478;
+      default: return id;
+    }
+  };
+
+  const getPatternDescription = (id: string) => {
+    switch (id) {
+      case 'calm': return t.breathing.patternCalmDesc;
+      case 'box': return t.breathing.patternBoxDesc;
+      case '478': return t.breathing.pattern478Desc;
+      default: return '';
+    }
+  };
+
   const getPhaseText = () => {
     switch (phase) {
-      case 'inhale': return 'Breathe In';
-      case 'hold1': return 'Hold';
-      case 'exhale': return 'Breathe Out';
-      case 'hold2': return 'Hold';
-      case 'complete': return 'Well Done';
-      default: return 'Ready?';
+      case 'inhale': return t.breathing.breatheIn;
+      case 'hold1': return t.breathing.hold;
+      case 'exhale': return t.breathing.breatheOut;
+      case 'hold2': return t.breathing.hold;
+      case 'complete': return t.breathing.wellDone;
+      default: return t.breathing.ready;
     }
   };
 
@@ -173,22 +189,22 @@ export default function BreathingPage() {
 
       {/* Header */}
       <div className="breathing-header">
-        <h1 className="breathing-title">Breathing</h1>
+        <h1 className="breathing-title">{t.breathing.title}</h1>
       </div>
 
       {/* Pattern Selection */}
       {!isActive && phase !== 'complete' && (
         <div className="breathing-pattern-selection">
-          <p className="breathing-pattern-label">Choose a pattern:</p>
+          <p className="breathing-pattern-label">{t.breathing.choosePattern}</p>
           <div className="breathing-patterns">
             {PATTERNS.map((pattern) => (
               <button
-                key={pattern.name}
+                key={pattern.id}
                 onClick={() => setSelectedPattern(pattern)}
-                className={`breathing-pattern-card ${selectedPattern.name === pattern.name ? 'selected' : ''}`}
+                className={`breathing-pattern-card ${selectedPattern.id === pattern.id ? 'selected' : ''}`}
               >
-                <span className="pattern-name">{pattern.name}</span>
-                <span className="pattern-description">{pattern.description}</span>
+                <span className="pattern-name">{getPatternName(pattern.id)}</span>
+                <span className="pattern-description">{getPatternDescription(pattern.id)}</span>
               </button>
             ))}
           </div>
@@ -228,7 +244,7 @@ export default function BreathingPage() {
         {/* Cycle Counter */}
         {isActive && (
           <p className="breathing-cycle-counter">
-            Cycle {currentCycle} of {selectedPattern.cycles}
+            {t.breathing.cycle} {currentCycle} {t.breathing.of} {selectedPattern.cycles}
           </p>
         )}
 
@@ -236,12 +252,12 @@ export default function BreathingPage() {
         {!isActive && phase !== 'complete' && (
           <div className="breathing-pattern-info">
             <p>
-              {selectedPattern.inhale}s in
-              {selectedPattern.hold1 > 0 && ` \u2022 ${selectedPattern.hold1}s hold`}
-              {` \u2022 ${selectedPattern.exhale}s out`}
-              {selectedPattern.hold2 > 0 && ` \u2022 ${selectedPattern.hold2}s hold`}
+              {selectedPattern.inhale}{t.breathing.secondsIn}
+              {selectedPattern.hold1 > 0 && ` \u2022 ${selectedPattern.hold1}${t.breathing.secondsHold}`}
+              {` \u2022 ${selectedPattern.exhale}${t.breathing.secondsOut}`}
+              {selectedPattern.hold2 > 0 && ` \u2022 ${selectedPattern.hold2}${t.breathing.secondsHold}`}
             </p>
-            <p>{selectedPattern.cycles} cycles</p>
+            <p>{selectedPattern.cycles} {t.breathing.cycles}</p>
           </div>
         )}
       </div>
@@ -251,20 +267,20 @@ export default function BreathingPage() {
         {phase === 'complete' ? (
           <div className="breathing-complete-section">
             <div className="breathing-complete-message">
-              <p className="complete-title">Session Complete</p>
-              <p className="complete-subtitle">Great job taking time for yourself</p>
+              <p className="complete-title">{t.breathing.sessionComplete}</p>
+              <p className="complete-subtitle">{t.breathing.greatJob}</p>
             </div>
             <button onClick={resetSession} className="breathing-btn primary">
-              Start Another Session
+              {t.breathing.startAnother}
             </button>
           </div>
         ) : isActive ? (
           <button onClick={stopBreathing} className="breathing-btn secondary">
-            Stop
+            {t.breathing.stop}
           </button>
         ) : (
           <button onClick={startBreathing} className="breathing-btn primary">
-            Begin
+            {t.breathing.begin}
           </button>
         )}
       </div>

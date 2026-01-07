@@ -1,9 +1,14 @@
+'use client';
+
 import Link from 'next/link';
 import { SignedIn, SignedOut } from '@clerk/nextjs';
 import { articles } from '../../lib/blog-data';
 import { BlogArticleList } from './BlogArticleList';
+import { useLanguage } from '../../components/LanguageProvider';
 
 export default function BlogPage() {
+  const { t } = useLanguage();
+
   return (
     <div className="min-h-screen" style={{ background: 'var(--cream-50)' }}>
       {/* Hero Section */}
@@ -16,13 +21,13 @@ export default function BlogPage() {
               color: 'var(--text-primary)'
             }}
           >
-            Research &amp; Insights
+            {t.blog.title}
           </h1>
           <p
             className="text-lg max-w-2xl mx-auto"
             style={{ color: 'var(--text-secondary)' }}
           >
-            Evidence-based articles on mental health, trauma treatment, and the science of healing.
+            {t.blog.subtitle}
           </p>
         </div>
       </section>
@@ -43,13 +48,13 @@ export default function BlogPage() {
               color: 'var(--text-primary)'
             }}
           >
-            Experience Evidence-Based Healing
+            {t.blog.ctaTitle}
           </h2>
           <p
             className="mb-8"
             style={{ color: 'var(--text-secondary)' }}
           >
-            Matcha combines proven techniques like EMDR and Flash to support your mental wellness journey.
+            {t.blog.ctaSubtitle}
           </p>
           <SignedOut>
             <Link
@@ -60,7 +65,7 @@ export default function BlogPage() {
                 color: 'white',
               }}
             >
-              Get Started Free
+              {t.blog.getStarted}
             </Link>
           </SignedOut>
           <SignedIn>
@@ -72,7 +77,7 @@ export default function BlogPage() {
                 color: 'white',
               }}
             >
-              Chat Now
+              {t.blog.chatNow}
             </Link>
           </SignedIn>
         </div>
@@ -99,7 +104,7 @@ export default function BlogPage() {
                 Matcha
               </p>
               <p className="text-sm" style={{ color: 'var(--text-muted)' }}>
-                Your companion for mental wellness
+                {t.blog.footerTagline}
               </p>
             </div>
             <div className="flex gap-8">
@@ -108,21 +113,21 @@ export default function BlogPage() {
                 className="text-sm hover:opacity-70 transition-opacity"
                 style={{ color: 'var(--text-secondary)' }}
               >
-                Home
+                {t.common.home}
               </Link>
               <Link
                 href="/pricing"
                 className="text-sm hover:opacity-70 transition-opacity"
                 style={{ color: 'var(--text-secondary)' }}
               >
-                Pricing
+                {t.common.pricing}
               </Link>
               <Link
                 href="/login"
                 className="text-sm hover:opacity-70 transition-opacity"
                 style={{ color: 'var(--text-secondary)' }}
               >
-                Login
+                {t.common.login}
               </Link>
             </div>
           </div>

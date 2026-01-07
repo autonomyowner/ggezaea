@@ -9,7 +9,25 @@ interface BlogArticleListProps {
 }
 
 export function BlogArticleList({ articles }: BlogArticleListProps) {
-  const { language } = useLanguage();
+  const { language, t } = useLanguage();
+
+  const getLocale = () => {
+    switch (language) {
+      case 'fr': return 'fr-FR';
+      case 'ar': return 'ar-SA';
+      default: return 'en-US';
+    }
+  };
+
+  const getTitle = (article: BlogArticle) => {
+    // Arabic falls back to English since articles don't have Arabic content yet
+    return language === 'fr' ? article.titleFr : article.titleEn;
+  };
+
+  const getExcerpt = (article: BlogArticle) => {
+    // Arabic falls back to English since articles don't have Arabic content yet
+    return language === 'fr' ? article.excerptFr : article.excerptEn;
+  };
 
   return (
     <section className="pb-20 px-4">
@@ -37,7 +55,7 @@ export function BlogArticleList({ articles }: BlogArticleListProps) {
                     {article.category}
                   </span>
                   <span className="text-xs" style={{ color: 'var(--text-muted)' }}>
-                    {article.readTime} min
+                    {article.readTime} {t.blog.minRead}
                   </span>
                 </div>
                 <h2
@@ -48,17 +66,17 @@ export function BlogArticleList({ articles }: BlogArticleListProps) {
                     lineHeight: 1.3
                   }}
                 >
-                  {language === 'en' ? article.titleEn : article.titleFr}
+                  {getTitle(article)}
                 </h2>
                 <p
                   className="text-sm mb-4"
                   style={{ color: 'var(--text-secondary)', lineHeight: 1.6 }}
                 >
-                  {language === 'en' ? article.excerptEn : article.excerptFr}
+                  {getExcerpt(article)}
                 </p>
                 <div className="flex items-center justify-between">
                   <span className="text-xs" style={{ color: 'var(--text-muted)' }}>
-                    {new Date(article.date).toLocaleDateString(language === 'en' ? 'en-US' : 'fr-FR', {
+                    {new Date(article.date).toLocaleDateString(getLocale(), {
                       year: 'numeric',
                       month: 'short',
                       day: 'numeric'
@@ -68,7 +86,7 @@ export function BlogArticleList({ articles }: BlogArticleListProps) {
                     className="text-sm font-medium"
                     style={{ color: 'var(--matcha-600)' }}
                   >
-                    {language === 'en' ? 'Read more' : 'Lire la suite'}
+                    {t.blog.readMore}
                   </span>
                 </div>
               </article>
