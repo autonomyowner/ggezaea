@@ -1,0 +1,23 @@
+# Render Blueprint for WA3i Voice Agent
+services:
+  - type: web
+    name: wa3i-voice
+    runtime: docker
+    dockerfilePath: ./apps/voice/Dockerfile
+    dockerContext: ./apps/voice
+    region: frankfurt  # EU region - closer to Middle East
+    plan: starter
+    healthCheckPath: /health
+    envVars:
+      - key: DEEPGRAM_API_KEY
+        sync: false
+      - key: OPENROUTER_API_KEY
+        sync: false
+      - key: ELEVENLABS_API_KEY
+        sync: false
+      - key: PORT
+        value: 3001
+      - key: HOST
+        value: 0.0.0.0
+      - key: WA3I_API_URL
+        sync: false
