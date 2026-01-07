@@ -6,16 +6,10 @@ from typing import Optional, Tuple
 import openai
 from vocode.streaming.agent.base_agent import BaseAgent, RespondAgent
 from vocode.streaming.models.agent import AgentConfig
-from pydantic import Field
 import config
 
 
-class WA3iAgentConfig(AgentConfig, type="wa3i_agent"):
-    """Configuration for WA3i Voice Agent"""
-    model: str = "anthropic/claude-3-haiku"  # Fast and good for conversation
-    language: str = "ar"  # Default to Arabic
-    system_prompt: str = Field(
-        default="""أنت WA3i، مساعد ذكاء اصطناعي متخصص في الصحة النفسية والتحليل المعرفي.
+ARABIC_SYSTEM_PROMPT = """أنت WA3i، مساعد ذكاء اصطناعي متخصص في الصحة النفسية والتحليل المعرفي.
 
 مهمتك:
 - مساعدة المستخدمين على فهم أنماط تفكيرهم
@@ -30,9 +24,31 @@ class WA3iAgentConfig(AgentConfig, type="wa3i_agent"):
 - داعماً ومشجعاً
 
 تحدث بالعربية الفصحى البسيطة."""
-    )
+
+ENGLISH_SYSTEM_PROMPT = """You are WA3i, an AI assistant specialized in mental health and cognitive analysis.
+
+Your mission:
+- Help users understand their thought patterns
+- Identify cognitive biases
+- Provide personalized insights for personal development
+- Support addiction recovery and identify emotional triggers
+
+Be:
+- Empathetic and understanding
+- Respectful and non-judgmental
+- Concise in your voice responses (2-3 sentences max)
+- Supportive and encouraging
+
+Speak in clear, simple English."""
+
+
+class WA3iAgentConfig(AgentConfig, type="wa3i_agent"):
+    """Configuration for WA3i Voice Agent"""
+    model: str = "anthropic/claude-3-haiku"
+    language: str = "ar"
+    system_prompt: str = ARABIC_SYSTEM_PROMPT
     temperature: float = 0.7
-    max_tokens: int = 150  # Keep responses short for voice
+    max_tokens: int = 150
 
 
 class WA3iAgent(RespondAgent[WA3iAgentConfig]):
@@ -114,20 +130,4 @@ class WA3iAgent(RespondAgent[WA3iAgentConfig]):
 class WA3iEnglishAgentConfig(WA3iAgentConfig, type="wa3i_english_agent"):
     """English configuration for WA3i Voice Agent"""
     language: str = "en"
-    system_prompt: str = Field(
-        default="""You are WA3i, an AI assistant specialized in mental health and cognitive analysis.
-
-Your mission:
-- Help users understand their thought patterns
-- Identify cognitive biases
-- Provide personalized insights for personal development
-- Support addiction recovery and identify emotional triggers
-
-Be:
-- Empathetic and understanding
-- Respectful and non-judgmental
-- Concise in your voice responses (2-3 sentences max)
-- Supportive and encouraging
-
-Speak in clear, simple English."""
-    )
+    system_prompt: str = ENGLISH_SYSTEM_PROMPT
