@@ -10,8 +10,27 @@ export default function Header() {
   const { language, setLanguage, t } = useLanguage();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
-  const toggleLanguage = () => {
-    setLanguage(language === 'en' ? 'fr' : 'en');
+  const cycleLanguage = () => {
+    const languages = ['en', 'fr', 'ar'] as const;
+    const currentIndex = languages.indexOf(language);
+    const nextIndex = (currentIndex + 1) % languages.length;
+    setLanguage(languages[nextIndex]);
+  };
+
+  const getLanguageLabel = () => {
+    switch (language) {
+      case 'en': return 'EN';
+      case 'fr': return 'FR';
+      case 'ar': return 'ع';
+    }
+  };
+
+  const getNextLanguageName = () => {
+    switch (language) {
+      case 'en': return 'Français';
+      case 'fr': return 'العربية';
+      case 'ar': return 'English';
+    }
   };
 
   return (
@@ -34,7 +53,7 @@ export default function Header() {
               color: 'var(--matcha-600)',
             }}
           >
-            Matcha
+            WA3i
           </Link>
 
           {/* Desktop Navigation */}
@@ -89,14 +108,14 @@ export default function Header() {
           <div className="hidden md:flex items-center gap-3">
             {/* Language Switcher */}
             <button
-              onClick={toggleLanguage}
+              onClick={cycleLanguage}
               className="px-3 py-1.5 rounded-full text-xs font-medium transition-all hover:bg-[var(--cream-200)]"
               style={{
                 color: 'var(--text-secondary)',
                 border: '1px solid var(--border-soft)',
               }}
             >
-              {language === 'en' ? 'FR' : 'EN'}
+              {getLanguageLabel()}
             </button>
 
             <SignedIn>
@@ -216,7 +235,7 @@ export default function Header() {
 
               {/* Mobile Language Switcher */}
               <button
-                onClick={toggleLanguage}
+                onClick={cycleLanguage}
                 className="text-sm font-medium py-2 text-left flex items-center gap-2"
                 style={{ color: 'var(--text-secondary)' }}
               >
@@ -226,9 +245,9 @@ export default function Header() {
                     background: 'var(--cream-200)',
                   }}
                 >
-                  {language === 'en' ? 'EN' : 'FR'}
+                  {getLanguageLabel()}
                 </span>
-                {language === 'en' ? 'Switch to French' : 'Passer en anglais'}
+                {getNextLanguageName()}
               </button>
 
               <div className="pt-3 border-t border-[var(--border-soft)]">
