@@ -94,8 +94,10 @@ class WA3iAgent(RespondAgent[WA3iAgentConfig]):
             return assistant_message, False
 
         except Exception as e:
-            error_msg = "عذراً، حدث خطأ. هل يمكنك تكرار ذلك؟" if self.agent_config.language == "ar" else "Sorry, an error occurred. Can you repeat that?"
-            return error_msg, False
+            import logging
+            logging.error(f"OpenRouter error: {e}")
+            # Return actual error for debugging
+            return f"Error: {str(e)}", False
 
     async def generate_response(
         self,

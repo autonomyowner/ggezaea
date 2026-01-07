@@ -60,6 +60,19 @@ async def health():
     return {"status": "ok"}
 
 
+@app.get("/debug")
+async def debug():
+    """Debug endpoint to check config"""
+    return {
+        "deepgram_key_set": bool(config.DEEPGRAM_API_KEY),
+        "openrouter_key_set": bool(config.OPENROUTER_API_KEY),
+        "elevenlabs_key_set": bool(config.ELEVENLABS_API_KEY),
+        "deepgram_key_prefix": config.DEEPGRAM_API_KEY[:8] + "..." if config.DEEPGRAM_API_KEY else None,
+        "openrouter_key_prefix": config.OPENROUTER_API_KEY[:8] + "..." if config.OPENROUTER_API_KEY else None,
+        "elevenlabs_key_prefix": config.ELEVENLABS_API_KEY[:8] + "..." if config.ELEVENLABS_API_KEY else None,
+    }
+
+
 @app.post("/conversation/start")
 async def start_conversation(request: Request):
     """Start a new voice conversation"""
