@@ -30,8 +30,8 @@
         <action android:name="android.intent.action.VIEW"/>
         <category android:name="android.intent.category.DEFAULT"/>
         <category android:name="android.intent.category.BROWSABLE"/>
-        <data android:scheme="matcha"/>
-        <data android:scheme="exp+matcha"/>
+        <data android:scheme="wa3i"/>
+        <data android:scheme="exp+wa3i"/>
       </intent-filter>
     </activity>
   </application>

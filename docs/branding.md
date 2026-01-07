@@ -1,6 +1,6 @@
-# Branding — Matcha
+# Branding — WA3i
 
-- Name: Matcha
+- Name: WA3i
 - Tagline: Understand deeply. Profile intelligently.
 
 ## Palette (dark-first)

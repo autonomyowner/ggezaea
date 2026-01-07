@@ -1,11 +1,11 @@
 {
   "expo": {
-    "name": "Matcha",
-    "slug": "matcha",
+    "name": "WA3i",
+    "slug": "WA3i",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
-    "scheme": "matcha",
+    "scheme": "WA3i",
     "userInterfaceStyle": "light",
     "splash": {
       "image": "./assets/icon.png",
@@ -17,9 +17,9 @@
     ],
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.matcha.app",
+      "bundleIdentifier": "com.WA3i.app",
       "infoPlist": {
-        "NSMicrophoneUsageDescription": "Matcha needs microphone access for voice conversations with your wellness companion.",
+        "NSMicrophoneUsageDescription": "WA3i يحتاج إذن الميكروفون للمحادثات الصوتية مع رفيق العافية الخاص بك.",
         "UIBackgroundModes": [
           "audio",
           "voip"
@@ -27,7 +27,7 @@
       }
     },
     "android": {
-      "package": "com.matcha.app",
+      "package": "com.WA3i.app",
       "softwareKeyboardLayoutMode": "pan",
       "adaptiveIcon": {
         "foregroundImage": "./assets/icon.png",
@@ -48,7 +48,7 @@
       [
         "expo-av",
         {
-          "microphonePermission": "Matcha needs microphone access for voice conversations."
+          "microphonePermission": "WA3i يحتاج إذن الميكروفون للمحادثات الصوتية."
         }
       ],
       [
@@ -80,7 +80,7 @@
       "icon": "./assets/icon.png",
       "color": "#5a9470",
       "androidMode": "default",
-      "androidCollapsedTitle": "Matcha"
+      "androidCollapsedTitle": "WA3i"
     },
     "extra": {
       "router": {},

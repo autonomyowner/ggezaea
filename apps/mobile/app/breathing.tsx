@@ -17,8 +17,8 @@ type BreathingPattern = {
 
 const PATTERNS: BreathingPattern[] = [
   {
-    name: 'Calm',
-    description: 'Simple relaxation breathing',
+    name: 'هدوء',
+    description: 'تنفس استرخائي بسيط',
     inhale: 4,
     hold1: 0,
     exhale: 6,
@@ -26,8 +26,8 @@ const PATTERNS: BreathingPattern[] = [
     cycles: 5,
   },
   {
-    name: 'Box',
-    description: 'Military stress relief technique',
+    name: 'صندوق',
+    description: 'تقنية عسكرية لتخفيف التوتر',
     inhale: 4,
     hold1: 4,
     exhale: 4,
@@ -36,7 +36,7 @@ const PATTERNS: BreathingPattern[] = [
   },
   {
     name: '4-7-8',
-    description: 'Deep sleep and anxiety relief',
+    description: 'للنوم العميق وتخفيف القلق',
     inhale: 4,
     hold1: 7,
     exhale: 8,
@@ -61,12 +61,12 @@ export default function BreathingScreen() {
 
   const getPhaseText = () => {
     switch (phase) {
-      case 'inhale': return 'Breathe In';
-      case 'hold1': return 'Hold';
-      case 'exhale': return 'Breathe Out';
-      case 'hold2': return 'Hold';
-      case 'complete': return 'Well Done';
-      default: return 'Ready?';
+      case 'inhale': return 'استنشق';
+      case 'hold1': return 'احبس';
+      case 'exhale': return 'ازفر';
+      case 'hold2': return 'احبس';
+      case 'complete': return 'أحسنت';
+      default: return 'جاهز؟';
     }
   };
 
@@ -167,14 +167,14 @@ export default function BreathingScreen() {
           <Ionicons name="arrow-back" size={24} color="#2d3a2e" />
         </TouchableOpacity>
         <Text style={{ flex: 1, fontFamily: 'DMSerifDisplay_400Regular', fontSize: 24, color: '#2d3a2e', marginLeft: 8 }}>
-          Breathing
+          التنفس
         </Text>
       </View>
 
       {/* Pattern Selection */}
       {!isActive && phase !== 'complete' && (
         <View style={{ paddingHorizontal: 16, marginBottom: 24 }}>
-          <Text style={{ color: '#5a5347', marginBottom: 12, fontWeight: '500' }}>Choose a pattern:</Text>
+          <Text style={{ color: '#5a5347', marginBottom: 12, fontWeight: '500' }}>اختر نمطاً:</Text>
           <View style={{ flexDirection: 'row', gap: 8 }}>
             {PATTERNS.map((pattern) => (
               <TouchableOpacity
@@ -259,7 +259,7 @@ export default function BreathingScreen() {
         {/* Cycle Counter */}
         {isActive && (
           <Text style={{ color: '#a69889', marginTop: 8 }}>
-            Cycle {currentCycle} of {selectedPattern.cycles}
+            الدورة {currentCycle} من {selectedPattern.cycles}
           </Text>
         )}
 
@@ -267,13 +267,13 @@ export default function BreathingScreen() {
         {!isActive && phase !== 'complete' && (
           <View style={{ marginTop: 16, alignItems: 'center' }}>
             <Text style={{ color: '#a69889', fontSize: 14 }}>
-              {selectedPattern.inhale}s in
-              {selectedPattern.hold1 > 0 && ` • ${selectedPattern.hold1}s hold`}
-              {` • ${selectedPattern.exhale}s out`}
-              {selectedPattern.hold2 > 0 && ` • ${selectedPattern.hold2}s hold`}
+              {selectedPattern.inhale}ث استنشاق
+              {selectedPattern.hold1 > 0 && ` • ${selectedPattern.hold1}ث حبس`}
+              {` • ${selectedPattern.exhale}ث زفير`}
+              {selectedPattern.hold2 > 0 && ` • ${selectedPattern.hold2}ث حبس`}
             </Text>
             <Text style={{ color: '#a69889', fontSize: 14, marginTop: 4 }}>
-              {selectedPattern.cycles} cycles
+              {selectedPattern.cycles} دورات
             </Text>
           </View>
         )}
@@ -285,10 +285,10 @@ export default function BreathingScreen() {
           <View style={{ gap: 12 }}>
             <View style={{ backgroundColor: '#dcedde', borderRadius: 12, padding: 16, alignItems: 'center' }}>
               <Text style={{ color: '#3d654c', fontWeight: '600', fontSize: 16 }}>
-                Session Complete
+                اكتملت الجلسة
               </Text>
               <Text style={{ color: '#5a9470', marginTop: 4 }}>
-                Great job taking time for yourself
+                أحسنت في تخصيص وقت لنفسك
               </Text>
             </View>
             <TouchableOpacity
@@ -301,7 +301,7 @@ export default function BreathingScreen() {
               }}
             >
               <Text style={{ color: 'white', fontWeight: '600', fontSize: 16 }}>
-                Start Another Session
+                ابدأ جلسة أخرى
               </Text>
             </TouchableOpacity>
           </View>
@@ -316,7 +316,7 @@ export default function BreathingScreen() {
             }}
           >
             <Text style={{ color: '#5a5347', fontWeight: '600', fontSize: 16 }}>
-              Stop
+              إيقاف
             </Text>
           </TouchableOpacity>
         ) : (
@@ -330,7 +330,7 @@ export default function BreathingScreen() {
             }}
           >
             <Text style={{ color: 'white', fontWeight: '600', fontSize: 16 }}>
-              Begin
+              ابدأ
             </Text>
           </TouchableOpacity>
         )}

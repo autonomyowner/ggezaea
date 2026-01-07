@@ -17,8 +17,10 @@ export function LanguageProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
     // Check localStorage for saved preference
     const saved = localStorage.getItem('matcha-language') as Language;
-    if (saved && (saved === 'en' || saved === 'fr')) {
+    if (saved && (saved === 'en' || saved === 'fr' || saved === 'ar')) {
       setLanguageState(saved);
+      // Set RTL for Arabic
+      document.documentElement.dir = saved === 'ar' ? 'rtl' : 'ltr';
     }
   }, []);
 
@@ -27,6 +29,8 @@ export function LanguageProvider({ children }: { children: ReactNode }) {
     localStorage.setItem('matcha-language', lang);
     // Update html lang attribute
     document.documentElement.lang = lang;
+    // Set RTL for Arabic
+    document.documentElement.dir = lang === 'ar' ? 'rtl' : 'ltr';
   };
 
   const t = translations[language];

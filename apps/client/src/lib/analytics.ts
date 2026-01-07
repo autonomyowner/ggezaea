@@ -62,7 +62,7 @@ export const trackBeginCheckout = (billing: 'monthly' | 'yearly', value: number)
     items: [
       {
         item_id: 'pro_subscription',
-        item_name: 'Matcha Pro',
+        item_name: 'WA3i Pro',
         item_category: 'subscription',
         price: value,
         quantity: 1,
@@ -83,11 +83,11 @@ export const trackPurchase = (
     label: billing,
     value,
     currency: 'USD',
-    transaction_id: transactionId || `matcha_${Date.now()}`,
+    transaction_id: transactionId || `wa3i_${Date.now()}`,
     items: [
       {
         item_id: 'pro_subscription',
-        item_name: 'Matcha Pro',
+        item_name: 'WA3i Pro',
         item_category: 'subscription',
         price: value,
         quantity: 1,

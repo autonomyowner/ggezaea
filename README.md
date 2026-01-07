@@ -1,4 +1,4 @@
-# Matcha
+# WA3i
 
 AI-powered psychological profiling SaaS. Analyze conversations and behaviors to generate comprehensive psychological insights.
 

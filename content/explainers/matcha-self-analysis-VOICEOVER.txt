@@ -1,4 +1,4 @@
-TIKTOK EXPLAINER: Matcha AI Self-Analysis
+TIKTOK EXPLAINER: WA3i AI Self-Analysis
 ==========================================
 
 TOTAL DURATION: 26 seconds
@@ -15,7 +15,7 @@ VOICEOVER SCRIPT:
 "That's because you're too close to see it. You need a mirror. But not just any mirror."
 
 [0:09-0:14]
-"Matcha AI analyzes every word you say. It spots the patterns you've been blind to for years."
+"WA3i AI analyzes every word you say. It spots the patterns you've been blind to for years."
 
 [0:14-0:18]
 "Cognitive biases. Thinking traps. Emotional blockers. All mapped out in real-time."
@@ -24,7 +24,7 @@ VOICEOVER SCRIPT:
 "Suddenly, everything clicks. The confusion? Gone. You finally understand why you do what you do."
 
 [0:22-0:26]
-"Stop wondering. Start knowing. Try Matcha AI free today."
+"Stop wondering. Start knowing. Try WA3i AI free today."
 
 
 ALTERNATIVE VOICES:
@@ -51,7 +51,7 @@ RECORDING TIPS:
 ---------------
 1. Keep energy high and conversational
 2. Slow down slightly at key moments (0:04-0:09, 0:22-0:26)
-3. Emphasize "Matcha AI" with clarity
+3. Emphasize "WA3i AI" with clarity
 4. Pause briefly between the three insights (0:14-0:18)
 5. Make "Stop wondering. Start knowing." punchy and direct
 
@@ -69,7 +69,7 @@ VISUAL ELEMENTS:
 ----------------
 Phase 1 (0-4s): Wandering dot in maze lines
 Phase 2 (4-9s): Shining mirror card
-Phase 3 (9-14s): "Matcha AI" brand reveal
+Phase 3 (9-14s): "WA3i AI" brand reveal
 Phase 4 (14-18s): 3 insight cards with animated progress bars
 Phase 5 (18-22s): Confused → Clear transformation
 Phase 6 (22-26s): Green gradient CTA box
@@ -98,7 +98,7 @@ HASHTAGS (TikTok):
 
 CAPTION IDEAS:
 --------------
-1. "Your mind is a maze. Matcha AI is the map. 🧠✨"
+1. "Your mind is a maze. WA3i AI is the map. 🧠✨"
 2. "Finally understand why you do what you do 🔍"
 3. "AI that actually gets you (better than you get yourself) 💚"
 4. "Stop overthinking. Start understanding. 🌱"

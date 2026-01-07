@@ -50,12 +50,12 @@ export default function JournalScreen() {
 
   const handleDeleteEntry = (id: string) => {
     Alert.alert(
-      'Delete Entry',
-      'Are you sure you want to delete this entry? This cannot be undone.',
+      'حذف المدخل',
+      'هل أنت متأكد من حذف هذا المدخل؟ لا يمكن التراجع عن هذا الإجراء.',
       [
-        { text: 'Cancel', style: 'cancel' },
+        { text: 'إلغاء', style: 'cancel' },
         {
-          text: 'Delete',
+          text: 'حذف',
           style: 'destructive',
           onPress: () => deleteEntry(id),
         },
@@ -97,17 +97,17 @@ export default function JournalScreen() {
           <View style={styles.statsRow}>
             <View style={styles.statItem}>
               <Text style={styles.statNumber}>{streak}</Text>
-              <Text style={styles.statLabel}>day streak</Text>
+              <Text style={styles.statLabel}>يوم متتالي</Text>
             </View>
             <View style={styles.statDivider} />
             <View style={styles.statItem}>
               <Text style={styles.statNumber}>{entries.length}</Text>
-              <Text style={styles.statLabel}>entries</Text>
+              <Text style={styles.statLabel}>مدخلات</Text>
             </View>
             <View style={styles.statDivider} />
             <View style={styles.statItem}>
               <Text style={styles.statNumber}>{todayEntries.length}</Text>
-              <Text style={styles.statLabel}>today</Text>
+              <Text style={styles.statLabel}>اليوم</Text>
             </View>
           </View>
         </Animated.View>
@@ -118,9 +118,9 @@ export default function JournalScreen() {
             onPress={() => openEditor('reflection', todayPrompt)}
             style={styles.promptCard}
           >
-            <Text style={styles.promptLabel}>Today's Reflection</Text>
+            <Text style={styles.promptLabel}>تأمل اليوم</Text>
             <Text style={styles.promptText}>"{todayPrompt}"</Text>
-            <Text style={styles.promptHint}>Tap to write</Text>
+            <Text style={styles.promptHint}>اضغط للكتابة</Text>
           </Pressable>
         </Animated.View>
 
@@ -133,22 +133,22 @@ export default function JournalScreen() {
             onPress={() => openEditor('gratitude', getRandomGratitudePrompt())}
             style={styles.actionButton}
           >
-            <Text style={styles.actionTitle}>Gratitude</Text>
-            <Text style={styles.actionSubtitle}>What are you thankful for?</Text>
+            <Text style={styles.actionTitle}>الامتنان</Text>
+            <Text style={styles.actionSubtitle}>ما الذي تشكر عليه؟</Text>
           </Pressable>
           <Pressable
             onPress={() => openEditor('freeform')}
             style={[styles.actionButton, styles.actionButtonAlt]}
           >
-            <Text style={[styles.actionTitle, styles.actionTitleAlt]}>Free Write</Text>
-            <Text style={[styles.actionSubtitle, styles.actionSubtitleAlt]}>Write anything on your mind</Text>
+            <Text style={[styles.actionTitle, styles.actionTitleAlt]}>كتابة حرة</Text>
+            <Text style={[styles.actionSubtitle, styles.actionSubtitleAlt]}>اكتب أي شيء يدور بذهنك</Text>
           </Pressable>
         </Animated.View>
 
         {/* Recent Entries */}
         <Animated.View entering={FadeInDown.delay(400).springify()}>
           <View style={styles.sectionHeader}>
-            <Text style={styles.sectionTitle}>Recent Entries</Text>
+            <Text style={styles.sectionTitle}>المدخلات الأخيرة</Text>
             {entries.length > 0 && (
               <Text style={styles.sectionCount}>{entries.length}</Text>
             )}
@@ -156,10 +156,10 @@ export default function JournalScreen() {
 
           {entries.length === 0 ? (
             <View style={styles.emptyState}>
-              <Text style={styles.emptyTitle}>Start Your Journal</Text>
+              <Text style={styles.emptyTitle}>ابدأ يومياتك</Text>
               <Text style={styles.emptyText}>
-                Tap on today's reflection above to write your first entry.
-                Everything is saved locally on your device.
+                اضغط على تأمل اليوم أعلاه لكتابة أول مدخل لك.
+                كل شيء يُحفظ محلياً على جهازك.
               </Text>
             </View>
           ) : (
@@ -180,7 +180,7 @@ export default function JournalScreen() {
           {entries.length > 10 && (
             <Pressable style={styles.viewAllButton}>
               <Text style={styles.viewAllText}>
-                View All Entries ({entries.length})
+                عرض كل المدخلات ({entries.length})
               </Text>
             </Pressable>
           )}
@@ -191,10 +191,9 @@ export default function JournalScreen() {
           entering={FadeInDown.delay(500).springify()}
           style={styles.privacyNote}
         >
-          <Text style={styles.privacyTitle}>Private & Offline</Text>
+          <Text style={styles.privacyTitle}>خاص وبدون إنترنت</Text>
           <Text style={styles.privacyText}>
-            Your journal entries are stored only on this device. They are never
-            uploaded or shared.
+            مدخلات يومياتك تُخزن فقط على هذا الجهاز. لا يتم رفعها أو مشاركتها أبداً.
           </Text>
         </Animated.View>
       </ScrollView>

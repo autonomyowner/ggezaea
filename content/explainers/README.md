@@ -1,8 +1,8 @@
 # TikTok Explainer Library 🎬
 
-Complete collection of Matcha AI TikTok explainers - ready to screen record and post!
+Complete collection of WA3i AI TikTok explainers - ready to screen record and post!
 
-All animations use **Matcha brand identity**: DM Serif Display font, cream backgrounds, matcha green & terra orange colors.
+All animations use **WA3i brand identity**: DM Serif Display font, cream backgrounds, WA3i green & terra orange colors.
 
 ---
 
@@ -20,10 +20,10 @@ All animations use **Matcha brand identity**: DM Serif Display font, cream backg
 
 ---
 
-### 2. **Matcha Self-Analysis** (26s)
-**File:** `matcha-self-analysis.html`
+### 2. **WA3i Self-Analysis** (26s)
+**File:** `WA3i-self-analysis.html`
 **Voice:** Rachel (friendly, conversational)
-**Topic:** How Matcha AI analyzes and reveals your hidden patterns
+**Topic:** How WA3i AI analyzes and reveals your hidden patterns
 **Highlights:**
 - Maze animation (wandering dot)
 - Shining mirror card effect
@@ -87,17 +87,17 @@ All animations use **Matcha brand identity**: DM Serif Display font, cream backg
 **Highlights:**
 - 3x stat counter animation
 - Emotion beats perfection message
-- Dark mode with matcha accents
+- Dark mode with WA3i accents
 
 ---
 
 ## 🎨 Design System
 
-All explainers use consistent Matcha branding:
+All explainers use consistent WA3i branding:
 
 **Colors:**
 - Backgrounds: `#fefdfb` (cream-50) → `#fdf8f3` (cream-100) → `#f5ebe0` (cream-200)
-- Primary: `#68a67d` (matcha-500), `#5a9470` (matcha-600)
+- Primary: `#68a67d` (WA3i-500), `#5a9470` (WA3i-600)
 - Accent: `#e07b4c` (terra-400), `#c45d2c` (terra-500)
 - Text: `#2d3a2e` (text-primary), `#5a6b5c` (text-secondary)
 
@@ -109,7 +109,7 @@ All explainers use consistent Matcha branding:
 **Animations:**
 - Organic blob floats (25-30s loops)
 - Smooth phase transitions (0.9-1s cubic-bezier)
-- Progress bar with matcha gradient
+- Progress bar with WA3i gradient
 - Hover effects on cards
 
 ---
@@ -196,7 +196,7 @@ The skill will:
 1. Generate complete HTML with animations
 2. Provide voiceover script with timestamps
 3. Recommend ElevenLabs voice
-4. Match exact Matcha brand identity
+4. Match exact WA3i brand identity
 
 ---
 
@@ -206,8 +206,8 @@ The skill will:
 content/explainers/
 ├── trauma-flash-technique.html (28s)
 ├── trauma-flash-technique-VOICEOVER.txt
-├── matcha-self-analysis.html (26s)
-├── matcha-self-analysis-VOICEOVER.txt
+├── WA3i-self-analysis.html (26s)
+├── WA3i-self-analysis-VOICEOVER.txt
 ├── why-therapy-fails.html (22s)
 ├── cognitive-biases.html (27s)
 ├── break-thinking-patterns.html (26s)
@@ -229,8 +229,8 @@ content/explainers/
 - Emotional regulation
 - Healthy boundaries
 
-**Matcha Features:**
-- How Matcha analyzes conversations
+**WA3i Features:**
+- How WA3i analyzes conversations
 - Real-time pattern detection
 - AI vs human therapists
 - Privacy & security
@@ -259,5 +259,5 @@ All animations auto-play and loop perfectly for screen recording!
 ---
 
 **Created with:** Claude Code + TikTok Explainer Skill
-**Brand:** Matcha AI - Your safe space for mental wellness
+**Brand:** WA3i AI - Your safe space for mental wellness
 **Last Updated:** 2025

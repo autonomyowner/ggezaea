@@ -13,9 +13,9 @@ const initialLayout = { width: Dimensions.get('window').width };
 
 // Define routes
 const routes = [
-  { key: 'index', title: 'Home', icon: 'home-outline' as const },
-  { key: 'chat', title: 'Journal', icon: 'book-outline' as const },
-  { key: 'profile', title: 'Focus', icon: 'checkbox-outline' as const },
+  { key: 'index', title: 'الرئيسية', icon: 'home-outline' as const },
+  { key: 'chat', title: 'اليوميات', icon: 'book-outline' as const },
+  { key: 'profile', title: 'التركيز', icon: 'checkbox-outline' as const },
 ];
 
 // Memoize screen components to prevent re-renders
@@ -81,13 +81,13 @@ export default function TabsLayout() {
   const getHeaderTitle = () => {
     switch (index) {
       case 0:
-        return 'Matcha';
+        return 'WA3i';
       case 1:
-        return 'Journal';
+        return 'اليوميات';
       case 2:
-        return 'Focus';
+        return 'التركيز';
       default:
-        return 'Matcha';
+        return 'WA3i';
     }
   };
 

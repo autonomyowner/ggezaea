@@ -437,7 +437,7 @@ function GoalCard({
 
 // Finished goal card
 function FinishedGoalCard({ goal, onDelete }: { goal: FinishedGoal; onDelete: () => void }) {
-  const completedDate = new Date(goal.completedAt).toLocaleDateString('en-US', {
+  const completedDate = new Date(goal.completedAt).toLocaleDateString('ar-SA', {
     month: 'short',
     day: 'numeric',
   });
@@ -446,9 +446,9 @@ function FinishedGoalCard({ goal, onDelete }: { goal: FinishedGoal; onDelete: ()
     <TouchableOpacity
       style={styles.finishedGoalCard}
       onLongPress={() => {
-        Alert.alert('Remove Achievement', 'Remove this from your achievements?', [
-          { text: 'Cancel', style: 'cancel' },
-          { text: 'Remove', style: 'destructive', onPress: onDelete },
+        Alert.alert('إزالة الإنجاز', 'هل تريد إزالة هذا من إنجازاتك؟', [
+          { text: 'إلغاء', style: 'cancel' },
+          { text: 'إزالة', style: 'destructive', onPress: onDelete },
         ]);
       }}
       activeOpacity={0.9}
@@ -459,7 +459,7 @@ function FinishedGoalCard({ goal, onDelete }: { goal: FinishedGoal; onDelete: ()
       <View style={styles.finishedGoalInfo}>
         <Text style={styles.finishedGoalTitle}>{goal.title}</Text>
         <Text style={styles.finishedGoalMeta}>
-          {goal.targetValue} {goal.unit} · {goal.daysToComplete} {goal.daysToComplete === 1 ? 'day' : 'days'}
+          {goal.targetValue} {goal.unit} · {goal.daysToComplete} {goal.daysToComplete === 1 ? 'يوم' : 'أيام'}
         </Text>
       </View>
       <Text style={styles.finishedGoalDate}>{completedDate}</Text>
@@ -471,15 +471,15 @@ function FinishedGoalCard({ goal, onDelete }: { goal: FinishedGoal; onDelete: ()
 function WeekStreak() {
   const { getWeeklyProgress, currentStreak } = useGoalsStore();
   const weekProgress = getWeeklyProgress();
-  const days = ['M', 'T', 'W', 'T', 'F', 'S', 'S'];
+  const days = ['ن', 'ث', 'ر', 'خ', 'ج', 'س', 'ح'];
 
   return (
     <View style={styles.weekContainer}>
       <View style={styles.weekHeader}>
-        <Text style={styles.weekTitle}>This Week</Text>
+        <Text style={styles.weekTitle}>هذا الأسبوع</Text>
         <View style={styles.streakBadge}>
           <Text style={styles.streakNumber}>{currentStreak}</Text>
-          <Text style={styles.streakLabel}>day streak</Text>
+          <Text style={styles.streakLabel}>يوم متتالي</Text>
         </View>
       </View>
       <View style={styles.weekDays}>
@@ -516,7 +516,7 @@ function AddGoalSection({ onAdd }: { onAdd: (title: string, target: number, unit
   const [expanded, setExpanded] = useState(false);
   const [title, setTitle] = useState('');
   const [target, setTarget] = useState('');
-  const [unit, setUnit] = useState('times');
+  const [unit, setUnit] = useState('مرات');
   const heightAnim = useRef(new Animated.Value(0)).current;
 
   useEffect(() => {
@@ -545,7 +545,7 @@ function AddGoalSection({ onAdd }: { onAdd: (title: string, target: number, unit
         activeOpacity={0.7}
       >
         <Text style={styles.addButtonText}>
-          {expanded ? 'Cancel' : 'New Goal'}
+          {expanded ? 'إلغاء' : 'هدف جديد'}
         </Text>
       </TouchableOpacity>
 
@@ -563,7 +563,7 @@ function AddGoalSection({ onAdd }: { onAdd: (title: string, target: number, unit
       >
         <TextInput
           style={styles.input}
-          placeholder="Goal title..."
+          placeholder="عنوان الهدف..."
           placeholderTextColor="#c4b8ab"
           value={title}
           onChangeText={setTitle}
@@ -571,7 +571,7 @@ function AddGoalSection({ onAdd }: { onAdd: (title: string, target: number, unit
         <View style={styles.inputRow}>
           <TextInput
             style={[styles.input, styles.inputSmall]}
-            placeholder="Target"
+            placeholder="الهدف"
             placeholderTextColor="#c4b8ab"
             keyboardType="numeric"
             value={target}
@@ -579,7 +579,7 @@ function AddGoalSection({ onAdd }: { onAdd: (title: string, target: number, unit
           />
           <TextInput
             style={[styles.input, styles.inputSmall]}
-            placeholder="Unit"
+            placeholder="الوحدة"
             placeholderTextColor="#c4b8ab"
             value={unit}
             onChangeText={setUnit}
@@ -590,7 +590,7 @@ function AddGoalSection({ onAdd }: { onAdd: (title: string, target: number, unit
           onPress={handleAdd}
           activeOpacity={0.7}
         >
-          <Text style={styles.submitButtonText}>Add Goal</Text>
+          <Text style={styles.submitButtonText}>إضافة هدف</Text>
         </TouchableOpacity>
       </Animated.View>
     </View>

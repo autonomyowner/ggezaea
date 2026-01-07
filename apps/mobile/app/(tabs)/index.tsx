@@ -30,11 +30,11 @@ import { LinearGradient } from 'expo-linear-gradient';
 const { width } = Dimensions.get('window');
 
 const MOOD_OPTIONS: { level: MoodLevel; label: string; color: string; emoji: string }[] = [
-  { level: 1, label: 'Struggling', color: '#e57373', emoji: '😔' },
-  { level: 2, label: 'Low', color: '#ffb74d', emoji: '😕' },
-  { level: 3, label: 'Okay', color: '#fff176', emoji: '😐' },
-  { level: 4, label: 'Good', color: '#aed581', emoji: '🙂' },
-  { level: 5, label: 'Great', color: '#81c784', emoji: '😊' },
+  { level: 1, label: 'صعب', color: '#e57373', emoji: '😔' },
+  { level: 2, label: 'منخفض', color: '#ffb74d', emoji: '😕' },
+  { level: 3, label: 'عادي', color: '#fff176', emoji: '😐' },
+  { level: 4, label: 'جيد', color: '#aed581', emoji: '🙂' },
+  { level: 5, label: 'رائع', color: '#81c784', emoji: '😊' },
 ];
 
 // Memoized Mood Button
@@ -112,10 +112,10 @@ function MoodCheckIn() {
       style={styles.moodCard}
     >
       <View style={styles.moodHeader}>
-        <Text style={styles.moodTitle}>How are you feeling?</Text>
+        <Text style={styles.moodTitle}>كيف تشعر؟</Text>
         {showConfirmation && (
           <Animated.View entering={FadeInUp.springify()} style={styles.savedBadge}>
-            <Text style={styles.savedLabel}>Saved</Text>
+            <Text style={styles.savedLabel}>تم الحفظ</Text>
           </Animated.View>
         )}
       </View>
@@ -137,7 +137,7 @@ function MoodCheckIn() {
 function WeekMoodStreak() {
   const { currentStreak, longestStreak, getWeekMoods } = useUserStore();
   const weekMoods = getWeekMoods();
-  const days = ['M', 'T', 'W', 'T', 'F', 'S', 'S'];
+  const days = ['ن', 'ث', 'ر', 'خ', 'ج', 'س', 'ح'];
 
   const last7Days = Array.from({ length: 7 }, (_, i) => {
     const date = new Date();
@@ -152,10 +152,10 @@ function WeekMoodStreak() {
       style={styles.card}
     >
       <View style={styles.streakHeader}>
-        <Text style={styles.cardTitle}>This Week</Text>
+        <Text style={styles.cardTitle}>هذا الأسبوع</Text>
         <View style={styles.streakBadge}>
           <Text style={styles.streakNumber}>{currentStreak}</Text>
-          <Text style={styles.streakLabel}>day streak</Text>
+          <Text style={styles.streakLabel}>يوم متتالي</Text>
         </View>
       </View>
 
@@ -189,8 +189,8 @@ function WeekMoodStreak() {
       {longestStreak > 0 && (
         <View style={styles.bestStreak}>
           <Text style={styles.bestStreakText}>
-            Best streak:{' '}
-            <Text style={styles.bestStreakValue}>{longestStreak} days</Text>
+            أفضل سلسلة:{' '}
+            <Text style={styles.bestStreakValue}>{longestStreak} يوم</Text>
           </Text>
         </View>
       )}
@@ -213,8 +213,8 @@ function QuickActions() {
   const actions = [
     {
       id: 'breathe',
-      title: 'Breathe',
-      subtitle: 'Calm your mind',
+      title: 'تنفس',
+      subtitle: 'هدئ عقلك',
       route: '/breathing',
       bgColor: '#5a9470',
       textColor: '#fff',
@@ -222,8 +222,8 @@ function QuickActions() {
     },
     {
       id: 'voice',
-      title: 'Voice Chat',
-      subtitle: 'Talk with Matcha',
+      title: 'محادثة صوتية',
+      subtitle: 'تحدث مع WA3i',
       route: '/voice-session',
       bgColor: '#dcedde',
       textColor: '#3d654c',
@@ -231,8 +231,8 @@ function QuickActions() {
     },
     {
       id: 'focus',
-      title: 'Focus',
-      subtitle: 'Guided exercise',
+      title: 'تركيز',
+      subtitle: 'تمرين موجه',
       route: '/flash-session',
       bgColor: '#fff',
       textColor: '#4a7c5d',
@@ -240,8 +240,8 @@ function QuickActions() {
     },
     {
       id: 'support',
-      title: 'Support',
-      subtitle: 'Get help',
+      title: 'دعم',
+      subtitle: 'احصل على مساعدة',
       route: '/crisis',
       bgColor: '#fff',
       textColor: '#c97d52',
@@ -255,7 +255,7 @@ function QuickActions() {
       layout={Layout.springify()}
       style={styles.actionsContainer}
     >
-      <Text style={styles.sectionTitle}>Quick Start</Text>
+      <Text style={styles.sectionTitle}>بداية سريعة</Text>
       <View style={styles.actionsGrid}>
         {actions.map((action, index) => (
           <AnimatedPressable
@@ -295,9 +295,9 @@ function JourneyStats() {
     useUserStore();
 
   const stats = [
-    { value: totalSessions, label: 'sessions' },
-    { value: totalMessages, label: 'messages' },
-    { value: breathingSessionsCompleted, label: 'breaths' },
+    { value: totalSessions, label: 'جلسات' },
+    { value: totalMessages, label: 'رسائل' },
+    { value: breathingSessionsCompleted, label: 'تنفسات' },
   ];
 
   return (
@@ -306,7 +306,7 @@ function JourneyStats() {
       layout={Layout.springify()}
       style={styles.card}
     >
-      <Text style={styles.cardTitle}>Your Journey</Text>
+      <Text style={styles.cardTitle}>رحلتك</Text>
       <View style={styles.statsRow}>
         {stats.map((stat, index) => (
           <View key={stat.label} style={styles.statItem}>
@@ -359,8 +359,7 @@ export default function DashboardScreen() {
           entering={FadeInDown.delay(500).springify()}
           style={styles.disclaimer}
         >
-          Matcha is for self-reflection and entertainment only. Not a
-          substitute for professional care.
+          WA3i للتأمل الذاتي والترفيه فقط. ليس بديلاً عن الرعاية المهنية.
         </Animated.Text>
       </ScrollView>
     </View>

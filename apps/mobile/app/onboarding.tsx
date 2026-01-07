@@ -17,26 +17,26 @@ interface OnboardingSlide {
 const SLIDES: OnboardingSlide[] = [
   {
     id: '1',
-    title: 'Welcome to Matcha',
-    description: 'Your AI companion for self-discovery and personal growth. Explore your thoughts, reflect on emotions, and build mindful habits.',
+    title: 'مرحباً بك في WA3i',
+    description: 'رفيقك الذكي لاكتشاف الذات والنمو الشخصي. استكشف أفكارك، تأمل في مشاعرك، وابنِ عادات واعية.',
     color: '#5a9470',
   },
   {
     id: '2',
-    title: 'Talk Freely',
-    description: 'Share what\'s on your mind in a judgment-free space. Our AI companion listens and helps you gain clarity through reflection.',
+    title: 'تحدث بحرية',
+    description: 'شارك ما يدور في ذهنك في مساحة خالية من الأحكام. رفيقنا الذكي يستمع ويساعدك على اكتساب الوضوح من خلال التأمل.',
     color: '#6b9ac4',
   },
   {
     id: '3',
-    title: 'Track Your Journey',
-    description: 'Monitor your mood, build healthy streaks, and discover your emotional patterns over time.',
+    title: 'تتبع رحلتك',
+    description: 'راقب مزاجك، ابنِ سلسلة صحية، واكتشف أنماطك العاطفية مع مرور الوقت.',
     color: '#c97d52',
   },
   {
     id: '4',
-    title: 'Important Note',
-    description: 'Matcha is a wellness companion for self-reflection and entertainment only. It is not a medical device and does not provide professional advice, diagnosis, or treatment. For health concerns, please consult a qualified professional.',
+    title: 'ملاحظة مهمة',
+    description: 'WA3i هو رفيق للعافية للتأمل الذاتي والترفيه فقط. ليس جهازاً طبياً ولا يقدم نصائح أو تشخيصات أو علاجات مهنية. للمخاوف الصحية، يرجى استشارة متخصص مؤهل.',
     color: '#a69889',
   },
 ];
@@ -48,14 +48,14 @@ interface Goal {
 }
 
 const GOALS: Goal[] = [
-  { id: 'thoughts', label: 'Explore Thoughts', description: 'Reflect on what\'s on your mind' },
-  { id: 'mood', label: 'Mood Journaling', description: 'Track and understand feelings' },
-  { id: 'stress', label: 'Stress Relief', description: 'Relaxation and breathing' },
-  { id: 'sleep', label: 'Wind Down', description: 'Evening relaxation routines' },
-  { id: 'relationships', label: 'Relationships', description: 'Reflect on connections' },
-  { id: 'self-discovery', label: 'Know Myself', description: 'Explore thoughts and feelings' },
-  { id: 'mindfulness', label: 'Mindfulness', description: 'Present moment awareness' },
-  { id: 'growth', label: 'Personal Growth', description: 'Self-improvement reflections' },
+  { id: 'thoughts', label: 'استكشاف الأفكار', description: 'تأمل في ما يدور بذهنك' },
+  { id: 'mood', label: 'يوميات المزاج', description: 'تتبع وفهم المشاعر' },
+  { id: 'stress', label: 'تخفيف التوتر', description: 'الاسترخاء والتنفس' },
+  { id: 'sleep', label: 'الاسترخاء المسائي', description: 'روتين الاسترخاء الليلي' },
+  { id: 'relationships', label: 'العلاقات', description: 'تأمل في الروابط' },
+  { id: 'self-discovery', label: 'معرفة الذات', description: 'استكشاف الأفكار والمشاعر' },
+  { id: 'mindfulness', label: 'اليقظة الذهنية', description: 'الوعي باللحظة الحاضرة' },
+  { id: 'growth', label: 'النمو الشخصي', description: 'تأملات تحسين الذات' },
 ];
 
 function SlideItem({ item }: { item: OnboardingSlide }) {
@@ -117,7 +117,7 @@ function GoalsScreen({ onComplete }: { onComplete: (goals: string[]) => void }) 
         textAlign: 'center',
         marginBottom: 8,
       }}>
-        What brings you here?
+        ما الذي يجلبك إلى هنا؟
       </Text>
       <Text style={{
         fontSize: 16,
@@ -125,7 +125,7 @@ function GoalsScreen({ onComplete }: { onComplete: (goals: string[]) => void }) 
         textAlign: 'center',
         marginBottom: 24,
       }}>
-        Select all that apply
+        اختر كل ما ينطبق
       </Text>
 
       <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 12 }}>
@@ -179,7 +179,7 @@ function GoalsScreen({ onComplete }: { onComplete: (goals: string[]) => void }) 
           fontWeight: '600',
           fontSize: 16,
         }}>
-          {selectedGoals.length > 0 ? 'Continue' : 'Select at least one'}
+          {selectedGoals.length > 0 ? 'متابعة' : 'اختر واحدة على الأقل'}
         </Text>
       </TouchableOpacity>
     </View>
@@ -225,7 +225,7 @@ export default function OnboardingScreen() {
       {/* Skip button */}
       <View style={{ alignItems: 'flex-end', paddingHorizontal: 16, paddingTop: 8 }}>
         <TouchableOpacity onPress={handleSkip} style={{ padding: 8 }}>
-          <Text style={{ color: '#a69889', fontSize: 16 }}>Skip</Text>
+          <Text style={{ color: '#a69889', fontSize: 16 }}>تخطي</Text>
         </TouchableOpacity>
       </View>
 
@@ -271,7 +271,7 @@ export default function OnboardingScreen() {
           }}
         >
           <Text style={{ color: 'white', fontWeight: '600', fontSize: 16 }}>
-            {currentIndex === SLIDES.length - 1 ? 'Get Started' : 'Next'}
+            {currentIndex === SLIDES.length - 1 ? 'ابدأ الآن' : 'التالي'}
           </Text>
         </TouchableOpacity>
       </View>

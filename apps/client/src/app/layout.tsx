@@ -23,11 +23,11 @@ const dmSerif = DM_Serif_Display({
 
 export const metadata: Metadata = {
   title: {
-    default: "Matcha - AI-Powered Psychological Insights",
-    template: "%s | Matcha",
+    default: "WA3i - AI-Powered Psychological Insights",
+    template: "%s | WA3i",
   },
   description:
-    "Discover your cognitive biases, understand your emotional patterns, and unlock personal growth with Matcha's AI-powered psychological analysis. Get real-time insights during conversations.",
+    "Discover your cognitive biases, understand your emotional patterns, and unlock personal growth with WA3i's AI-powered psychological analysis. Get real-time insights during conversations.",
   keywords: [
     "psychology AI",
     "cognitive bias detection",
@@ -40,25 +40,25 @@ export const metadata: Metadata = {
     "thought pattern analysis",
     "mindfulness AI",
   ],
-  authors: [{ name: "Matcha" }],
-  creator: "Matcha",
-  publisher: "Matcha",
+  authors: [{ name: "WA3i" }],
+  creator: "WA3i",
+  publisher: "WA3i",
   metadataBase: new URL("https://vematcha.xyz"),
   alternates: {
     canonical: "/",
   },
   openGraph: {
-    title: "Matcha - AI-Powered Psychological Insights",
+    title: "WA3i - AI-Powered Psychological Insights",
     description:
       "Understand your mind with AI. Detect cognitive biases, track emotional patterns, and get personalized insights for personal growth.",
     type: "website",
     locale: "en_US",
     url: "https://vematcha.xyz",
-    siteName: "Matcha",
+    siteName: "WA3i",
   },
   twitter: {
     card: "summary_large_image",
-    title: "Matcha - AI-Powered Psychological Insights",
+    title: "WA3i - AI-Powered Psychological Insights",
     description:
       "Understand your mind with AI. Detect cognitive biases and get personalized insights.",
   },
@@ -136,7 +136,7 @@ export default function RootLayout({
                   "@type": "WebSite",
                   "@id": "https://vematcha.xyz/#website",
                   "url": "https://vematcha.xyz",
-                  "name": "Matcha",
+                  "name": "WA3i",
                   "description": "AI-Powered Psychological Insights",
                   "publisher": { "@id": "https://vematcha.xyz/#organization" },
                   "potentialAction": {
@@ -148,7 +148,7 @@ export default function RootLayout({
                 {
                   "@type": "Organization",
                   "@id": "https://vematcha.xyz/#organization",
-                  "name": "Matcha",
+                  "name": "WA3i",
                   "url": "https://vematcha.xyz",
                   "logo": {
                     "@type": "ImageObject",
@@ -158,7 +158,7 @@ export default function RootLayout({
                 },
                 {
                   "@type": "SoftwareApplication",
-                  "name": "Matcha",
+                  "name": "WA3i",
                   "applicationCategory": "HealthApplication",
                   "operatingSystem": "Web",
                   "description": "AI-powered psychological analysis tool that helps you understand cognitive biases, emotional patterns, and unlock personal growth through real-time insights.",

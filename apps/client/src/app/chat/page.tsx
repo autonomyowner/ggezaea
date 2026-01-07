@@ -293,7 +293,7 @@ export default function ChatPage() {
           id: `voice-${Date.now()}-${index}`,
           conversationId: activeConversationId || '',
           role: isUser ? 'USER' : 'ASSISTANT',
-          content: text.replace(/^(You|Matcha): /, ''),
+          content: text.replace(/^(You|WA3i): /, ''),
           createdAt: new Date().toISOString(),
         };
       });

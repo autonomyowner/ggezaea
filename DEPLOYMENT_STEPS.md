@@ -1,4 +1,4 @@
-# Matcha AI - Complete Deployment Guide
+# WA3i AI - Complete Deployment Guide
 
 ## 🎯 Overview
 This guide will walk you through:
@@ -37,7 +37,7 @@ ELEVENLABS_API_KEY=sk_8f3f73a363b6f9c4cadc91a80ecd7b0369cf036dda96d9c0
 ### Step 2: Install Backend Dependencies
 
 ```bash
-cd D:/p1/vematcha/apps/api
+cd D:/p1/vewa3i/apps/api
 
 # Install new dependencies
 npm install axios @nestjs/axios
@@ -163,7 +163,7 @@ curl -X POST http://localhost:4000/voice/start \
 Open a NEW terminal (keep backend running):
 
 ```bash
-cd D:/p1/vematcha/apps/client
+cd D:/p1/vewa3i/apps/client
 
 # Install Vapi SDK
 npm install @vapi-ai/web
@@ -229,7 +229,7 @@ export default function VoiceTestPage() {
 
 5. Allow microphone access when prompted
 
-6. **Speak**: "Hello Matcha, how are you?"
+6. **Speak**: "Hello WA3i, how are you?"
 
 7. **Expected**: AI responds with voice
 
@@ -242,7 +242,7 @@ export default function VoiceTestPage() {
 After voice session:
 
 ```bash
-cd D:/p1/vematcha/apps/api
+cd D:/p1/vewa3i/apps/api
 npx prisma studio
 ```
 
@@ -279,7 +279,7 @@ Before deploying to Render, verify:
 ### Step 1: Commit Your Changes
 
 ```bash
-cd D:/p1/vematcha
+cd D:/p1/vewa3i
 
 # Check what's changed
 git status
@@ -608,7 +608,7 @@ This section covers deploying the horizontally scalable backend with Redis-backe
 1. Go to https://dashboard.render.com
 2. Click **"New +"** → **"Redis"**
 3. Configure:
-   - **Name**: `matcha-redis`
+   - **Name**: `wa3i-redis`
    - **Region**: Frankfurt (same as API)
    - **Plan**: Starter ($7/month) or Free (for testing)
    - **Max Memory Policy**: `allkeys-lru`
@@ -618,7 +618,7 @@ This section covers deploying the horizontally scalable backend with Redis-backe
 
 ### Step 2: Update API Service Environment Variables
 
-1. Go to your **matcha-api** service on Render
+1. Go to your **wa3i-api** service on Render
 2. Click **"Environment"** tab
 3. Add/Update these variables:
 
@@ -633,7 +633,7 @@ REDIS_URL = redis://red-xxxxx:6379  (paste your Redis Internal URL)
 1. Go to https://dashboard.render.com
 2. Click **"New +"** → **"Background Worker"**
 3. Configure:
-   - **Name**: `matcha-worker`
+   - **Name**: `wa3i-worker`
    - **Region**: Frankfurt
    - **Branch**: main
    - **Root Directory**: `apps/api`
@@ -655,7 +655,7 @@ FRONTEND_URL = https://your-frontend.vercel.app
 
 ### Step 4: Enable Auto-Scaling on API (Optional)
 
-1. Go to your **matcha-api** service
+1. Go to your **wa3i-api** service
 2. Click **"Settings"** tab
 3. Scroll to **"Instance Type"**
 4. Enable **"Auto-Scaling"**:
@@ -672,7 +672,7 @@ FRONTEND_URL = https://your-frontend.vercel.app
 The `apps/api/render.yaml` has been updated with the new configuration. Push to deploy:
 
 ```bash
-cd D:/p1/vematcha
+cd D:/p1/vewa3i
 git add apps/api/render.yaml
 git commit -m "feat(api): configure horizontal scaling with Redis and worker"
 git push origin main
@@ -684,7 +684,7 @@ After Render deploys (2-5 minutes):
 
 ```bash
 # Test health endpoint
-curl https://matcha-api.onrender.com/api/health
+curl https://wa3i-api.onrender.com/api/health
 
 # Expected response:
 {
@@ -701,7 +701,7 @@ curl https://matcha-api.onrender.com/api/health
 }
 
 # Test readiness probe
-curl https://matcha-api.onrender.com/api/health/ready
+curl https://wa3i-api.onrender.com/api/health/ready
 
 # Expected:
 {
@@ -718,7 +718,7 @@ curl https://matcha-api.onrender.com/api/health/ready
 ```bash
 # Make rapid requests to test rate limiting
 for i in {1..5}; do
-  curl -s -o /dev/null -w "%{http_code}\n" https://matcha-api.onrender.com/api/health
+  curl -s -o /dev/null -w "%{http_code}\n" https://wa3i-api.onrender.com/api/health
 done
 
 # Expected: First 3 return 200, then 429 (rate limited)
@@ -726,7 +726,7 @@ done
 
 ### Step 8: Verify Worker is Processing Jobs
 
-1. Go to Render Dashboard → **matcha-worker**
+1. Go to Render Dashboard → **wa3i-worker**
 2. Click **"Logs"** tab
 3. Look for:
 ```

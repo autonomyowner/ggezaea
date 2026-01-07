@@ -1,7 +1,7 @@
 {
-  "name": "@matcha/api",
+  "name": "@WA3i/api",
   "version": "1.0.0",
-  "description": "Matcha Backend API - NestJS",
+  "description": "WA3i Backend API - NestJS",
   "main": "dist/main.js",
   "prisma": {
     "schema": "prisma/schema.prisma"
@@ -27,9 +27,10 @@
   },
   "keywords": [
     "nestjs",
-    "matcha",
+    "WA3i",
     "api",
-    "psychological-profiling"
+    "wellness",
+    "arabic"
   ],
   "author": "",
   "license": "ISC",

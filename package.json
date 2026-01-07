@@ -1,7 +1,7 @@
 {
-  "name": "matcha",
+  "name": "WA3i",
   "version": "1.0.0",
-  "description": "Matcha - AI Psychological Profiler",
+  "description": "WA3i - رفيقك الذكي للعافية النفسية",
   "main": "index.js",
   "overrides": {
     "react": "19.1.0",

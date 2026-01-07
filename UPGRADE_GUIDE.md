@@ -1,4 +1,4 @@
-# Matcha AI - Clinical Upgrade Guide
+# WA3i AI - Clinical Upgrade Guide
 
 ## Overview
 
@@ -574,4 +574,4 @@ Users should consult licensed mental health professionals for clinical care.
 
 ---
 
-**Built with ❤️ for Matcha AI - "AI at the service of your mind"**
+**Built with ❤️ for WA3i AI - "AI at the service of your mind"**
