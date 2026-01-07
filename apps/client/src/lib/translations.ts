@@ -48,6 +48,8 @@ export const translations = {
       emotionalBlockersDesc: 'Highlight the emotional barriers preventing you from taking action and achieving your goals.',
       psychProfile: 'Psychological profile',
       psychProfileDesc: 'Get an overview of your mental functioning with actionable insights for your personal development.',
+      addictionRecovery: 'Addiction Recovery Support',
+      addictionRecoveryDesc: 'Understand the thought patterns and emotional triggers behind substance abuse. WA3i helps identify root causes and supports your journey to recovery.',
 
       // Testimonials
       testimonials: 'They transformed their lives',
@@ -443,6 +445,8 @@ export const translations = {
       emotionalBlockersDesc: "Mettez en lumiere les freins emotionnels qui vous empechent de passer a l'action et atteignez vos objectifs.",
       psychProfile: 'Profil psychologique',
       psychProfileDesc: "Obtenez une vue d'ensemble de votre fonctionnement mental avec des insights actionnables pour votre developpement personnel.",
+      addictionRecovery: 'Soutien a la guerison des addictions',
+      addictionRecoveryDesc: 'Comprenez les schemas de pensee et les declencheurs emotionnels derriere l\'abus de substances. WA3i aide a identifier les causes profondes et soutient votre parcours vers la guerison.',
 
       // Testimonials
       testimonials: 'Ils ont transforme leur vie',
@@ -838,6 +842,8 @@ export const translations = {
       emotionalBlockersDesc: 'سلط الضوء على الحواجز العاطفية التي تمنعك من اتخاذ الإجراءات وتحقيق أهدافك.',
       psychProfile: 'الملف النفسي',
       psychProfileDesc: 'احصل على نظرة شاملة على أدائك العقلي مع رؤى قابلة للتنفيذ لتطويرك الشخصي.',
+      addictionRecovery: 'دعم التعافي من الإدمان',
+      addictionRecoveryDesc: 'افهم أنماط التفكير والمحفزات العاطفية وراء تعاطي المخدرات. يساعد WA3i في تحديد الأسباب الجذرية ويدعم رحلتك نحو التعافي.',
 
       // Testimonials
       testimonials: 'غيّروا حياتهم',

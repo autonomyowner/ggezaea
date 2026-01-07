@@ -521,7 +521,7 @@ export default function LandingPage() {
                     viewport={{ once: true }}
                     transition={{ delay: 0.1 }}
                   >
-                    Matcha is a really good idea.
+                    WA3i is a really good idea.
                   </motion.p>
                   <motion.p
                     className="mb-4"
@@ -547,7 +547,7 @@ export default function LandingPage() {
                     viewport={{ once: true }}
                     transition={{ delay: 0.4 }}
                   >
-                    However, <span style={{ color: 'var(--matcha-600)', fontWeight: 600 }}>Matcha really applied the concept in my real-life situation.</span>
+                    However, <span style={{ color: 'var(--matcha-600)', fontWeight: 600 }}>WA3i really applied the concept in my real-life situation.</span>
                   </motion.p>
                 </blockquote>
 
@@ -582,7 +582,7 @@ export default function LandingPage() {
                       className="text-sm"
                       style={{ color: 'var(--text-muted)' }}
                     >
-                      First Matcha User
+                      First WA3i User
                     </p>
                   </div>
                 </motion.div>
@@ -647,6 +647,12 @@ export default function LandingPage() {
                 description: t.landing.psychProfileDesc,
                 color: 'var(--terra-500)',
                 bgGradient: 'from-terra-100/50 to-transparent',
+              },
+              {
+                title: t.landing.addictionRecovery,
+                description: t.landing.addictionRecoveryDesc,
+                color: 'var(--matcha-700)',
+                bgGradient: 'from-matcha-200/50 to-transparent',
               },
             ].map((feature, i) => (
               <motion.div
@@ -769,7 +775,7 @@ export default function LandingPage() {
               >
                 <Image
                   src={`/social medea  posts/${filename}`}
-                  alt={`Matcha social media post ${i + 1}`}
+                  alt={`WA3i social media post ${i + 1}`}
                   fill
                   className="object-cover transition-transform duration-500 group-hover:scale-110"
                   sizes="(max-width: 768px) 50vw, 25vw"
@@ -920,7 +926,7 @@ export default function LandingPage() {
                   color: 'var(--matcha-600)',
                 }}
               >
-                Matcha
+                WA3i
               </p>
               <p className="text-sm" style={{ color: 'var(--text-muted)' }}>
                 {t.landing.footerTagline}
@@ -957,7 +963,7 @@ export default function LandingPage() {
               color: 'var(--text-muted)',
             }}
           >
-            © 2024 Matcha. {t.landing.allRightsReserved}
+            © 2024 WA3i. {t.landing.allRightsReserved}
           </div>
         </div>
       </footer>
