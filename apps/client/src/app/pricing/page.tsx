@@ -249,6 +249,7 @@ export default function PricingPage() {
                   t.pricing.proFeature6,
                   t.pricing.proFeature7,
                   t.pricing.proFeature8,
+                  t.pricing.proFeature9,
                 ].map((feature, i) => (
                   <li key={i} className="flex items-start gap-3">
                     <span

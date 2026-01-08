@@ -150,6 +150,7 @@ export const translations = {
       proFeature6: 'AI chat for deeper insights',
       proFeature7: 'Priority support',
       proFeature8: 'Early access to new features',
+      proFeature9: 'Addiction Recovery Support',
       tryPro: 'Try Pro free for 14 days',
 
       // Comparison
@@ -547,6 +548,7 @@ export const translations = {
       proFeature6: 'Chat IA pour approfondir',
       proFeature7: 'Support prioritaire',
       proFeature8: 'Acces anticipe aux nouvelles fonctionnalites',
+      proFeature9: 'Accompagnement Addiction et Sevrage',
       tryPro: 'Essayer Pro gratuitement 14 jours',
 
       // Comparison
@@ -943,6 +945,7 @@ export const translations = {
       proFeature6: 'محادثة AI للتعمق',
       proFeature7: 'دعم ذو أولوية',
       proFeature8: 'وصول مبكر للميزات الجديدة',
+      proFeature9: 'دعم التعافي من الإدمان',
       tryPro: 'جرب Pro مجاناً لمدة 14 يوم',
 
       // Comparison
