@@ -4,6 +4,7 @@ import { DM_Sans, DM_Serif_Display } from "next/font/google";
 import { ClerkProvider } from "@clerk/nextjs";
 import Header from "../components/Header";
 import { LanguageProvider } from "../components/LanguageProvider";
+import InvestorFloatingButtons from "../components/InvestorFloatingButtons";
 import "./globals.css";
 
 const GA_MEASUREMENT_ID = "G-X3NN5L7W36";
@@ -193,6 +194,7 @@ export default function RootLayout({
               <Header />
             </div>
             <main>{children}</main>
+            <InvestorFloatingButtons />
           </LanguageProvider>
         </ClerkProvider>
       </body>
