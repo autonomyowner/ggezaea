@@ -6,6 +6,7 @@ import { useLanguage } from '../../components/LanguageProvider';
 
 export default function PricingPage() {
   const [billingPeriod, setBillingPeriod] = useState<'monthly' | 'yearly'>('monthly');
+  const [showBDLModal, setShowBDLModal] = useState(false);
   const { t, language } = useLanguage();
 
   const currency = language === 'en' ? '$' : '€';
@@ -347,18 +348,26 @@ export default function PricingPage() {
                 ))}
               </ul>
 
-              <a
-                href="https://wa.me/213797339451?text=I%20want%20to%20become%20a%20Founding%20Member"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex w-full items-center justify-center px-6 py-3 rounded-xl font-medium transition-all hover:scale-[1.02]"
+              <button
+                onClick={() => setShowBDLModal(true)}
+                className="inline-flex w-full items-center justify-center gap-3 px-6 py-3 rounded-xl font-medium transition-all hover:scale-[1.02]"
                 style={{
                   background: 'white',
                   color: 'var(--matcha-700)',
                 }}
               >
-                {language === 'en' ? 'Only 47 left!' : 'Plus que 47 places !'}
-              </a>
+                {/* Visa Icon */}
+                <svg width="36" height="12" viewBox="0 0 40 14" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M16.5 1L14 13H11L13.5 1H16.5Z" fill="#1A1F71"/>
+                  <path d="M26.5 1.2C25.8 0.9 24.7 0.6 23.3 0.6C20 0.6 17.7 2.3 17.7 4.7C17.7 6.5 19.3 7.5 20.6 8.1C21.9 8.7 22.4 9.1 22.4 9.7C22.4 10.6 21.3 11 20.3 11C18.8 11 18 10.8 16.7 10.2L16.2 10L15.7 13C16.7 13.4 18.4 13.8 20.1 13.8C23.6 13.8 25.8 12.1 25.8 9.5C25.8 8.1 24.9 7 23 6.1C21.8 5.5 21.1 5.1 21.1 4.5C21.1 4 21.7 3.4 23 3.4C24.1 3.4 24.9 3.6 25.5 3.9L25.8 4L26.5 1.2Z" fill="#1A1F71"/>
+                  <path d="M31.5 1H29C28.2 1 27.6 1.2 27.3 2L22.5 13H26L26.7 11H30.9L31.3 13H34.5L31.5 1ZM27.7 8.5C28 7.7 29.2 4.5 29.2 4.5C29.2 4.5 29.5 3.7 29.7 3.2L29.9 4.4C29.9 4.4 30.6 7.5 30.8 8.5H27.7Z" fill="#1A1F71"/>
+                  <path d="M10.5 1L7.2 9.4L6.8 7.5C6.2 5.5 4.3 3.3 2.1 2.2L5.1 13H8.6L14 1H10.5Z" fill="#1A1F71"/>
+                  <path d="M5 1H0L0 1.2C4.1 2.2 6.8 4.7 7.8 7.5L6.7 2C6.5 1.3 6 1 5 1Z" fill="#F9A533"/>
+                </svg>
+                {/* BDL Icon */}
+                <img src="/bdlicon.png" alt="BDL" className="h-6 w-auto" />
+                <span>{language === 'en' ? 'Pay Now' : 'Payer'}</span>
+              </button>
             </div>
           </div>
         </div>
@@ -653,6 +662,193 @@ export default function PricingPage() {
           </div>
         </div>
       </footer>
+
+      {/* BDL Payment Modal */}
+      {showBDLModal && (
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center p-4"
+          style={{ background: 'rgba(0, 0, 0, 0.5)' }}
+          onClick={() => setShowBDLModal(false)}
+        >
+          <div
+            className="w-full max-w-md rounded-3xl p-8 relative"
+            style={{
+              background: 'var(--bg-card)',
+              boxShadow: 'var(--shadow-xl)',
+            }}
+            onClick={(e) => e.stopPropagation()}
+          >
+            {/* Close button */}
+            <button
+              onClick={() => setShowBDLModal(false)}
+              className="absolute top-4 right-4 w-8 h-8 flex items-center justify-center rounded-full hover:bg-gray-100 transition-colors"
+              style={{ color: 'var(--text-muted)' }}
+            >
+              ×
+            </button>
+
+            {/* BDL Logo/Header */}
+            <div className="text-center mb-6">
+              <div className="inline-flex items-center justify-center mb-4">
+                <img src="/bdlicon.png" alt="BDL" className="h-16 w-auto rounded-2xl" />
+              </div>
+              <h3
+                className="text-xl font-semibold"
+                style={{
+                  fontFamily: 'var(--font-dm-serif), Georgia, serif',
+                  color: 'var(--text-primary)',
+                }}
+              >
+                {language === 'en' ? 'Banque de Développement Local' : 'Banque de Développement Local'}
+              </h3>
+              <p className="text-sm mt-1" style={{ color: 'var(--text-muted)' }}>
+                {language === 'en' ? 'Secure Payment Gateway' : 'Passerelle de paiement sécurisée'}
+              </p>
+              {/* Accepted Cards */}
+              <div className="flex items-center justify-center gap-3 mt-4">
+                {/* Visa Icon */}
+                <div className="px-3 py-1.5 rounded-md" style={{ background: '#1A1F71' }}>
+                  <svg width="40" height="14" viewBox="0 0 40 14" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M16.5 1L14 13H11L13.5 1H16.5Z" fill="white"/>
+                    <path d="M26.5 1.2C25.8 0.9 24.7 0.6 23.3 0.6C20 0.6 17.7 2.3 17.7 4.7C17.7 6.5 19.3 7.5 20.6 8.1C21.9 8.7 22.4 9.1 22.4 9.7C22.4 10.6 21.3 11 20.3 11C18.8 11 18 10.8 16.7 10.2L16.2 10L15.7 13C16.7 13.4 18.4 13.8 20.1 13.8C23.6 13.8 25.8 12.1 25.8 9.5C25.8 8.1 24.9 7 23 6.1C21.8 5.5 21.1 5.1 21.1 4.5C21.1 4 21.7 3.4 23 3.4C24.1 3.4 24.9 3.6 25.5 3.9L25.8 4L26.5 1.2Z" fill="white"/>
+                    <path d="M31.5 1H29C28.2 1 27.6 1.2 27.3 2L22.5 13H26L26.7 11H30.9L31.3 13H34.5L31.5 1ZM27.7 8.5C28 7.7 29.2 4.5 29.2 4.5C29.2 4.5 29.5 3.7 29.7 3.2L29.9 4.4C29.9 4.4 30.6 7.5 30.8 8.5H27.7Z" fill="white"/>
+                    <path d="M10.5 1L7.2 9.4L6.8 7.5C6.2 5.5 4.3 3.3 2.1 2.2L5.1 13H8.6L14 1H10.5Z" fill="white"/>
+                    <path d="M5 1H0L0 1.2C4.1 2.2 6.8 4.7 7.8 7.5L6.7 2C6.5 1.3 6 1 5 1Z" fill="#F9A533"/>
+                  </svg>
+                </div>
+                {/* BDL Icon */}
+                <img src="/bdlicon.png" alt="BDL" className="h-8 w-auto rounded-md" />
+                {/* Mastercard Icon */}
+                <div className="px-2 py-1.5 rounded-md" style={{ background: '#f5f5f5', border: '1px solid #e0e0e0' }}>
+                  <svg width="32" height="20" viewBox="0 0 32 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <circle cx="11" cy="10" r="8" fill="#EB001B"/>
+                    <circle cx="21" cy="10" r="8" fill="#F79E1B"/>
+                    <path d="M16 3.5C17.8 5 19 7.3 19 10C19 12.7 17.8 15 16 16.5C14.2 15 13 12.7 13 10C13 7.3 14.2 5 16 3.5Z" fill="#FF5F00"/>
+                  </svg>
+                </div>
+              </div>
+            </div>
+
+            {/* Order Summary */}
+            <div
+              className="rounded-xl p-4 mb-6"
+              style={{ background: 'var(--cream-100)' }}
+            >
+              <div className="flex justify-between items-center mb-2">
+                <span style={{ color: 'var(--text-secondary)' }}>
+                  {language === 'en' ? 'Founding Member - Lifetime' : 'Membre Fondateur - À vie'}
+                </span>
+                <span className="font-semibold" style={{ color: 'var(--text-primary)' }}>
+                  5,850 DZD
+                </span>
+              </div>
+              <div className="flex justify-between items-center text-sm">
+                <span style={{ color: 'var(--text-muted)' }}>
+                  {language === 'en' ? '(Approx. €39)' : '(Environ 39€)'}
+                </span>
+              </div>
+            </div>
+
+            {/* Card Form (Mockup) */}
+            <form onSubmit={(e) => { e.preventDefault(); alert(language === 'en' ? 'This is a mockup - Payment integration coming soon!' : 'Ceci est une maquette - Intégration du paiement bientôt disponible!'); }}>
+              <div className="space-y-4">
+                <div>
+                  <label className="block text-sm font-medium mb-2" style={{ color: 'var(--text-secondary)' }}>
+                    {language === 'en' ? 'Card Number' : 'Numéro de carte'}
+                  </label>
+                  <input
+                    type="text"
+                    placeholder="4242 4242 4242 4242"
+                    className="w-full px-4 py-3 rounded-xl border outline-none focus:ring-2 focus:ring-[var(--matcha-500)]"
+                    style={{
+                      borderColor: 'var(--border-soft)',
+                      background: 'var(--bg-card)',
+                      color: 'var(--text-primary)',
+                    }}
+                  />
+                </div>
+
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-sm font-medium mb-2" style={{ color: 'var(--text-secondary)' }}>
+                      {language === 'en' ? 'Expiry Date' : 'Date d\'expiration'}
+                    </label>
+                    <input
+                      type="text"
+                      placeholder="MM/YY"
+                      className="w-full px-4 py-3 rounded-xl border outline-none focus:ring-2 focus:ring-[var(--matcha-500)]"
+                      style={{
+                        borderColor: 'var(--border-soft)',
+                        background: 'var(--bg-card)',
+                        color: 'var(--text-primary)',
+                      }}
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium mb-2" style={{ color: 'var(--text-secondary)' }}>
+                      CVC
+                    </label>
+                    <input
+                      type="text"
+                      placeholder="123"
+                      className="w-full px-4 py-3 rounded-xl border outline-none focus:ring-2 focus:ring-[var(--matcha-500)]"
+                      style={{
+                        borderColor: 'var(--border-soft)',
+                        background: 'var(--bg-card)',
+                        color: 'var(--text-primary)',
+                      }}
+                    />
+                  </div>
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium mb-2" style={{ color: 'var(--text-secondary)' }}>
+                    {language === 'en' ? 'Cardholder Name' : 'Nom du titulaire'}
+                  </label>
+                  <input
+                    type="text"
+                    placeholder={language === 'en' ? 'AHMED BENALI' : 'AHMED BENALI'}
+                    className="w-full px-4 py-3 rounded-xl border outline-none focus:ring-2 focus:ring-[var(--matcha-500)]"
+                    style={{
+                      borderColor: 'var(--border-soft)',
+                      background: 'var(--bg-card)',
+                      color: 'var(--text-primary)',
+                    }}
+                  />
+                </div>
+
+                <button
+                  type="submit"
+                  className="w-full py-3 rounded-xl font-medium transition-all hover:opacity-90"
+                  style={{
+                    background: '#006233',
+                    color: 'white',
+                  }}
+                >
+                  {language === 'en' ? 'Pay 5,850 DZD' : 'Payer 5 850 DZD'}
+                </button>
+              </div>
+            </form>
+
+            {/* Security badges */}
+            <div className="mt-6 flex items-center justify-center gap-4 text-xs" style={{ color: 'var(--text-muted)' }}>
+              <span className="flex items-center gap-1">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                  <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
+                  <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+                </svg>
+                {language === 'en' ? 'SSL Secured' : 'Sécurisé SSL'}
+              </span>
+              <span className="flex items-center gap-1">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                  <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+                </svg>
+                {language === 'en' ? 'BDL Protected' : 'Protégé par BDL'}
+              </span>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
